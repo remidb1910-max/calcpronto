@@ -29,8 +29,35 @@
       <svg width="28" height="28" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8" fill="#0b6e4f"/><path d="M9 11h14M9 16h14M9 21h8" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/><circle cx="23" cy="21" r="2.4" fill="#f2a900"/></svg>
       <span>Calc<b>Pronto</b></span>
     </a>
-    <nav class="top" aria-label="Rechner">
-<a href="/de/#realestate">Immobilien und Kredit</a><a href="/de/#finance">Steuern und Geld</a><a href="/de/#work">Arbeit und Gehalt</a><a href="/de/#business">Unternehmen und Selbstständige</a><a href="/de/#travel">Reisen</a>    </nav>
+    <input type="checkbox" id="nav-toggle" class="nav-toggle" aria-label="Menü">
+    <label for="nav-toggle" class="burger" aria-hidden="true"><span></span><span></span><span></span></label>
+    <nav class="top" aria-label="Menü">
+      <details class="dd">
+        <summary>Immobilien und Kredit</summary>
+        <div class="dd-panel">
+<a href="/de/kreditrechner/">Kreditrate</a><a href="/de/wie-viel-kredit-kann-ich-mir-leisten/">Kreditbetrag</a><a href="/de/notarkosten-frankreich/">Notarkosten Frankreich</a>        </div>
+      </details>
+      <details class="dd">
+        <summary>Steuern und Geld</summary>
+        <div class="dd-panel">
+<a href="/de/einkommensteuer-frankreich/">Einkommensteuer Frankreich</a>        </div>
+      </details>
+      <details class="dd">
+        <summary>Arbeit und Gehalt</summary>
+        <div class="dd-panel">
+<a href="/de/gehaltsrechner-frankreich/">Gehalt Frankreich</a><a href="/de/arbeitstage-rechner/">Arbeitstage</a>        </div>
+      </details>
+      <details class="dd">
+        <summary>Unternehmen und Selbstständige</summary>
+        <div class="dd-panel">
+<a href="/de/mehrwertsteuer-rechner/">MwSt.</a>        </div>
+      </details>
+      <details class="dd">
+        <summary>Reisen</summary>
+        <div class="dd-panel">
+<a href="/de/schengen-rechner/">Schengen 90/180</a><a href="/de/flugverspaetung-entschaedigung/">Flugverspätung</a>        </div>
+      </details>
+    </nav>
     <div class="lang">
 <a href="/fr/ia/" hreflang="fr" lang="fr">FR</a><a href="/en/ai/" hreflang="en" lang="en">EN</a><a href="/de/ki/" hreflang="de" lang="de" aria-current="true">DE</a><a href="/es/ia/" hreflang="es" lang="es">ES</a><a href="/it/ia/" hreflang="it" lang="it">IT</a>    </div>
   </div>
@@ -75,5 +102,11 @@
     </div>
   </div>
 </footer>
+<script>
+(function(){var dd=document.querySelectorAll('nav.top details.dd');
+dd.forEach(function(d){d.addEventListener('toggle',function(){if(d.open)dd.forEach(function(o){if(o!==d)o.open=false})})});
+document.addEventListener('click',function(e){if(!e.target.closest('nav.top'))dd.forEach(function(o){o.open=false})});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')dd.forEach(function(o){o.open=false})})})();
+</script>
 </body>
 </html>

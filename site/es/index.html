@@ -30,49 +30,84 @@
       <svg width="28" height="28" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8" fill="#0b6e4f"/><path d="M9 11h14M9 16h14M9 21h8" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/><circle cx="23" cy="21" r="2.4" fill="#f2a900"/></svg>
       <span>Calc<b>Pronto</b></span>
     </a>
-    <nav class="top" aria-label="Calculadora">
-<a href="/es/#realestate">Vivienda y préstamos</a><a href="/es/#finance">Impuestos y dinero</a><a href="/es/#work">Trabajo y salario</a><a href="/es/#business">Empresa y autónomos</a><a href="/es/#travel">Viajes</a>    </nav>
+    <input type="checkbox" id="nav-toggle" class="nav-toggle" aria-label="Menú">
+    <label for="nav-toggle" class="burger" aria-hidden="true"><span></span><span></span><span></span></label>
+    <nav class="top" aria-label="Menú">
+      <details class="dd">
+        <summary>Vivienda y préstamos</summary>
+        <div class="dd-panel">
+<a href="/es/calculadora-prestamo/">Préstamo</a><a href="/es/cuanto-me-prestan/">Cuánto me prestan</a><a href="/es/gastos-notario-francia/">Notario Francia</a>        </div>
+      </details>
+      <details class="dd">
+        <summary>Impuestos y dinero</summary>
+        <div class="dd-panel">
+<a href="/es/calculadora-impuesto-renta-francia/">Renta Francia</a>        </div>
+      </details>
+      <details class="dd">
+        <summary>Trabajo y salario</summary>
+        <div class="dd-panel">
+<a href="/es/calculadora-sueldo-francia/">Sueldo Francia</a><a href="/es/calculadora-dias-habiles/">Días hábiles</a>        </div>
+      </details>
+      <details class="dd">
+        <summary>Empresa y autónomos</summary>
+        <div class="dd-panel">
+<a href="/es/calculadora-iva/">IVA</a>        </div>
+      </details>
+      <details class="dd">
+        <summary>Viajes</summary>
+        <div class="dd-panel">
+<a href="/es/calculadora-schengen/">Schengen 90/180</a><a href="/es/indemnizacion-retraso-vuelo/">Retraso de vuelo</a>        </div>
+      </details>
+    </nav>
     <div class="lang">
 <a href="/fr/" hreflang="fr" lang="fr">FR</a><a href="/en/" hreflang="en" lang="en">EN</a><a href="/de/" hreflang="de" lang="de">DE</a><a href="/es/" hreflang="es" lang="es" aria-current="true">ES</a><a href="/it/" hreflang="it" lang="it">IT</a>    </div>
   </div>
 </header>
 <main>
   <div class="wrap">
-<h1>Cálculos exactos en segundos</h1>
-<p class="lead">Calculadoras gratuitas y sin registro que aplican las normas oficiales: tipos de IVA actualizados, festivos de 33 países, la regla Schengen y los derechos de los pasajeros aéreos en la UE.</p>
+<section class="hero">
+  <h1>Cálculos exactos en segundos</h1>
+  <p class="lead">Calculadoras gratuitas y sin registro que aplican las normas oficiales: tipos de IVA actualizados, festivos de 33 países, la regla Schengen y los derechos de los pasajeros aéreos en la UE.</p>
+  <div class="search">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg>
+    <input id="q" type="search" placeholder="Buscar una calculadora: sueldo, préstamo, impuestos, IVA…" aria-label="Buscar una calculadora: sueldo, préstamo, impuestos, IVA…" autocomplete="off">
+  </div>
+  <ul class="chips"><li>Gratis, sin registro</li><li>Normas oficiales 2026</li><li>Resultados comprobados automáticamente</li></ul>
+</section>
+<p id="none" class="none" hidden>Ninguna calculadora coincide. Pruebe con otra palabra.</p>
 <section class="theme" id="realestate">
-  <h2>Vivienda y préstamos</h2>
+  <h2><span class="ico ico-realestate"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11.5 12 5l8 6.5V20h-5v-5h-6v5H4z"/></svg></span>Vivienda y préstamos</h2>
   <div class="tiles">
-<a class="tile" href="/es/calculadora-prestamo/"><b>Calculadora de préstamo e hipoteca</b><span>Cuota mensual, coste total y amortización</span></a><a class="tile" href="/es/cuanto-me-prestan/"><b>¿Cuánto me presta el banco?</b><span>Préstamo máximo según tus ingresos</span></a><a class="tile" href="/es/gastos-notario-francia/"><b>Gastos de notario en Francia 2026</b><span>Impuestos por departamento, honorarios del notario</span></a>  </div>
+<a class="tile" href="/es/calculadora-prestamo/" data-k="calculadora de préstamo e hipoteca cuota mensual, coste total y amortización préstamo vivienda y préstamos"><b>Calculadora de préstamo e hipoteca</b><span>Cuota mensual, coste total y amortización</span><i>Abrir →</i></a><a class="tile" href="/es/cuanto-me-prestan/" data-k="¿cuánto me presta el banco? préstamo máximo según tus ingresos cuánto me prestan vivienda y préstamos"><b>¿Cuánto me presta el banco?</b><span>Préstamo máximo según tus ingresos</span><i>Abrir →</i></a><a class="tile" href="/es/gastos-notario-francia/" data-k="gastos de notario en francia 2026 impuestos por departamento, honorarios del notario notario francia vivienda y préstamos"><b>Gastos de notario en Francia 2026</b><span>Impuestos por departamento, honorarios del notario</span><i>Abrir →</i></a>  </div>
 </section>
 <section class="theme" id="finance">
-  <h2>Impuestos y dinero</h2>
+  <h2><span class="ico ico-finance"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V10m7 10V4m7 16v-7"/></svg></span>Impuestos y dinero</h2>
   <div class="tiles">
-<a class="tile" href="/es/calculadora-impuesto-renta-francia/"><b>Impuesto sobre la renta en Francia 2026</b><span>Tramos 2026, partes, límite, décote</span></a>  </div>
+<a class="tile" href="/es/calculadora-impuesto-renta-francia/" data-k="impuesto sobre la renta en francia 2026 tramos 2026, partes, límite, décote renta francia impuestos y dinero"><b>Impuesto sobre la renta en Francia 2026</b><span>Tramos 2026, partes, límite, décote</span><i>Abrir →</i></a>  </div>
 </section>
 <section class="theme" id="work">
-  <h2>Trabajo y salario</h2>
+  <h2><span class="ico ico-work"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="8" width="17" height="11" rx="2"/><path d="M9 8V6a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></svg></span>Trabajo y salario</h2>
   <div class="tiles">
-<a class="tile" href="/es/calculadora-sueldo-francia/"><b>Calculadora de sueldo en Francia: de bruto a neto 2026</b><span>Bruto a neto en Francia, cada cotización, retención</span></a><a class="tile" href="/es/calculadora-dias-habiles/"><b>Calculadora de días hábiles</b><span>Días hábiles entre fechas, festivos por comunidad</span></a>  </div>
+<a class="tile" href="/es/calculadora-sueldo-francia/" data-k="calculadora de sueldo en francia: de bruto a neto 2026 bruto a neto en francia, cada cotización, retención sueldo francia trabajo y salario"><b>Calculadora de sueldo en Francia: de bruto a neto 2026</b><span>Bruto a neto en Francia, cada cotización, retención</span><i>Abrir →</i></a><a class="tile" href="/es/calculadora-dias-habiles/" data-k="calculadora de días hábiles días hábiles entre fechas, festivos por comunidad días hábiles trabajo y salario"><b>Calculadora de días hábiles</b><span>Días hábiles entre fechas, festivos por comunidad</span><i>Abrir →</i></a>  </div>
 </section>
 <section class="theme" id="business">
-  <h2>Empresa y autónomos</h2>
+  <h2><span class="ico ico-business"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V6l8-2v16m0-10 8 2v8M2.5 20h19"/></svg></span>Empresa y autónomos</h2>
   <div class="tiles">
-<a class="tile" href="/es/calculadora-iva/"><b>Calculadora de IVA: base, IVA y total</b><span>Con y sin IVA, tipos de los 27 países de la UE</span></a>  </div>
+<a class="tile" href="/es/calculadora-iva/" data-k="calculadora de iva: base, iva y total con y sin iva, tipos de los 27 países de la ue iva empresa y autónomos"><b>Calculadora de IVA: base, IVA y total</b><span>Con y sin IVA, tipos de los 27 países de la UE</span><i>Abrir →</i></a>  </div>
 </section>
 <section class="theme" id="travel">
-  <h2>Viajes</h2>
+  <h2><span class="ico ico-travel"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 13.5 21 6l-4.5 13-3.5-5.5z"/><path d="M13 13.5 21 6"/></svg></span>Viajes</h2>
   <div class="tiles">
-<a class="tile" href="/es/calculadora-schengen/"><b>Calculadora Schengen: regla de 90 días en 180</b><span>Días restantes y fecha máxima de salida</span></a><a class="tile" href="/es/indemnizacion-retraso-vuelo/"><b>Indemnización por retraso o cancelación de vuelo</b><span>De 250 a 600 € según el Reglamento 261/2004</span></a>  </div>
+<a class="tile" href="/es/calculadora-schengen/" data-k="calculadora schengen: regla de 90 días en 180 días restantes y fecha máxima de salida schengen 90/180 viajes"><b>Calculadora Schengen: regla de 90 días en 180</b><span>Días restantes y fecha máxima de salida</span><i>Abrir →</i></a><a class="tile" href="/es/indemnizacion-retraso-vuelo/" data-k="indemnización por retraso o cancelación de vuelo de 250 a 600 € según el reglamento 261/2004 retraso de vuelo viajes"><b>Indemnización por retraso o cancelación de vuelo</b><span>De 250 a 600 € según el Reglamento 261/2004</span><i>Abrir →</i></a>  </div>
 </section>
-<section class="theme">
-  <h2>IVA — Por país</h2>
+<details class="more">
+  <summary>IVA — Por país</summary>
   <ul class="pills"><li><a href="/es/calculadora-iva/alemania/">Alemania</a></li><li><a href="/es/calculadora-iva/austria/">Austria</a></li><li><a href="/es/calculadora-iva/bulgaria/">Bulgaria</a></li><li><a href="/es/calculadora-iva/belgica/">Bélgica</a></li><li><a href="/es/calculadora-iva/chequia/">Chequia</a></li><li><a href="/es/calculadora-iva/chipre/">Chipre</a></li><li><a href="/es/calculadora-iva/croacia/">Croacia</a></li><li><a href="/es/calculadora-iva/dinamarca/">Dinamarca</a></li><li><a href="/es/calculadora-iva/eslovaquia/">Eslovaquia</a></li><li><a href="/es/calculadora-iva/eslovenia/">Eslovenia</a></li><li><a href="/es/calculadora-iva/espana/">España</a></li><li><a href="/es/calculadora-iva/estonia/">Estonia</a></li><li><a href="/es/calculadora-iva/finlandia/">Finlandia</a></li><li><a href="/es/calculadora-iva/francia/">Francia</a></li><li><a href="/es/calculadora-iva/grecia/">Grecia</a></li><li><a href="/es/calculadora-iva/hungria/">Hungría</a></li><li><a href="/es/calculadora-iva/irlanda/">Irlanda</a></li><li><a href="/es/calculadora-iva/italia/">Italia</a></li><li><a href="/es/calculadora-iva/letonia/">Letonia</a></li><li><a href="/es/calculadora-iva/lituania/">Lituania</a></li><li><a href="/es/calculadora-iva/luxemburgo/">Luxemburgo</a></li><li><a href="/es/calculadora-iva/malta/">Malta</a></li><li><a href="/es/calculadora-iva/paises-bajos/">Países Bajos</a></li><li><a href="/es/calculadora-iva/polonia/">Polonia</a></li><li><a href="/es/calculadora-iva/portugal/">Portugal</a></li><li><a href="/es/calculadora-iva/rumania/">Rumanía</a></li><li><a href="/es/calculadora-iva/suecia/">Suecia</a></li></ul>
-</section>
-<section class="theme">
-  <h2>Días hábiles — Por país</h2>
+</details>
+<details class="more">
+  <summary>Días hábiles — Por país</summary>
   <ul class="pills"><li><a href="/es/calculadora-dias-habiles/alemania/">Alemania</a></li><li><a href="/es/calculadora-dias-habiles/australia/">Australia</a></li><li><a href="/es/calculadora-dias-habiles/austria/">Austria</a></li><li><a href="/es/calculadora-dias-habiles/bulgaria/">Bulgaria</a></li><li><a href="/es/calculadora-dias-habiles/belgica/">Bélgica</a></li><li><a href="/es/calculadora-dias-habiles/canada/">Canadá</a></li><li><a href="/es/calculadora-dias-habiles/chequia/">Chequia</a></li><li><a href="/es/calculadora-dias-habiles/chipre/">Chipre</a></li><li><a href="/es/calculadora-dias-habiles/croacia/">Croacia</a></li><li><a href="/es/calculadora-dias-habiles/dinamarca/">Dinamarca</a></li><li><a href="/es/calculadora-dias-habiles/eslovaquia/">Eslovaquia</a></li><li><a href="/es/calculadora-dias-habiles/eslovenia/">Eslovenia</a></li><li><a href="/es/calculadora-dias-habiles/espana/">España</a></li><li><a href="/es/calculadora-dias-habiles/estados-unidos/">Estados Unidos</a></li><li><a href="/es/calculadora-dias-habiles/estonia/">Estonia</a></li><li><a href="/es/calculadora-dias-habiles/finlandia/">Finlandia</a></li><li><a href="/es/calculadora-dias-habiles/francia/">Francia</a></li><li><a href="/es/calculadora-dias-habiles/grecia/">Grecia</a></li><li><a href="/es/calculadora-dias-habiles/hungria/">Hungría</a></li><li><a href="/es/calculadora-dias-habiles/irlanda/">Irlanda</a></li><li><a href="/es/calculadora-dias-habiles/italia/">Italia</a></li><li><a href="/es/calculadora-dias-habiles/letonia/">Letonia</a></li><li><a href="/es/calculadora-dias-habiles/lituania/">Lituania</a></li><li><a href="/es/calculadora-dias-habiles/luxemburgo/">Luxemburgo</a></li><li><a href="/es/calculadora-dias-habiles/malta/">Malta</a></li><li><a href="/es/calculadora-dias-habiles/noruega/">Noruega</a></li><li><a href="/es/calculadora-dias-habiles/paises-bajos/">Países Bajos</a></li><li><a href="/es/calculadora-dias-habiles/polonia/">Polonia</a></li><li><a href="/es/calculadora-dias-habiles/portugal/">Portugal</a></li><li><a href="/es/calculadora-dias-habiles/reino-unido/">Reino Unido</a></li><li><a href="/es/calculadora-dias-habiles/rumania/">Rumanía</a></li><li><a href="/es/calculadora-dias-habiles/suecia/">Suecia</a></li><li><a href="/es/calculadora-dias-habiles/suiza/">Suiza</a></li></ul>
-</section>
+</details>
 <div class="ai-box">Esta calculadora también está disponible para asistentes de IA: añade CalcPronto a Claude y pregunta directamente «¿cuántos días Schengen me quedan?». <a href="/es/ia/">Ver cómo →</a></div>
   </div>
 </main>
@@ -88,5 +123,19 @@
     </div>
   </div>
 </footer>
+<script>
+(function(){var dd=document.querySelectorAll('nav.top details.dd');
+dd.forEach(function(d){d.addEventListener('toggle',function(){if(d.open)dd.forEach(function(o){if(o!==d)o.open=false})})});
+document.addEventListener('click',function(e){if(!e.target.closest('nav.top'))dd.forEach(function(o){o.open=false})});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')dd.forEach(function(o){o.open=false})})})();
+</script>
+<script>
+(function(){var q=document.getElementById('q'),none=document.getElementById('none');
+function norm(s){return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'')}
+q.addEventListener('input',function(){var words=norm(q.value).split(/\s+/).filter(Boolean),shown=0;
+document.querySelectorAll('section.theme').forEach(function(sec){var n=0;
+sec.querySelectorAll('.tile').forEach(function(a){var k=norm(a.dataset.k),ok=words.every(function(w){return k.indexOf(w)>=0});a.hidden=!ok;if(ok)n++});
+sec.hidden=!n;shown+=n});none.hidden=shown>0})})();
+</script>
 </body>
 </html>

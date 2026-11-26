@@ -29,8 +29,35 @@
       <svg width="28" height="28" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8" fill="#0b6e4f"/><path d="M9 11h14M9 16h14M9 21h8" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/><circle cx="23" cy="21" r="2.4" fill="#f2a900"/></svg>
       <span>Calc<b>Pronto</b></span>
     </a>
-    <nav class="top" aria-label="Calculator">
-<a href="/en/#realestate">Property and loans</a><a href="/en/#finance">Tax and money</a><a href="/en/#work">Work and pay</a><a href="/en/#business">Business and self-employed</a><a href="/en/#travel">Travel</a>    </nav>
+    <input type="checkbox" id="nav-toggle" class="nav-toggle" aria-label="Menu">
+    <label for="nav-toggle" class="burger" aria-hidden="true"><span></span><span></span><span></span></label>
+    <nav class="top" aria-label="Menu">
+      <details class="dd">
+        <summary>Property and loans</summary>
+        <div class="dd-panel">
+<a href="/en/loan-calculator/">Loan</a><a href="/en/how-much-can-i-borrow/">Borrowing capacity</a><a href="/en/french-notary-fees-calculator/">French notary fees</a>        </div>
+      </details>
+      <details class="dd">
+        <summary>Tax and money</summary>
+        <div class="dd-panel">
+<a href="/en/french-income-tax-calculator/">French income tax</a>        </div>
+      </details>
+      <details class="dd">
+        <summary>Work and pay</summary>
+        <div class="dd-panel">
+<a href="/en/french-salary-calculator/">French salary</a><a href="/en/business-days-calculator/">Business days</a>        </div>
+      </details>
+      <details class="dd">
+        <summary>Business and self-employed</summary>
+        <div class="dd-panel">
+<a href="/en/vat-calculator/">VAT</a>        </div>
+      </details>
+      <details class="dd">
+        <summary>Travel</summary>
+        <div class="dd-panel">
+<a href="/en/schengen-calculator/">Schengen 90/180</a><a href="/en/flight-delay-compensation/">Flight delay</a>        </div>
+      </details>
+    </nav>
     <div class="lang">
 <a href="/fr/confidentialite/" hreflang="fr" lang="fr">FR</a><a href="/en/privacy/" hreflang="en" lang="en" aria-current="true">EN</a><a href="/de/datenschutz/" hreflang="de" lang="de">DE</a><a href="/es/privacidad/" hreflang="es" lang="es">ES</a><a href="/it/privacy/" hreflang="it" lang="it">IT</a>    </div>
   </div>
@@ -53,5 +80,11 @@
     </div>
   </div>
 </footer>
+<script>
+(function(){var dd=document.querySelectorAll('nav.top details.dd');
+dd.forEach(function(d){d.addEventListener('toggle',function(){if(d.open)dd.forEach(function(o){if(o!==d)o.open=false})})});
+document.addEventListener('click',function(e){if(!e.target.closest('nav.top'))dd.forEach(function(o){o.open=false})});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')dd.forEach(function(o){o.open=false})})})();
+</script>
 </body>
 </html>

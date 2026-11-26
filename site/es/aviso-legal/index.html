@@ -29,8 +29,35 @@
       <svg width="28" height="28" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8" fill="#0b6e4f"/><path d="M9 11h14M9 16h14M9 21h8" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/><circle cx="23" cy="21" r="2.4" fill="#f2a900"/></svg>
       <span>Calc<b>Pronto</b></span>
     </a>
-    <nav class="top" aria-label="Calculadora">
-<a href="/es/#realestate">Vivienda y préstamos</a><a href="/es/#finance">Impuestos y dinero</a><a href="/es/#work">Trabajo y salario</a><a href="/es/#business">Empresa y autónomos</a><a href="/es/#travel">Viajes</a>    </nav>
+    <input type="checkbox" id="nav-toggle" class="nav-toggle" aria-label="Menú">
+    <label for="nav-toggle" class="burger" aria-hidden="true"><span></span><span></span><span></span></label>
+    <nav class="top" aria-label="Menú">
+      <details class="dd">
+        <summary>Vivienda y préstamos</summary>
+        <div class="dd-panel">
+<a href="/es/calculadora-prestamo/">Préstamo</a><a href="/es/cuanto-me-prestan/">Cuánto me prestan</a><a href="/es/gastos-notario-francia/">Notario Francia</a>        </div>
+      </details>
+      <details class="dd">
+        <summary>Impuestos y dinero</summary>
+        <div class="dd-panel">
+<a href="/es/calculadora-impuesto-renta-francia/">Renta Francia</a>        </div>
+      </details>
+      <details class="dd">
+        <summary>Trabajo y salario</summary>
+        <div class="dd-panel">
+<a href="/es/calculadora-sueldo-francia/">Sueldo Francia</a><a href="/es/calculadora-dias-habiles/">Días hábiles</a>        </div>
+      </details>
+      <details class="dd">
+        <summary>Empresa y autónomos</summary>
+        <div class="dd-panel">
+<a href="/es/calculadora-iva/">IVA</a>        </div>
+      </details>
+      <details class="dd">
+        <summary>Viajes</summary>
+        <div class="dd-panel">
+<a href="/es/calculadora-schengen/">Schengen 90/180</a><a href="/es/indemnizacion-retraso-vuelo/">Retraso de vuelo</a>        </div>
+      </details>
+    </nav>
     <div class="lang">
 <a href="/fr/mentions-legales/" hreflang="fr" lang="fr">FR</a><a href="/en/legal-notice/" hreflang="en" lang="en">EN</a><a href="/de/impressum/" hreflang="de" lang="de">DE</a><a href="/es/aviso-legal/" hreflang="es" lang="es" aria-current="true">ES</a><a href="/it/note-legali/" hreflang="it" lang="it">IT</a>    </div>
   </div>
@@ -61,5 +88,11 @@ Contacto : <a href="mailto:remidb@outlook.fr">remidb@outlook.fr</a><br>  Directo
     </div>
   </div>
 </footer>
+<script>
+(function(){var dd=document.querySelectorAll('nav.top details.dd');
+dd.forEach(function(d){d.addEventListener('toggle',function(){if(d.open)dd.forEach(function(o){if(o!==d)o.open=false})})});
+document.addEventListener('click',function(e){if(!e.target.closest('nav.top'))dd.forEach(function(o){o.open=false})});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')dd.forEach(function(o){o.open=false})})})();
+</script>
 </body>
 </html>

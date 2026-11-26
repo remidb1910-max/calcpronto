@@ -30,49 +30,84 @@
       <svg width="28" height="28" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8" fill="#0b6e4f"/><path d="M9 11h14M9 16h14M9 21h8" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/><circle cx="23" cy="21" r="2.4" fill="#f2a900"/></svg>
       <span>Calc<b>Pronto</b></span>
     </a>
-    <nav class="top" aria-label="Calcolatore">
-<a href="/it/#realestate">Casa e mutuo</a><a href="/it/#finance">Tasse e soldi</a><a href="/it/#work">Lavoro e stipendio</a><a href="/it/#business">Impresa e autonomi</a><a href="/it/#travel">Viaggi</a>    </nav>
+    <input type="checkbox" id="nav-toggle" class="nav-toggle" aria-label="Menu">
+    <label for="nav-toggle" class="burger" aria-hidden="true"><span></span><span></span><span></span></label>
+    <nav class="top" aria-label="Menu">
+      <details class="dd">
+        <summary>Casa e mutuo</summary>
+        <div class="dd-panel">
+<a href="/it/calcolo-rata-mutuo/">Rata mutuo</a><a href="/it/quanto-posso-chiedere-mutuo/">Importo mutuo</a><a href="/it/spese-notarili-francia/">Notaio Francia</a>        </div>
+      </details>
+      <details class="dd">
+        <summary>Tasse e soldi</summary>
+        <div class="dd-panel">
+<a href="/it/calcolo-imposta-reddito-francia/">Imposta Francia</a>        </div>
+      </details>
+      <details class="dd">
+        <summary>Lavoro e stipendio</summary>
+        <div class="dd-panel">
+<a href="/it/calcolo-stipendio-francia/">Stipendio Francia</a><a href="/it/calcolo-giorni-lavorativi/">Giorni lavorativi</a>        </div>
+      </details>
+      <details class="dd">
+        <summary>Impresa e autonomi</summary>
+        <div class="dd-panel">
+<a href="/it/calcolo-iva/">IVA</a>        </div>
+      </details>
+      <details class="dd">
+        <summary>Viaggi</summary>
+        <div class="dd-panel">
+<a href="/it/calcolatore-schengen/">Schengen 90/180</a><a href="/it/rimborso-ritardo-volo/">Ritardo volo</a>        </div>
+      </details>
+    </nav>
     <div class="lang">
 <a href="/fr/" hreflang="fr" lang="fr">FR</a><a href="/en/" hreflang="en" lang="en">EN</a><a href="/de/" hreflang="de" lang="de">DE</a><a href="/es/" hreflang="es" lang="es">ES</a><a href="/it/" hreflang="it" lang="it" aria-current="true">IT</a>    </div>
   </div>
 </header>
 <main>
   <div class="wrap">
-<h1>Calcoli precisi in pochi secondi</h1>
-<p class="lead">Calcolatori gratuiti e senza registrazione che applicano le regole ufficiali: aliquote IVA aggiornate, festività di 33 paesi, la regola Schengen e i diritti dei passeggeri aerei UE.</p>
+<section class="hero">
+  <h1>Calcoli precisi in pochi secondi</h1>
+  <p class="lead">Calcolatori gratuiti e senza registrazione che applicano le regole ufficiali: aliquote IVA aggiornate, festività di 33 paesi, la regola Schengen e i diritti dei passeggeri aerei UE.</p>
+  <div class="search">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg>
+    <input id="q" type="search" placeholder="Cerca un calcolo: stipendio, mutuo, tasse, IVA…" aria-label="Cerca un calcolo: stipendio, mutuo, tasse, IVA…" autocomplete="off">
+  </div>
+  <ul class="chips"><li>Gratis, senza registrazione</li><li>Regole ufficiali 2026</li><li>Risultati verificati automaticamente</li></ul>
+</section>
+<p id="none" class="none" hidden>Nessun calcolatore trovato. Prova un&#39;altra parola.</p>
 <section class="theme" id="realestate">
-  <h2>Casa e mutuo</h2>
+  <h2><span class="ico ico-realestate"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11.5 12 5l8 6.5V20h-5v-5h-6v5H4z"/></svg></span>Casa e mutuo</h2>
   <div class="tiles">
-<a class="tile" href="/it/calcolo-rata-mutuo/"><b>Calcolo della rata del mutuo</b><span>Rata mensile, costo totale e ammortamento</span></a><a class="tile" href="/it/quanto-posso-chiedere-mutuo/"><b>Quanto posso chiedere di mutuo?</b><span>Importo massimo in base al reddito</span></a><a class="tile" href="/it/spese-notarili-francia/"><b>Spese notarili in Francia 2026</b><span>Imposte per dipartimento, onorario del notaio</span></a>  </div>
+<a class="tile" href="/it/calcolo-rata-mutuo/" data-k="calcolo della rata del mutuo rata mensile, costo totale e ammortamento rata mutuo casa e mutuo"><b>Calcolo della rata del mutuo</b><span>Rata mensile, costo totale e ammortamento</span><i>Apri →</i></a><a class="tile" href="/it/quanto-posso-chiedere-mutuo/" data-k="quanto posso chiedere di mutuo? importo massimo in base al reddito importo mutuo casa e mutuo"><b>Quanto posso chiedere di mutuo?</b><span>Importo massimo in base al reddito</span><i>Apri →</i></a><a class="tile" href="/it/spese-notarili-francia/" data-k="spese notarili in francia 2026 imposte per dipartimento, onorario del notaio notaio francia casa e mutuo"><b>Spese notarili in Francia 2026</b><span>Imposte per dipartimento, onorario del notaio</span><i>Apri →</i></a>  </div>
 </section>
 <section class="theme" id="finance">
-  <h2>Tasse e soldi</h2>
+  <h2><span class="ico ico-finance"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V10m7 10V4m7 16v-7"/></svg></span>Tasse e soldi</h2>
   <div class="tiles">
-<a class="tile" href="/it/calcolo-imposta-reddito-francia/"><b>Imposta sul reddito in Francia 2026</b><span>Scaglioni 2026, parti, tetto, décote</span></a>  </div>
+<a class="tile" href="/it/calcolo-imposta-reddito-francia/" data-k="imposta sul reddito in francia 2026 scaglioni 2026, parti, tetto, décote imposta francia tasse e soldi"><b>Imposta sul reddito in Francia 2026</b><span>Scaglioni 2026, parti, tetto, décote</span><i>Apri →</i></a>  </div>
 </section>
 <section class="theme" id="work">
-  <h2>Lavoro e stipendio</h2>
+  <h2><span class="ico ico-work"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="8" width="17" height="11" rx="2"/><path d="M9 8V6a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></svg></span>Lavoro e stipendio</h2>
   <div class="tiles">
-<a class="tile" href="/it/calcolo-stipendio-francia/"><b>Calcolo stipendio in Francia: da lordo a netto 2026</b><span>Lordo e netto in Francia, ogni contributo, ritenuta</span></a><a class="tile" href="/it/calcolo-giorni-lavorativi/"><b>Calcolo dei giorni lavorativi</b><span>Giorni lavorativi tra due date, festività di 33 paesi</span></a>  </div>
+<a class="tile" href="/it/calcolo-stipendio-francia/" data-k="calcolo stipendio in francia: da lordo a netto 2026 lordo e netto in francia, ogni contributo, ritenuta stipendio francia lavoro e stipendio"><b>Calcolo stipendio in Francia: da lordo a netto 2026</b><span>Lordo e netto in Francia, ogni contributo, ritenuta</span><i>Apri →</i></a><a class="tile" href="/it/calcolo-giorni-lavorativi/" data-k="calcolo dei giorni lavorativi giorni lavorativi tra due date, festività di 33 paesi giorni lavorativi lavoro e stipendio"><b>Calcolo dei giorni lavorativi</b><span>Giorni lavorativi tra due date, festività di 33 paesi</span><i>Apri →</i></a>  </div>
 </section>
 <section class="theme" id="business">
-  <h2>Impresa e autonomi</h2>
+  <h2><span class="ico ico-business"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V6l8-2v16m0-10 8 2v8M2.5 20h19"/></svg></span>Impresa e autonomi</h2>
   <div class="tiles">
-<a class="tile" href="/it/calcolo-iva/"><b>Calcolo IVA: imponibile, IVA e totale</b><span>Scorporo e aggiunta IVA, aliquote dei 27 paesi UE</span></a>  </div>
+<a class="tile" href="/it/calcolo-iva/" data-k="calcolo iva: imponibile, iva e totale scorporo e aggiunta iva, aliquote dei 27 paesi ue iva impresa e autonomi"><b>Calcolo IVA: imponibile, IVA e totale</b><span>Scorporo e aggiunta IVA, aliquote dei 27 paesi UE</span><i>Apri →</i></a>  </div>
 </section>
 <section class="theme" id="travel">
-  <h2>Viaggi</h2>
+  <h2><span class="ico ico-travel"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 13.5 21 6l-4.5 13-3.5-5.5z"/><path d="M13 13.5 21 6"/></svg></span>Viaggi</h2>
   <div class="tiles">
-<a class="tile" href="/it/calcolatore-schengen/"><b>Calcolatore Schengen: regola dei 90 giorni su 180</b><span>Giorni rimanenti e data massima di uscita</span></a><a class="tile" href="/it/rimborso-ritardo-volo/"><b>Rimborso per volo in ritardo o cancellato</b><span>Da 250 a 600 € secondo il Regolamento 261/2004</span></a>  </div>
+<a class="tile" href="/it/calcolatore-schengen/" data-k="calcolatore schengen: regola dei 90 giorni su 180 giorni rimanenti e data massima di uscita schengen 90/180 viaggi"><b>Calcolatore Schengen: regola dei 90 giorni su 180</b><span>Giorni rimanenti e data massima di uscita</span><i>Apri →</i></a><a class="tile" href="/it/rimborso-ritardo-volo/" data-k="rimborso per volo in ritardo o cancellato da 250 a 600 € secondo il regolamento 261/2004 ritardo volo viaggi"><b>Rimborso per volo in ritardo o cancellato</b><span>Da 250 a 600 € secondo il Regolamento 261/2004</span><i>Apri →</i></a>  </div>
 </section>
-<section class="theme">
-  <h2>IVA — Per paese</h2>
+<details class="more">
+  <summary>IVA — Per paese</summary>
   <ul class="pills"><li><a href="/it/calcolo-iva/austria/">Austria</a></li><li><a href="/it/calcolo-iva/belgio/">Belgio</a></li><li><a href="/it/calcolo-iva/bulgaria/">Bulgaria</a></li><li><a href="/it/calcolo-iva/cechia/">Cechia</a></li><li><a href="/it/calcolo-iva/cipro/">Cipro</a></li><li><a href="/it/calcolo-iva/croazia/">Croazia</a></li><li><a href="/it/calcolo-iva/danimarca/">Danimarca</a></li><li><a href="/it/calcolo-iva/estonia/">Estonia</a></li><li><a href="/it/calcolo-iva/finlandia/">Finlandia</a></li><li><a href="/it/calcolo-iva/francia/">Francia</a></li><li><a href="/it/calcolo-iva/germania/">Germania</a></li><li><a href="/it/calcolo-iva/grecia/">Grecia</a></li><li><a href="/it/calcolo-iva/irlanda/">Irlanda</a></li><li><a href="/it/calcolo-iva/italia/">Italia</a></li><li><a href="/it/calcolo-iva/lettonia/">Lettonia</a></li><li><a href="/it/calcolo-iva/lituania/">Lituania</a></li><li><a href="/it/calcolo-iva/lussemburgo/">Lussemburgo</a></li><li><a href="/it/calcolo-iva/malta/">Malta</a></li><li><a href="/it/calcolo-iva/paesi-bassi/">Paesi Bassi</a></li><li><a href="/it/calcolo-iva/polonia/">Polonia</a></li><li><a href="/it/calcolo-iva/portogallo/">Portogallo</a></li><li><a href="/it/calcolo-iva/romania/">Romania</a></li><li><a href="/it/calcolo-iva/slovacchia/">Slovacchia</a></li><li><a href="/it/calcolo-iva/slovenia/">Slovenia</a></li><li><a href="/it/calcolo-iva/spagna/">Spagna</a></li><li><a href="/it/calcolo-iva/svezia/">Svezia</a></li><li><a href="/it/calcolo-iva/ungheria/">Ungheria</a></li></ul>
-</section>
-<section class="theme">
-  <h2>Giorni lavorativi — Per paese</h2>
+</details>
+<details class="more">
+  <summary>Giorni lavorativi — Per paese</summary>
   <ul class="pills"><li><a href="/it/calcolo-giorni-lavorativi/australia/">Australia</a></li><li><a href="/it/calcolo-giorni-lavorativi/austria/">Austria</a></li><li><a href="/it/calcolo-giorni-lavorativi/belgio/">Belgio</a></li><li><a href="/it/calcolo-giorni-lavorativi/bulgaria/">Bulgaria</a></li><li><a href="/it/calcolo-giorni-lavorativi/canada/">Canada</a></li><li><a href="/it/calcolo-giorni-lavorativi/cechia/">Cechia</a></li><li><a href="/it/calcolo-giorni-lavorativi/cipro/">Cipro</a></li><li><a href="/it/calcolo-giorni-lavorativi/croazia/">Croazia</a></li><li><a href="/it/calcolo-giorni-lavorativi/danimarca/">Danimarca</a></li><li><a href="/it/calcolo-giorni-lavorativi/estonia/">Estonia</a></li><li><a href="/it/calcolo-giorni-lavorativi/finlandia/">Finlandia</a></li><li><a href="/it/calcolo-giorni-lavorativi/francia/">Francia</a></li><li><a href="/it/calcolo-giorni-lavorativi/germania/">Germania</a></li><li><a href="/it/calcolo-giorni-lavorativi/grecia/">Grecia</a></li><li><a href="/it/calcolo-giorni-lavorativi/irlanda/">Irlanda</a></li><li><a href="/it/calcolo-giorni-lavorativi/italia/">Italia</a></li><li><a href="/it/calcolo-giorni-lavorativi/lettonia/">Lettonia</a></li><li><a href="/it/calcolo-giorni-lavorativi/lituania/">Lituania</a></li><li><a href="/it/calcolo-giorni-lavorativi/lussemburgo/">Lussemburgo</a></li><li><a href="/it/calcolo-giorni-lavorativi/malta/">Malta</a></li><li><a href="/it/calcolo-giorni-lavorativi/norvegia/">Norvegia</a></li><li><a href="/it/calcolo-giorni-lavorativi/paesi-bassi/">Paesi Bassi</a></li><li><a href="/it/calcolo-giorni-lavorativi/polonia/">Polonia</a></li><li><a href="/it/calcolo-giorni-lavorativi/portogallo/">Portogallo</a></li><li><a href="/it/calcolo-giorni-lavorativi/regno-unito/">Regno Unito</a></li><li><a href="/it/calcolo-giorni-lavorativi/romania/">Romania</a></li><li><a href="/it/calcolo-giorni-lavorativi/slovacchia/">Slovacchia</a></li><li><a href="/it/calcolo-giorni-lavorativi/slovenia/">Slovenia</a></li><li><a href="/it/calcolo-giorni-lavorativi/spagna/">Spagna</a></li><li><a href="/it/calcolo-giorni-lavorativi/stati-uniti/">Stati Uniti</a></li><li><a href="/it/calcolo-giorni-lavorativi/svezia/">Svezia</a></li><li><a href="/it/calcolo-giorni-lavorativi/svizzera/">Svizzera</a></li><li><a href="/it/calcolo-giorni-lavorativi/ungheria/">Ungheria</a></li></ul>
-</section>
+</details>
 <div class="ai-box">Questo calcolatore è disponibile anche per gli assistenti IA: aggiungi CalcPronto a Claude e chiedi direttamente «quanti giorni Schengen mi restano?». <a href="/it/ia/">Scopri come →</a></div>
   </div>
 </main>
@@ -88,5 +123,19 @@
     </div>
   </div>
 </footer>
+<script>
+(function(){var dd=document.querySelectorAll('nav.top details.dd');
+dd.forEach(function(d){d.addEventListener('toggle',function(){if(d.open)dd.forEach(function(o){if(o!==d)o.open=false})})});
+document.addEventListener('click',function(e){if(!e.target.closest('nav.top'))dd.forEach(function(o){o.open=false})});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')dd.forEach(function(o){o.open=false})})})();
+</script>
+<script>
+(function(){var q=document.getElementById('q'),none=document.getElementById('none');
+function norm(s){return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'')}
+q.addEventListener('input',function(){var words=norm(q.value).split(/\s+/).filter(Boolean),shown=0;
+document.querySelectorAll('section.theme').forEach(function(sec){var n=0;
+sec.querySelectorAll('.tile').forEach(function(a){var k=norm(a.dataset.k),ok=words.every(function(w){return k.indexOf(w)>=0});a.hidden=!ok;if(ok)n++});
+sec.hidden=!n;shown+=n});none.hidden=shown>0})})();
+</script>
 </body>
 </html>

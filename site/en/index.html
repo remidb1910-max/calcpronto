@@ -30,49 +30,84 @@
       <svg width="28" height="28" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8" fill="#0b6e4f"/><path d="M9 11h14M9 16h14M9 21h8" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/><circle cx="23" cy="21" r="2.4" fill="#f2a900"/></svg>
       <span>Calc<b>Pronto</b></span>
     </a>
-    <nav class="top" aria-label="Calculator">
-<a href="/en/#realestate">Property and loans</a><a href="/en/#finance">Tax and money</a><a href="/en/#work">Work and pay</a><a href="/en/#business">Business and self-employed</a><a href="/en/#travel">Travel</a>    </nav>
+    <input type="checkbox" id="nav-toggle" class="nav-toggle" aria-label="Menu">
+    <label for="nav-toggle" class="burger" aria-hidden="true"><span></span><span></span><span></span></label>
+    <nav class="top" aria-label="Menu">
+      <details class="dd">
+        <summary>Property and loans</summary>
+        <div class="dd-panel">
+<a href="/en/loan-calculator/">Loan</a><a href="/en/how-much-can-i-borrow/">Borrowing capacity</a><a href="/en/french-notary-fees-calculator/">French notary fees</a>        </div>
+      </details>
+      <details class="dd">
+        <summary>Tax and money</summary>
+        <div class="dd-panel">
+<a href="/en/french-income-tax-calculator/">French income tax</a>        </div>
+      </details>
+      <details class="dd">
+        <summary>Work and pay</summary>
+        <div class="dd-panel">
+<a href="/en/french-salary-calculator/">French salary</a><a href="/en/business-days-calculator/">Business days</a>        </div>
+      </details>
+      <details class="dd">
+        <summary>Business and self-employed</summary>
+        <div class="dd-panel">
+<a href="/en/vat-calculator/">VAT</a>        </div>
+      </details>
+      <details class="dd">
+        <summary>Travel</summary>
+        <div class="dd-panel">
+<a href="/en/schengen-calculator/">Schengen 90/180</a><a href="/en/flight-delay-compensation/">Flight delay</a>        </div>
+      </details>
+    </nav>
     <div class="lang">
 <a href="/fr/" hreflang="fr" lang="fr">FR</a><a href="/en/" hreflang="en" lang="en" aria-current="true">EN</a><a href="/de/" hreflang="de" lang="de">DE</a><a href="/es/" hreflang="es" lang="es">ES</a><a href="/it/" hreflang="it" lang="it">IT</a>    </div>
   </div>
 </header>
 <main>
   <div class="wrap">
-<h1>Accurate answers in seconds</h1>
-<p class="lead">Free calculators, no sign-up, that apply the official rules: current VAT rates, public holidays for 33 countries, the Schengen rule and EU air passenger rights.</p>
+<section class="hero">
+  <h1>Accurate answers in seconds</h1>
+  <p class="lead">Free calculators, no sign-up, that apply the official rules: current VAT rates, public holidays for 33 countries, the Schengen rule and EU air passenger rights.</p>
+  <div class="search">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg>
+    <input id="q" type="search" placeholder="Search a calculator: salary, loan, tax, VAT…" aria-label="Search a calculator: salary, loan, tax, VAT…" autocomplete="off">
+  </div>
+  <ul class="chips"><li>Free, no sign-up</li><li>Official 2026 rules</li><li>Automatically checked results</li></ul>
+</section>
+<p id="none" class="none" hidden>No calculator matches. Try another word.</p>
 <section class="theme" id="realestate">
-  <h2>Property and loans</h2>
+  <h2><span class="ico ico-realestate"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11.5 12 5l8 6.5V20h-5v-5h-6v5H4z"/></svg></span>Property and loans</h2>
   <div class="tiles">
-<a class="tile" href="/en/loan-calculator/"><b>Loan and mortgage calculator</b><span>Monthly payment, total cost and amortization</span></a><a class="tile" href="/en/how-much-can-i-borrow/"><b>How much can I borrow?</b><span>Maximum loan from your income and debts</span></a><a class="tile" href="/en/french-notary-fees-calculator/"><b>French notary fees calculator 2026</b><span>Transfer taxes by département, notary fees, new or existing</span></a>  </div>
+<a class="tile" href="/en/loan-calculator/" data-k="loan and mortgage calculator monthly payment, total cost and amortization loan property and loans"><b>Loan and mortgage calculator</b><span>Monthly payment, total cost and amortization</span><i>Open →</i></a><a class="tile" href="/en/how-much-can-i-borrow/" data-k="how much can i borrow? maximum loan from your income and debts borrowing capacity property and loans"><b>How much can I borrow?</b><span>Maximum loan from your income and debts</span><i>Open →</i></a><a class="tile" href="/en/french-notary-fees-calculator/" data-k="french notary fees calculator 2026 transfer taxes by département, notary fees, new or existing french notary fees property and loans"><b>French notary fees calculator 2026</b><span>Transfer taxes by département, notary fees, new or existing</span><i>Open →</i></a>  </div>
 </section>
 <section class="theme" id="finance">
-  <h2>Tax and money</h2>
+  <h2><span class="ico ico-finance"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V10m7 10V4m7 16v-7"/></svg></span>Tax and money</h2>
   <div class="tiles">
-<a class="tile" href="/en/french-income-tax-calculator/"><b>French income tax calculator 2026</b><span>French tax brackets, family parts, cap, décote</span></a>  </div>
+<a class="tile" href="/en/french-income-tax-calculator/" data-k="french income tax calculator 2026 french tax brackets, family parts, cap, décote french income tax tax and money"><b>French income tax calculator 2026</b><span>French tax brackets, family parts, cap, décote</span><i>Open →</i></a>  </div>
 </section>
 <section class="theme" id="work">
-  <h2>Work and pay</h2>
+  <h2><span class="ico ico-work"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="8" width="17" height="11" rx="2"/><path d="M9 8V6a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></svg></span>Work and pay</h2>
   <div class="tiles">
-<a class="tile" href="/en/french-salary-calculator/"><b>French salary calculator: gross to net 2026</b><span>Brut to net in France, every contribution, tax withheld</span></a><a class="tile" href="/en/business-days-calculator/"><b>Business days calculator</b><span>Working days between dates, holidays for 33 countries</span></a>  </div>
+<a class="tile" href="/en/french-salary-calculator/" data-k="french salary calculator: gross to net 2026 brut to net in france, every contribution, tax withheld french salary work and pay"><b>French salary calculator: gross to net 2026</b><span>Brut to net in France, every contribution, tax withheld</span><i>Open →</i></a><a class="tile" href="/en/business-days-calculator/" data-k="business days calculator working days between dates, holidays for 33 countries business days work and pay"><b>Business days calculator</b><span>Working days between dates, holidays for 33 countries</span><i>Open →</i></a>  </div>
 </section>
 <section class="theme" id="business">
-  <h2>Business and self-employed</h2>
+  <h2><span class="ico ico-business"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V6l8-2v16m0-10 8 2v8M2.5 20h19"/></svg></span>Business and self-employed</h2>
   <div class="tiles">
-<a class="tile" href="/en/vat-calculator/"><b>VAT calculator: net, VAT and gross</b><span>Add or remove VAT, rates of all 27 EU countries</span></a>  </div>
+<a class="tile" href="/en/vat-calculator/" data-k="vat calculator: net, vat and gross add or remove vat, rates of all 27 eu countries vat business and self-employed"><b>VAT calculator: net, VAT and gross</b><span>Add or remove VAT, rates of all 27 EU countries</span><i>Open →</i></a>  </div>
 </section>
 <section class="theme" id="travel">
-  <h2>Travel</h2>
+  <h2><span class="ico ico-travel"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 13.5 21 6l-4.5 13-3.5-5.5z"/><path d="M13 13.5 21 6"/></svg></span>Travel</h2>
   <div class="tiles">
-<a class="tile" href="/en/schengen-calculator/"><b>Schengen calculator: the 90/180-day rule</b><span>Days left and latest exit date</span></a><a class="tile" href="/en/flight-delay-compensation/"><b>Flight delay and cancellation compensation</b><span>€250 to €600 under EU261, £220 to £520 under UK261</span></a>  </div>
+<a class="tile" href="/en/schengen-calculator/" data-k="schengen calculator: the 90/180-day rule days left and latest exit date schengen 90/180 travel"><b>Schengen calculator: the 90/180-day rule</b><span>Days left and latest exit date</span><i>Open →</i></a><a class="tile" href="/en/flight-delay-compensation/" data-k="flight delay and cancellation compensation €250 to €600 under eu261, £220 to £520 under uk261 flight delay travel"><b>Flight delay and cancellation compensation</b><span>€250 to €600 under EU261, £220 to £520 under UK261</span><i>Open →</i></a>  </div>
 </section>
-<section class="theme">
-  <h2>VAT — By country</h2>
+<details class="more">
+  <summary>VAT — By country</summary>
   <ul class="pills"><li><a href="/en/vat-calculator/austria/">Austria</a></li><li><a href="/en/vat-calculator/belgium/">Belgium</a></li><li><a href="/en/vat-calculator/bulgaria/">Bulgaria</a></li><li><a href="/en/vat-calculator/croatia/">Croatia</a></li><li><a href="/en/vat-calculator/cyprus/">Cyprus</a></li><li><a href="/en/vat-calculator/czechia/">Czechia</a></li><li><a href="/en/vat-calculator/denmark/">Denmark</a></li><li><a href="/en/vat-calculator/estonia/">Estonia</a></li><li><a href="/en/vat-calculator/finland/">Finland</a></li><li><a href="/en/vat-calculator/france/">France</a></li><li><a href="/en/vat-calculator/germany/">Germany</a></li><li><a href="/en/vat-calculator/greece/">Greece</a></li><li><a href="/en/vat-calculator/hungary/">Hungary</a></li><li><a href="/en/vat-calculator/ireland/">Ireland</a></li><li><a href="/en/vat-calculator/italy/">Italy</a></li><li><a href="/en/vat-calculator/latvia/">Latvia</a></li><li><a href="/en/vat-calculator/lithuania/">Lithuania</a></li><li><a href="/en/vat-calculator/luxembourg/">Luxembourg</a></li><li><a href="/en/vat-calculator/malta/">Malta</a></li><li><a href="/en/vat-calculator/netherlands/">Netherlands</a></li><li><a href="/en/vat-calculator/poland/">Poland</a></li><li><a href="/en/vat-calculator/portugal/">Portugal</a></li><li><a href="/en/vat-calculator/romania/">Romania</a></li><li><a href="/en/vat-calculator/slovakia/">Slovakia</a></li><li><a href="/en/vat-calculator/slovenia/">Slovenia</a></li><li><a href="/en/vat-calculator/spain/">Spain</a></li><li><a href="/en/vat-calculator/sweden/">Sweden</a></li></ul>
-</section>
-<section class="theme">
-  <h2>Business days — By country</h2>
+</details>
+<details class="more">
+  <summary>Business days — By country</summary>
   <ul class="pills"><li><a href="/en/business-days-calculator/australia/">Australia</a></li><li><a href="/en/business-days-calculator/austria/">Austria</a></li><li><a href="/en/business-days-calculator/belgium/">Belgium</a></li><li><a href="/en/business-days-calculator/bulgaria/">Bulgaria</a></li><li><a href="/en/business-days-calculator/canada/">Canada</a></li><li><a href="/en/business-days-calculator/croatia/">Croatia</a></li><li><a href="/en/business-days-calculator/cyprus/">Cyprus</a></li><li><a href="/en/business-days-calculator/czechia/">Czechia</a></li><li><a href="/en/business-days-calculator/denmark/">Denmark</a></li><li><a href="/en/business-days-calculator/estonia/">Estonia</a></li><li><a href="/en/business-days-calculator/finland/">Finland</a></li><li><a href="/en/business-days-calculator/france/">France</a></li><li><a href="/en/business-days-calculator/germany/">Germany</a></li><li><a href="/en/business-days-calculator/greece/">Greece</a></li><li><a href="/en/business-days-calculator/hungary/">Hungary</a></li><li><a href="/en/business-days-calculator/ireland/">Ireland</a></li><li><a href="/en/business-days-calculator/italy/">Italy</a></li><li><a href="/en/business-days-calculator/latvia/">Latvia</a></li><li><a href="/en/business-days-calculator/lithuania/">Lithuania</a></li><li><a href="/en/business-days-calculator/luxembourg/">Luxembourg</a></li><li><a href="/en/business-days-calculator/malta/">Malta</a></li><li><a href="/en/business-days-calculator/netherlands/">Netherlands</a></li><li><a href="/en/business-days-calculator/norway/">Norway</a></li><li><a href="/en/business-days-calculator/poland/">Poland</a></li><li><a href="/en/business-days-calculator/portugal/">Portugal</a></li><li><a href="/en/business-days-calculator/romania/">Romania</a></li><li><a href="/en/business-days-calculator/slovakia/">Slovakia</a></li><li><a href="/en/business-days-calculator/slovenia/">Slovenia</a></li><li><a href="/en/business-days-calculator/spain/">Spain</a></li><li><a href="/en/business-days-calculator/sweden/">Sweden</a></li><li><a href="/en/business-days-calculator/switzerland/">Switzerland</a></li><li><a href="/en/business-days-calculator/united-kingdom/">United Kingdom</a></li><li><a href="/en/business-days-calculator/united-states/">United States</a></li></ul>
-</section>
+</details>
 <div class="ai-box">This calculator is also available to AI assistants: add CalcPronto to Claude and just ask &#34;how many Schengen days do I have left?&#34;. <a href="/en/ai/">See how →</a></div>
   </div>
 </main>
@@ -88,5 +123,19 @@
     </div>
   </div>
 </footer>
+<script>
+(function(){var dd=document.querySelectorAll('nav.top details.dd');
+dd.forEach(function(d){d.addEventListener('toggle',function(){if(d.open)dd.forEach(function(o){if(o!==d)o.open=false})})});
+document.addEventListener('click',function(e){if(!e.target.closest('nav.top'))dd.forEach(function(o){o.open=false})});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')dd.forEach(function(o){o.open=false})})})();
+</script>
+<script>
+(function(){var q=document.getElementById('q'),none=document.getElementById('none');
+function norm(s){return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'')}
+q.addEventListener('input',function(){var words=norm(q.value).split(/\s+/).filter(Boolean),shown=0;
+document.querySelectorAll('section.theme').forEach(function(sec){var n=0;
+sec.querySelectorAll('.tile').forEach(function(a){var k=norm(a.dataset.k),ok=words.every(function(w){return k.indexOf(w)>=0});a.hidden=!ok;if(ok)n++});
+sec.hidden=!n;shown+=n});none.hidden=shown>0})})();
+</script>
 </body>
 </html>
