@@ -38,13 +38,28 @@ urls = current if (first_time or not before) else [u for u in current if u not i
 print(f"{len(current)} pages in the sitemap, {len(before)} in the previous commit, {len(urls)} to send")
 if not urls:
     sys.exit(0)
-time.sleep(60)  # let the CDN serve the key file and the new pages
+def live(url: str) -> bool:
+    try:
+        return urllib.request.urlopen(url, timeout=20).status == 200
+    except Exception:
+        return False
+
+
+# Wait until the CDN serves the key file and the newest page (up to about 8 minutes).
+for _ in range(16):
+    if live(f"https://{HOST}/{key}.txt") and live(urls[-1]):
+        break
+    time.sleep(30)
+
 for i in range(0, len(urls), 10000):
     body = json.dumps({"host": HOST, "key": key, "keyLocation": f"https://{HOST}/{key}.txt",
                        "urlList": urls[i:i + 10000]}).encode("utf-8")
-    request = urllib.request.Request("https://api.indexnow.org/indexnow", data=body,
-                                     headers={"Content-Type": "application/json; charset=utf-8"})
-    try:
-        print("IndexNow:", urllib.request.urlopen(request, timeout=60).status)
-    except Exception as exc:  # never fail for this
-        print("IndexNow error:", exc)
+    for attempt in range(3):  # 403 = the engine could not read the key file yet: wait and try again
+        request = urllib.request.Request("https://api.indexnow.org/indexnow", data=body,
+                                         headers={"Content-Type": "application/json; charset=utf-8"})
+        try:
+            print("IndexNow:", urllib.request.urlopen(request, timeout=60).status)
+            break
+        except Exception as exc:  # never fail for this
+            print("IndexNow error:", exc)
+            time.sleep(120)
