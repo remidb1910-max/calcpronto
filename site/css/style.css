@@ -97,3 +97,13 @@ footer.site .cols{display:flex;flex-wrap:wrap;gap:18px;justify-content:space-bet
 .partner{background:#fff;border:1px solid var(--line);border-left:4px solid #f2a900;border-radius:var(--radius);padding:14px 16px;margin:18px 0}
 .partner p{margin:6px 0 10px}.partner-tag{font-size:.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
 .theme{scroll-margin-top:12px}
+/* Phones: the whole menu stays visible, form fields line up, wide tables shrink and show that they scroll */
+.row2,.row3{align-items:end}
+@media (max-width:640px){
+nav.top{flex-wrap:wrap;overflow:visible;white-space:normal;gap:2px 14px;font-size:.9rem;padding-bottom:2px}
+table{font-size:.84rem}
+th,td{padding:7px 6px}
+table.data td:first-child,table.data th:first-child{min-width:8.5em}
+.table-wrap{background:linear-gradient(to right,var(--bg) 30%,transparent),linear-gradient(to left,var(--bg) 30%,transparent) 100% 0,radial-gradient(farthest-side at 0 50%,rgba(15,23,42,.22),transparent),radial-gradient(farthest-side at 100% 50%,rgba(15,23,42,.22),transparent) 100% 0;background-repeat:no-repeat;background-size:36px 100%,36px 100%,12px 100%,12px 100%;background-attachment:local,local,scroll,scroll}
+.table-wrap table{background:transparent}
+}
