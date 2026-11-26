@@ -20,7 +20,7 @@
 <meta property="og:locale" content="de_DE">
 <meta name="theme-color" content="#0b6e4f">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="/css/style.css?v=2eeb844d">
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebSite", "name": "CalcPronto", "url": "https://calcpronto.com/de/", "inLanguage": "de"}</script>
 </head>
 <body>
@@ -67,39 +67,44 @@
   <div class="wrap">
 <section class="hero">
   <h1>Genaue Ergebnisse in Sekunden</h1>
-  <p class="lead">Kostenlose Rechner ohne Anmeldung, die die offiziellen Regeln anwenden: aktuelle Mehrwertsteuersätze, Feiertage in 33 Ländern, die Schengen-Regel und die EU-Fluggastrechte.</p>
+  <p class="sub">Kostenlos, ohne Anmeldung, nach den offiziellen Regeln 2026.</p>
   <div class="search">
-    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg>
+    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg>
     <input id="q" type="search" placeholder="Rechner suchen: Gehalt, Kredit, Steuer, MwSt. …" aria-label="Rechner suchen: Gehalt, Kredit, Steuer, MwSt. …" autocomplete="off">
   </div>
-  <ul class="chips"><li>Kostenlos, ohne Anmeldung</li><li>Offizielle Regeln 2026</li><li>Automatisch geprüfte Ergebnisse</li></ul>
+  <div class="quick" id="quick">
+    <span>Am häufigsten genutzt</span>
+<a href="/de/gehaltsrechner-frankreich/">Gehalt Frankreich</a><a href="/de/kreditrechner/">Kreditrate</a><a href="/de/notarkosten-frankreich/">Notarkosten Frankreich</a><a href="/de/einkommensteuer-frankreich/">Einkommensteuer Frankreich</a><a href="/de/wie-viel-kredit-kann-ich-mir-leisten/">Kreditbetrag</a>  </div>
 </section>
 <p id="none" class="none" hidden>Kein Rechner gefunden. Versuchen Sie ein anderes Wort.</p>
-<section class="theme" id="realestate">
-  <h2><span class="ico ico-realestate"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11.5 12 5l8 6.5V20h-5v-5h-6v5H4z"/></svg></span>Immobilien und Kredit</h2>
-  <div class="tiles">
-<a class="tile" href="/de/kreditrechner/" data-k="kreditrechner: monatsrate und tilgungsplan monatsrate, gesamtkosten und tilgungsplan kreditrate immobilien und kredit"><b>Kreditrechner: Monatsrate und Tilgungsplan</b><span>Monatsrate, Gesamtkosten und Tilgungsplan</span><i>Öffnen →</i></a><a class="tile" href="/de/wie-viel-kredit-kann-ich-mir-leisten/" data-k="wie viel kredit kann ich mir leisten? maximaler kreditbetrag aus einkommen und raten kreditbetrag immobilien und kredit"><b>Wie viel Kredit kann ich mir leisten?</b><span>Maximaler Kreditbetrag aus Einkommen und Raten</span><i>Öffnen →</i></a><a class="tile" href="/de/notarkosten-frankreich/" data-k="notarkosten in frankreich 2026 berechnen grunderwerbsteuer nach département, notargebühren notarkosten frankreich immobilien und kredit"><b>Notarkosten in Frankreich 2026 berechnen</b><span>Grunderwerbsteuer nach Département, Notargebühren</span><i>Öffnen →</i></a>  </div>
+<h2 class="browse" id="browse">Alle Rechner nach Thema</h2>
+<div class="topics">
+<section class="topic" id="realestate">
+  <h3><span class="emo" aria-hidden="true">🏠</span>Immobilien und Kredit</h3>
+  <ul>
+<li data-k="kreditrechner: monatsrate und tilgungsplan monatsrate, gesamtkosten und tilgungsplan kreditrate immobilien und kredit"><a href="/de/kreditrechner/"><b>Kreditrate</b><span>Monatsrate, Gesamtkosten und Tilgungsplan</span></a></li><li data-k="wie viel kredit kann ich mir leisten? maximaler kreditbetrag aus einkommen und raten kreditbetrag immobilien und kredit"><a href="/de/wie-viel-kredit-kann-ich-mir-leisten/"><b>Kreditbetrag</b><span>Maximaler Kreditbetrag aus Einkommen und Raten</span></a></li><li data-k="notarkosten in frankreich 2026 berechnen grunderwerbsteuer nach département, notargebühren notarkosten frankreich immobilien und kredit"><a href="/de/notarkosten-frankreich/"><b>Notarkosten Frankreich</b><span>Grunderwerbsteuer nach Département, Notargebühren</span></a></li>  </ul>
 </section>
-<section class="theme" id="finance">
-  <h2><span class="ico ico-finance"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V10m7 10V4m7 16v-7"/></svg></span>Steuern und Geld</h2>
-  <div class="tiles">
-<a class="tile" href="/de/einkommensteuer-frankreich/" data-k="einkommensteuer frankreich 2026 berechnen tarif 2026, parts, kappung, décote einkommensteuer frankreich steuern und geld"><b>Einkommensteuer Frankreich 2026 berechnen</b><span>Tarif 2026, Parts, Kappung, Décote</span><i>Öffnen →</i></a>  </div>
+<section class="topic" id="finance">
+  <h3><span class="emo" aria-hidden="true">💶</span>Steuern und Geld</h3>
+  <ul>
+<li data-k="einkommensteuer frankreich 2026 berechnen tarif 2026, parts, kappung, décote einkommensteuer frankreich steuern und geld"><a href="/de/einkommensteuer-frankreich/"><b>Einkommensteuer Frankreich</b><span>Tarif 2026, Parts, Kappung, Décote</span></a></li>  </ul>
 </section>
-<section class="theme" id="work">
-  <h2><span class="ico ico-work"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="8" width="17" height="11" rx="2"/><path d="M9 8V6a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></svg></span>Arbeit und Gehalt</h2>
-  <div class="tiles">
-<a class="tile" href="/de/gehaltsrechner-frankreich/" data-k="gehaltsrechner frankreich: brutto-netto 2026 brutto zu netto in frankreich, alle beiträge, quellensteuer gehalt frankreich arbeit und gehalt"><b>Gehaltsrechner Frankreich: Brutto-Netto 2026</b><span>Brutto zu Netto in Frankreich, alle Beiträge, Quellensteuer</span><i>Öffnen →</i></a><a class="tile" href="/de/arbeitstage-rechner/" data-k="arbeitstage-rechner arbeitstage zwischen zwei daten, feiertage aller bundesländer arbeitstage arbeit und gehalt"><b>Arbeitstage-Rechner</b><span>Arbeitstage zwischen zwei Daten, Feiertage aller Bundesländer</span><i>Öffnen →</i></a>  </div>
+<section class="topic" id="work">
+  <h3><span class="emo" aria-hidden="true">💼</span>Arbeit und Gehalt</h3>
+  <ul>
+<li data-k="gehaltsrechner frankreich: brutto-netto 2026 brutto zu netto in frankreich, alle beiträge, quellensteuer gehalt frankreich arbeit und gehalt"><a href="/de/gehaltsrechner-frankreich/"><b>Gehalt Frankreich</b><span>Brutto zu Netto in Frankreich, alle Beiträge, Quellensteuer</span></a></li><li data-k="arbeitstage-rechner arbeitstage zwischen zwei daten, feiertage aller bundesländer arbeitstage arbeit und gehalt"><a href="/de/arbeitstage-rechner/"><b>Arbeitstage</b><span>Arbeitstage zwischen zwei Daten, Feiertage aller Bundesländer</span></a></li>  </ul>
 </section>
-<section class="theme" id="business">
-  <h2><span class="ico ico-business"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V6l8-2v16m0-10 8 2v8M2.5 20h19"/></svg></span>Unternehmen und Selbstständige</h2>
-  <div class="tiles">
-<a class="tile" href="/de/mehrwertsteuer-rechner/" data-k="mehrwertsteuer-rechner: netto, mwst. und brutto netto ↔ brutto, sätze aller 27 eu-länder mwst. unternehmen und selbstständige"><b>Mehrwertsteuer-Rechner: Netto, MwSt. und Brutto</b><span>Netto ↔ Brutto, Sätze aller 27 EU-Länder</span><i>Öffnen →</i></a>  </div>
+<section class="topic" id="business">
+  <h3><span class="emo" aria-hidden="true">🧾</span>Unternehmen und Selbstständige</h3>
+  <ul>
+<li data-k="mehrwertsteuer-rechner: netto, mwst. und brutto netto ↔ brutto, sätze aller 27 eu-länder mwst. unternehmen und selbstständige"><a href="/de/mehrwertsteuer-rechner/"><b>MwSt.</b><span>Netto ↔ Brutto, Sätze aller 27 EU-Länder</span></a></li>  </ul>
 </section>
-<section class="theme" id="travel">
-  <h2><span class="ico ico-travel"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 13.5 21 6l-4.5 13-3.5-5.5z"/><path d="M13 13.5 21 6"/></svg></span>Reisen</h2>
-  <div class="tiles">
-<a class="tile" href="/de/schengen-rechner/" data-k="schengen-rechner: die 90/180-tage-regel verbleibende tage und spätestes ausreisedatum schengen 90/180 reisen"><b>Schengen-Rechner: die 90/180-Tage-Regel</b><span>Verbleibende Tage und spätestes Ausreisedatum</span><i>Öffnen →</i></a><a class="tile" href="/de/flugverspaetung-entschaedigung/" data-k="entschädigung bei flugverspätung oder annullierung 250 bis 600 € nach der eu-verordnung 261/2004 flugverspätung reisen"><b>Entschädigung bei Flugverspätung oder Annullierung</b><span>250 bis 600 € nach der EU-Verordnung 261/2004</span><i>Öffnen →</i></a>  </div>
+<section class="topic" id="travel">
+  <h3><span class="emo" aria-hidden="true">✈️</span>Reisen</h3>
+  <ul>
+<li data-k="schengen-rechner: die 90/180-tage-regel verbleibende tage und spätestes ausreisedatum schengen 90/180 reisen"><a href="/de/schengen-rechner/"><b>Schengen 90/180</b><span>Verbleibende Tage und spätestes Ausreisedatum</span></a></li><li data-k="entschädigung bei flugverspätung oder annullierung 250 bis 600 € nach der eu-verordnung 261/2004 flugverspätung reisen"><a href="/de/flugverspaetung-entschaedigung/"><b>Flugverspätung</b><span>250 bis 600 € nach der EU-Verordnung 261/2004</span></a></li>  </ul>
 </section>
+</div>
 <details class="more">
   <summary>MwSt. — Nach Land</summary>
   <ul class="pills"><li><a href="/de/mehrwertsteuer-rechner/belgien/">Belgien</a></li><li><a href="/de/mehrwertsteuer-rechner/bulgarien/">Bulgarien</a></li><li><a href="/de/mehrwertsteuer-rechner/deutschland/">Deutschland</a></li><li><a href="/de/mehrwertsteuer-rechner/danemark/">Dänemark</a></li><li><a href="/de/mehrwertsteuer-rechner/estland/">Estland</a></li><li><a href="/de/mehrwertsteuer-rechner/finnland/">Finnland</a></li><li><a href="/de/mehrwertsteuer-rechner/frankreich/">Frankreich</a></li><li><a href="/de/mehrwertsteuer-rechner/griechenland/">Griechenland</a></li><li><a href="/de/mehrwertsteuer-rechner/irland/">Irland</a></li><li><a href="/de/mehrwertsteuer-rechner/italien/">Italien</a></li><li><a href="/de/mehrwertsteuer-rechner/kroatien/">Kroatien</a></li><li><a href="/de/mehrwertsteuer-rechner/lettland/">Lettland</a></li><li><a href="/de/mehrwertsteuer-rechner/litauen/">Litauen</a></li><li><a href="/de/mehrwertsteuer-rechner/luxemburg/">Luxemburg</a></li><li><a href="/de/mehrwertsteuer-rechner/malta/">Malta</a></li><li><a href="/de/mehrwertsteuer-rechner/niederlande/">Niederlande</a></li><li><a href="/de/mehrwertsteuer-rechner/polen/">Polen</a></li><li><a href="/de/mehrwertsteuer-rechner/portugal/">Portugal</a></li><li><a href="/de/mehrwertsteuer-rechner/rumanien/">Rumänien</a></li><li><a href="/de/mehrwertsteuer-rechner/schweden/">Schweden</a></li><li><a href="/de/mehrwertsteuer-rechner/slowakei/">Slowakei</a></li><li><a href="/de/mehrwertsteuer-rechner/slowenien/">Slowenien</a></li><li><a href="/de/mehrwertsteuer-rechner/spanien/">Spanien</a></li><li><a href="/de/mehrwertsteuer-rechner/tschechien/">Tschechien</a></li><li><a href="/de/mehrwertsteuer-rechner/ungarn/">Ungarn</a></li><li><a href="/de/mehrwertsteuer-rechner/zypern/">Zypern</a></li><li><a href="/de/mehrwertsteuer-rechner/osterreich/">Österreich</a></li></ul>
@@ -130,12 +135,12 @@ document.addEventListener('click',function(e){if(!e.target.closest('nav.top'))dd
 document.addEventListener('keydown',function(e){if(e.key==='Escape')dd.forEach(function(o){o.open=false})})})();
 </script>
 <script>
-(function(){var q=document.getElementById('q'),none=document.getElementById('none');
+(function(){var q=document.getElementById('q'),none=document.getElementById('none'),quick=document.getElementById('quick'),browse=document.getElementById('browse');
 function norm(s){return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'')}
 q.addEventListener('input',function(){var words=norm(q.value).split(/\s+/).filter(Boolean),shown=0;
-document.querySelectorAll('section.theme').forEach(function(sec){var n=0;
-sec.querySelectorAll('.tile').forEach(function(a){var k=norm(a.dataset.k),ok=words.every(function(w){return k.indexOf(w)>=0});a.hidden=!ok;if(ok)n++});
-sec.hidden=!n;shown+=n});none.hidden=shown>0})})();
+document.querySelectorAll('section.topic').forEach(function(sec){var n=0;
+sec.querySelectorAll('li').forEach(function(li){var k=norm(li.dataset.k),ok=words.every(function(w){return k.indexOf(w)>=0});li.hidden=!ok;if(ok)n++});
+sec.hidden=!n;shown+=n});none.hidden=shown>0;quick.hidden=words.length>0;browse.hidden=words.length>0})})();
 </script>
 </body>
 </html>

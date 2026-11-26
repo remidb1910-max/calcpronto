@@ -20,7 +20,7 @@
 <meta property="og:locale" content="it_IT">
 <meta name="theme-color" content="#0b6e4f">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="/css/style.css?v=2eeb844d">
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebSite", "name": "CalcPronto", "url": "https://calcpronto.com/it/", "inLanguage": "it"}</script>
 </head>
 <body>
@@ -67,39 +67,44 @@
   <div class="wrap">
 <section class="hero">
   <h1>Calcoli precisi in pochi secondi</h1>
-  <p class="lead">Calcolatori gratuiti e senza registrazione che applicano le regole ufficiali: aliquote IVA aggiornate, festività di 33 paesi, la regola Schengen e i diritti dei passeggeri aerei UE.</p>
+  <p class="sub">Gratis, senza registrazione, secondo le regole ufficiali 2026.</p>
   <div class="search">
-    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg>
+    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg>
     <input id="q" type="search" placeholder="Cerca un calcolo: stipendio, mutuo, tasse, IVA…" aria-label="Cerca un calcolo: stipendio, mutuo, tasse, IVA…" autocomplete="off">
   </div>
-  <ul class="chips"><li>Gratis, senza registrazione</li><li>Regole ufficiali 2026</li><li>Risultati verificati automaticamente</li></ul>
+  <div class="quick" id="quick">
+    <span>I più usati</span>
+<a href="/it/calcolo-stipendio-francia/">Stipendio Francia</a><a href="/it/calcolo-rata-mutuo/">Rata mutuo</a><a href="/it/spese-notarili-francia/">Notaio Francia</a><a href="/it/calcolo-imposta-reddito-francia/">Imposta Francia</a><a href="/it/quanto-posso-chiedere-mutuo/">Importo mutuo</a>  </div>
 </section>
 <p id="none" class="none" hidden>Nessun calcolatore trovato. Prova un&#39;altra parola.</p>
-<section class="theme" id="realestate">
-  <h2><span class="ico ico-realestate"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11.5 12 5l8 6.5V20h-5v-5h-6v5H4z"/></svg></span>Casa e mutuo</h2>
-  <div class="tiles">
-<a class="tile" href="/it/calcolo-rata-mutuo/" data-k="calcolo della rata del mutuo rata mensile, costo totale e ammortamento rata mutuo casa e mutuo"><b>Calcolo della rata del mutuo</b><span>Rata mensile, costo totale e ammortamento</span><i>Apri →</i></a><a class="tile" href="/it/quanto-posso-chiedere-mutuo/" data-k="quanto posso chiedere di mutuo? importo massimo in base al reddito importo mutuo casa e mutuo"><b>Quanto posso chiedere di mutuo?</b><span>Importo massimo in base al reddito</span><i>Apri →</i></a><a class="tile" href="/it/spese-notarili-francia/" data-k="spese notarili in francia 2026 imposte per dipartimento, onorario del notaio notaio francia casa e mutuo"><b>Spese notarili in Francia 2026</b><span>Imposte per dipartimento, onorario del notaio</span><i>Apri →</i></a>  </div>
+<h2 class="browse" id="browse">Tutti i calcolatori, per tema</h2>
+<div class="topics">
+<section class="topic" id="realestate">
+  <h3><span class="emo" aria-hidden="true">🏠</span>Casa e mutuo</h3>
+  <ul>
+<li data-k="calcolo della rata del mutuo rata mensile, costo totale e ammortamento rata mutuo casa e mutuo"><a href="/it/calcolo-rata-mutuo/"><b>Rata mutuo</b><span>Rata mensile, costo totale e ammortamento</span></a></li><li data-k="quanto posso chiedere di mutuo? importo massimo in base al reddito importo mutuo casa e mutuo"><a href="/it/quanto-posso-chiedere-mutuo/"><b>Importo mutuo</b><span>Importo massimo in base al reddito</span></a></li><li data-k="spese notarili in francia 2026 imposte per dipartimento, onorario del notaio notaio francia casa e mutuo"><a href="/it/spese-notarili-francia/"><b>Notaio Francia</b><span>Imposte per dipartimento, onorario del notaio</span></a></li>  </ul>
 </section>
-<section class="theme" id="finance">
-  <h2><span class="ico ico-finance"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V10m7 10V4m7 16v-7"/></svg></span>Tasse e soldi</h2>
-  <div class="tiles">
-<a class="tile" href="/it/calcolo-imposta-reddito-francia/" data-k="imposta sul reddito in francia 2026 scaglioni 2026, parti, tetto, décote imposta francia tasse e soldi"><b>Imposta sul reddito in Francia 2026</b><span>Scaglioni 2026, parti, tetto, décote</span><i>Apri →</i></a>  </div>
+<section class="topic" id="finance">
+  <h3><span class="emo" aria-hidden="true">💶</span>Tasse e soldi</h3>
+  <ul>
+<li data-k="imposta sul reddito in francia 2026 scaglioni 2026, parti, tetto, décote imposta francia tasse e soldi"><a href="/it/calcolo-imposta-reddito-francia/"><b>Imposta Francia</b><span>Scaglioni 2026, parti, tetto, décote</span></a></li>  </ul>
 </section>
-<section class="theme" id="work">
-  <h2><span class="ico ico-work"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="8" width="17" height="11" rx="2"/><path d="M9 8V6a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></svg></span>Lavoro e stipendio</h2>
-  <div class="tiles">
-<a class="tile" href="/it/calcolo-stipendio-francia/" data-k="calcolo stipendio in francia: da lordo a netto 2026 lordo e netto in francia, ogni contributo, ritenuta stipendio francia lavoro e stipendio"><b>Calcolo stipendio in Francia: da lordo a netto 2026</b><span>Lordo e netto in Francia, ogni contributo, ritenuta</span><i>Apri →</i></a><a class="tile" href="/it/calcolo-giorni-lavorativi/" data-k="calcolo dei giorni lavorativi giorni lavorativi tra due date, festività di 33 paesi giorni lavorativi lavoro e stipendio"><b>Calcolo dei giorni lavorativi</b><span>Giorni lavorativi tra due date, festività di 33 paesi</span><i>Apri →</i></a>  </div>
+<section class="topic" id="work">
+  <h3><span class="emo" aria-hidden="true">💼</span>Lavoro e stipendio</h3>
+  <ul>
+<li data-k="calcolo stipendio in francia: da lordo a netto 2026 lordo e netto in francia, ogni contributo, ritenuta stipendio francia lavoro e stipendio"><a href="/it/calcolo-stipendio-francia/"><b>Stipendio Francia</b><span>Lordo e netto in Francia, ogni contributo, ritenuta</span></a></li><li data-k="calcolo dei giorni lavorativi giorni lavorativi tra due date, festività di 33 paesi giorni lavorativi lavoro e stipendio"><a href="/it/calcolo-giorni-lavorativi/"><b>Giorni lavorativi</b><span>Giorni lavorativi tra due date, festività di 33 paesi</span></a></li>  </ul>
 </section>
-<section class="theme" id="business">
-  <h2><span class="ico ico-business"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V6l8-2v16m0-10 8 2v8M2.5 20h19"/></svg></span>Impresa e autonomi</h2>
-  <div class="tiles">
-<a class="tile" href="/it/calcolo-iva/" data-k="calcolo iva: imponibile, iva e totale scorporo e aggiunta iva, aliquote dei 27 paesi ue iva impresa e autonomi"><b>Calcolo IVA: imponibile, IVA e totale</b><span>Scorporo e aggiunta IVA, aliquote dei 27 paesi UE</span><i>Apri →</i></a>  </div>
+<section class="topic" id="business">
+  <h3><span class="emo" aria-hidden="true">🧾</span>Impresa e autonomi</h3>
+  <ul>
+<li data-k="calcolo iva: imponibile, iva e totale scorporo e aggiunta iva, aliquote dei 27 paesi ue iva impresa e autonomi"><a href="/it/calcolo-iva/"><b>IVA</b><span>Scorporo e aggiunta IVA, aliquote dei 27 paesi UE</span></a></li>  </ul>
 </section>
-<section class="theme" id="travel">
-  <h2><span class="ico ico-travel"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 13.5 21 6l-4.5 13-3.5-5.5z"/><path d="M13 13.5 21 6"/></svg></span>Viaggi</h2>
-  <div class="tiles">
-<a class="tile" href="/it/calcolatore-schengen/" data-k="calcolatore schengen: regola dei 90 giorni su 180 giorni rimanenti e data massima di uscita schengen 90/180 viaggi"><b>Calcolatore Schengen: regola dei 90 giorni su 180</b><span>Giorni rimanenti e data massima di uscita</span><i>Apri →</i></a><a class="tile" href="/it/rimborso-ritardo-volo/" data-k="rimborso per volo in ritardo o cancellato da 250 a 600 € secondo il regolamento 261/2004 ritardo volo viaggi"><b>Rimborso per volo in ritardo o cancellato</b><span>Da 250 a 600 € secondo il Regolamento 261/2004</span><i>Apri →</i></a>  </div>
+<section class="topic" id="travel">
+  <h3><span class="emo" aria-hidden="true">✈️</span>Viaggi</h3>
+  <ul>
+<li data-k="calcolatore schengen: regola dei 90 giorni su 180 giorni rimanenti e data massima di uscita schengen 90/180 viaggi"><a href="/it/calcolatore-schengen/"><b>Schengen 90/180</b><span>Giorni rimanenti e data massima di uscita</span></a></li><li data-k="rimborso per volo in ritardo o cancellato da 250 a 600 € secondo il regolamento 261/2004 ritardo volo viaggi"><a href="/it/rimborso-ritardo-volo/"><b>Ritardo volo</b><span>Da 250 a 600 € secondo il Regolamento 261/2004</span></a></li>  </ul>
 </section>
+</div>
 <details class="more">
   <summary>IVA — Per paese</summary>
   <ul class="pills"><li><a href="/it/calcolo-iva/austria/">Austria</a></li><li><a href="/it/calcolo-iva/belgio/">Belgio</a></li><li><a href="/it/calcolo-iva/bulgaria/">Bulgaria</a></li><li><a href="/it/calcolo-iva/cechia/">Cechia</a></li><li><a href="/it/calcolo-iva/cipro/">Cipro</a></li><li><a href="/it/calcolo-iva/croazia/">Croazia</a></li><li><a href="/it/calcolo-iva/danimarca/">Danimarca</a></li><li><a href="/it/calcolo-iva/estonia/">Estonia</a></li><li><a href="/it/calcolo-iva/finlandia/">Finlandia</a></li><li><a href="/it/calcolo-iva/francia/">Francia</a></li><li><a href="/it/calcolo-iva/germania/">Germania</a></li><li><a href="/it/calcolo-iva/grecia/">Grecia</a></li><li><a href="/it/calcolo-iva/irlanda/">Irlanda</a></li><li><a href="/it/calcolo-iva/italia/">Italia</a></li><li><a href="/it/calcolo-iva/lettonia/">Lettonia</a></li><li><a href="/it/calcolo-iva/lituania/">Lituania</a></li><li><a href="/it/calcolo-iva/lussemburgo/">Lussemburgo</a></li><li><a href="/it/calcolo-iva/malta/">Malta</a></li><li><a href="/it/calcolo-iva/paesi-bassi/">Paesi Bassi</a></li><li><a href="/it/calcolo-iva/polonia/">Polonia</a></li><li><a href="/it/calcolo-iva/portogallo/">Portogallo</a></li><li><a href="/it/calcolo-iva/romania/">Romania</a></li><li><a href="/it/calcolo-iva/slovacchia/">Slovacchia</a></li><li><a href="/it/calcolo-iva/slovenia/">Slovenia</a></li><li><a href="/it/calcolo-iva/spagna/">Spagna</a></li><li><a href="/it/calcolo-iva/svezia/">Svezia</a></li><li><a href="/it/calcolo-iva/ungheria/">Ungheria</a></li></ul>
@@ -130,12 +135,12 @@ document.addEventListener('click',function(e){if(!e.target.closest('nav.top'))dd
 document.addEventListener('keydown',function(e){if(e.key==='Escape')dd.forEach(function(o){o.open=false})})})();
 </script>
 <script>
-(function(){var q=document.getElementById('q'),none=document.getElementById('none');
+(function(){var q=document.getElementById('q'),none=document.getElementById('none'),quick=document.getElementById('quick'),browse=document.getElementById('browse');
 function norm(s){return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'')}
 q.addEventListener('input',function(){var words=norm(q.value).split(/\s+/).filter(Boolean),shown=0;
-document.querySelectorAll('section.theme').forEach(function(sec){var n=0;
-sec.querySelectorAll('.tile').forEach(function(a){var k=norm(a.dataset.k),ok=words.every(function(w){return k.indexOf(w)>=0});a.hidden=!ok;if(ok)n++});
-sec.hidden=!n;shown+=n});none.hidden=shown>0})})();
+document.querySelectorAll('section.topic').forEach(function(sec){var n=0;
+sec.querySelectorAll('li').forEach(function(li){var k=norm(li.dataset.k),ok=words.every(function(w){return k.indexOf(w)>=0});li.hidden=!ok;if(ok)n++});
+sec.hidden=!n;shown+=n});none.hidden=shown>0;quick.hidden=words.length>0;browse.hidden=words.length>0})})();
 </script>
 </body>
 </html>
