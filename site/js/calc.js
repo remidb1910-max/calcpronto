@@ -805,8 +805,13 @@
 
   function init() {
     var page = CP.page;
-    if (page === "loan") { bind(["loan-amount", "loan-rate", "loan-years", "loan-ins", "loan-fees", "currency"], Loan.render); Loan.render(); }
-    if (page === "capacity") { bind(["cap-income", "cap-debts", "cap-rate", "cap-years", "cap-ratio", "cap-ins", "cap-down", "currency"], Capacity.render); Capacity.render(); }
+    if (page === "loan") {
+      if (CP.prefillLoan) { $("#loan-amount").value = CP.prefillLoan.amount; $("#loan-years").value = CP.prefillLoan.years; $("#loan-ins").value = CP.prefillLoan.ins; }
+      bind(["loan-amount", "loan-rate", "loan-years", "loan-ins", "loan-fees", "currency"], Loan.render); Loan.render();
+    }
+    if (page === "capacity") {
+      if (CP.prefillCapIncome) $("#cap-income").value = CP.prefillCapIncome;
+      bind(["cap-income", "cap-debts", "cap-rate", "cap-years", "cap-ratio", "cap-ins", "cap-down", "currency"], Capacity.render); Capacity.render(); }
     if (page === "vat") {
       $("#vat-country").addEventListener("change", function () { VAT.fillRates(); VAT.render(); });
       $("#vat-rate").addEventListener("change", function () { VAT.toggleCustom(); VAT.render(); });
