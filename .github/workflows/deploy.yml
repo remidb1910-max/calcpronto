@@ -7,67 +7,30 @@ permissions:
   contents: read
   pages: write
   id-token: write
-concurrency:
-  group: pages
-  cancel-in-progress: true
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    concurrency:
+      group: pages
+      cancel-in-progress: true
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
-      - name: Unpack site
-        run: mkdir -p _site && unzip -q site.zip -d _site && ls _site | head
-      - name: Remember what is online before this deployment
-        continue-on-error: true
-        run: |
-          # Sitemap currently online, and whether the IndexNow key file was already served (if not: first run).
-          curl -fsS --max-time 30 https://calcpronto.com/sitemap.xml -o previous-sitemap.xml || echo "no previous sitemap"
-          KEY=$(ls _site | grep -E '^[0-9a-f]{32}\.txt$' | head -1 | sed 's/\.txt$//')
-          if [ -n "$KEY" ] && curl -fsS --max-time 30 "https://calcpronto.com/$KEY.txt" -o /dev/null; then touch key-was-live; fi
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: _site
+          path: site
       - id: deployment
         uses: actions/deploy-pages@v4
-      - name: Tell search engines about the new pages (IndexNow - Bing, Yandex, Seznam, Naver)
-        continue-on-error: true
-        run: |
-          python3 - <<'EOF'
-          import glob, json, os, re, time, urllib.request
-
-          HOST = "calcpronto.com"
-          keys = [os.path.basename(p)[:-4] for p in glob.glob("_site/*.txt")
-                  if re.fullmatch(r"[0-9a-f]{32}\.txt", os.path.basename(p))]
-          if not keys:
-              raise SystemExit("No IndexNow key file in the site: nothing sent.")
-          key = keys[0]
-
-          def locs(path):
-              try:
-                  return re.findall(r"<loc>(.*?)</loc>", open(path, encoding="utf-8").read())
-              except OSError:
-                  return []
-
-          current, previous = locs("_site/sitemap.xml"), set(locs("previous-sitemap.xml"))
-          if os.path.exists("key-was-live") and previous:
-              urls = [u for u in current if u not in previous]   # only the pages added by this deployment
-          else:
-              urls = current                                     # first run with this key: send every page once
-          print(f"{len(current)} pages in the sitemap, {len(previous)} online before, {len(urls)} to send")
-          if not urls:
-              raise SystemExit(0)
-          time.sleep(60)  # let the CDN serve the key file before the engines check it
-          for i in range(0, len(urls), 10000):
-              body = json.dumps({"host": HOST, "key": key, "keyLocation": f"https://{HOST}/{key}.txt",
-                                 "urlList": urls[i:i + 10000]}).encode("utf-8")
-              req = urllib.request.Request("https://api.indexnow.org/indexnow", data=body,
-                                           headers={"Content-Type": "application/json; charset=utf-8"})
-              try:
-                  print("IndexNow:", urllib.request.urlopen(req, timeout=60).status)
-              except Exception as exc:  # never fail the deployment for this
-                  print("IndexNow error:", exc)
-          EOF
+  indexnow:
+    # Tells Bing, Yandex, Seznam and Naver about the pages added by this push. Never blocks the deployment.
+    needs: deploy
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - run: python3 .github/indexnow.py

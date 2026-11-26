@@ -1,0 +1,861 @@
+/* CalcPronto calculators. Same rules as the CalcPronto AI tools (MCP server).
+   No tracking, no dependencies. Every page sets window.CP = {lang, locale, currency, t, page}. */
+(function () {
+  "use strict";
+  var CP = window.CP || {};
+  var T = CP.t || {};
+  var LOCALE = CP.locale || "en-US";
+
+  // ------------------------------------------------------------ helpers
+  function $(sel, root) { return (root || document).querySelector(sel); }
+  function $all(sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); }
+  function t(key, vars) {
+    var s = T[key] || key;
+    if (vars) Object.keys(vars).forEach(function (k) { s = s.split("{" + k + "}").join(vars[k]); });
+    return s;
+  }
+  function num(v) {
+    if (v === null || v === undefined) return NaN;
+    var s = String(v).trim().replace(/[\s  ']/g, "");
+    if (s.indexOf(",") >= 0 && s.indexOf(".") >= 0) {
+      s = s.lastIndexOf(",") > s.lastIndexOf(".") ? s.replace(/\./g, "").replace(",", ".") : s.replace(/,/g, "");
+    } else {
+      s = s.replace(",", ".");
+    }
+    return s === "" ? NaN : Number(s);
+  }
+  function val(id) { var el = document.getElementById(id); return el ? num(el.value) : NaN; }
+  function fmt(x, digits) {
+    if (!isFinite(x)) return "—";
+    var d = digits === undefined ? 2 : digits;
+    return new Intl.NumberFormat(LOCALE, { minimumFractionDigits: d, maximumFractionDigits: d }).format(x);
+  }
+  function money(x, cur) {
+    if (!isFinite(x)) return "—";
+    try {
+      return new Intl.NumberFormat(LOCALE, { style: "currency", currency: cur || CP.currency || "EUR" }).format(x);
+    } catch (e) { return fmt(x) + " " + (cur || ""); }
+  }
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+  function currency() { var el = document.getElementById("currency"); return el ? el.value : (CP.currency || "EUR"); }
+
+  // Dates as day numbers (UTC) to avoid time-zone and DST issues.
+  function dayNum(s) {
+    var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(s || "").trim());
+    if (!m) return NaN;
+    var d = Date.UTC(+m[1], +m[2] - 1, +m[3]);
+    var back = new Date(d);
+    if (back.getUTCMonth() !== +m[2] - 1) return NaN;
+    return Math.round(d / 86400000);
+  }
+  function isoOf(n) { return new Date(n * 86400000).toISOString().slice(0, 10); }
+  function showDate(n) {
+    return new Intl.DateTimeFormat(LOCALE, { weekday: "short", day: "numeric", month: "long", year: "numeric", timeZone: "UTC" })
+      .format(new Date(n * 86400000));
+  }
+  function weekday(n) { return new Date(n * 86400000).getUTCDay(); } // 0 = Sunday
+  function todayNum() {
+    var d = new Date();
+    return Math.round(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) / 86400000);
+  }
+
+  // ------------------------------------------------------------ loans (same formulas as loancalc engine)
+  function payment(P, r, n) {
+    if (n <= 0) return NaN;
+    if (r === 0) return P / n;
+    return P * r / (1 - Math.pow(1 + r, -n));
+  }
+
+  var Loan = {
+    compute: function (P, ratePct, years, insPct, fees) {
+      var n = Math.round(years * 12), r = ratePct / 100 / 12;
+      var pay = payment(P, r, n);
+      var ins = P * (insPct || 0) / 100 / 12;
+      var rows = [], bal = P, acc = { paid: 0, interest: 0, principal: 0 };
+      for (var k = 1; k <= n && bal > 0.005; k++) {
+        var it = bal * r, pr = Math.min(pay - it, bal);
+        bal -= pr;
+        acc.paid += it + pr; acc.interest += it; acc.principal += pr;
+        if (k % 12 === 0 || k === n || bal <= 0.005) {
+          rows.push({ year: Math.ceil(k / 12), paid: acc.paid, interest: acc.interest, principal: acc.principal, balance: Math.max(bal, 0) });
+          acc = { paid: 0, interest: 0, principal: 0 };
+        }
+      }
+      var interest = pay * n - P;
+      return { n: n, payment: pay, insurance: ins, paymentWithIns: pay + ins, interest: interest,
+        totalIns: ins * n, fees: fees || 0, cost: interest + ins * n + (fees || 0), repaid: pay * n + ins * n, rows: rows };
+    },
+    render: function () {
+      var P = val("loan-amount"), rate = val("loan-rate"), years = val("loan-years");
+      var ins = val("loan-ins"); if (!isFinite(ins)) ins = 0;
+      var fees = val("loan-fees"); if (!isFinite(fees)) fees = 0;
+      var out = $("#result");
+      if (!(P > 0) || !(rate >= 0 && rate <= 100) || !(years > 0 && years <= 50)) { out.innerHTML = "<p class='hint'>" + t("fill_fields") + "</p>"; return; }
+      var c = currency(), res = Loan.compute(P, rate, years, ins, fees);
+      var h = "<div class='big'><span>" + t("monthly_payment") + "</span><strong>" + money(res.payment, c) + "</strong></div>";
+      if (ins > 0) h += "<div class='kv'><span>" + t("payment_with_insurance") + "</span><b>" + money(res.paymentWithIns, c) + "</b></div>";
+      h += "<div class='kv'><span>" + t("number_of_payments") + "</span><b>" + res.n + "</b></div>";
+      h += "<div class='kv'><span>" + t("total_interest") + "</span><b>" + money(res.interest, c) + "</b></div>";
+      if (ins > 0) h += "<div class='kv'><span>" + t("total_insurance") + "</span><b>" + money(res.totalIns, c) + "</b></div>";
+      if (fees > 0) h += "<div class='kv'><span>" + t("fees") + "</span><b>" + money(res.fees, c) + "</b></div>";
+      h += "<div class='kv total'><span>" + t("total_cost") + "</span><b>" + money(res.cost, c) + "</b></div>";
+      h += "<details><summary>" + t("amortization_table") + "</summary><div class='table-wrap'><table><thead><tr><th>" + t("year") + "</th><th>" + t("paid") + "</th><th>" + t("interest") + "</th><th>" + t("principal") + "</th><th>" + t("balance") + "</th></tr></thead><tbody>";
+      res.rows.forEach(function (r) {
+        h += "<tr><td>" + r.year + "</td><td>" + money(r.paid, c) + "</td><td>" + money(r.interest, c) + "</td><td>" + money(r.principal, c) + "</td><td>" + money(r.balance, c) + "</td></tr>";
+      });
+      h += "</tbody></table></div></details>";
+      out.innerHTML = h;
+    }
+  };
+
+  var Capacity = {
+    compute: function (income, debts, ratePct, years, ratio, insPct, down) {
+      var budget = income * ratio / 100 - debts;
+      if (budget <= 0) return { budget: 0, loan: 0, purchase: down };
+      var n = Math.round(years * 12), r = ratePct / 100 / 12;
+      var unit = payment(1, r, n) + (insPct || 0) / 100 / 12;
+      var loan = budget / unit;
+      return { budget: budget, loan: loan, purchase: loan + down };
+    },
+    render: function () {
+      var inc = val("cap-income"), debts = val("cap-debts"), rate = val("cap-rate"), years = val("cap-years"), ratio = val("cap-ratio");
+      var ins = val("cap-ins"), down = val("cap-down");
+      if (!isFinite(debts)) debts = 0; if (!isFinite(ins)) ins = 0; if (!isFinite(down)) down = 0;
+      var out = $("#result");
+      if (!(inc > 0) || !(rate >= 0) || !(years > 0 && years <= 40) || !(ratio > 0 && ratio <= 100)) { out.innerHTML = "<p class='hint'>" + t("fill_fields") + "</p>"; return; }
+      var c = currency(), res = Capacity.compute(inc, debts, rate, years, ratio, ins, down);
+      if (res.budget <= 0) { out.innerHTML = "<p class='warn'>" + t("cap_no_room") + "</p>"; return; }
+      var h = "<div class='big'><span>" + t("max_loan") + "</span><strong>" + money(res.loan, c) + "</strong></div>";
+      h += "<div class='kv'><span>" + t("max_monthly_payment") + "</span><b>" + money(res.budget, c) + "</b></div>";
+      if (down > 0) h += "<div class='kv total'><span>" + t("max_purchase") + "</span><b>" + money(res.purchase, c) + "</b></div>";
+      h += "<p class='small'>" + t("cap_explain", { ratio: fmt(ratio, ratio % 1 ? 1 : 0), income: money(inc, c), debts: money(debts, c), budget: money(res.budget, c) }) + "</p>";
+      out.innerHTML = h;
+    }
+  };
+
+  // ------------------------------------------------------------ VAT
+  var VAT = {
+    rates: CP.vatRates || {},
+    fillRates: function () {
+      var cc = $("#vat-country").value, sel = $("#vat-rate"), r = VAT.rates[cc];
+      if (!r) return;
+      var list = [r.standard].concat(r.reduced || []);
+      if (r.super_reduced) list.push(r.super_reduced);
+      sel.innerHTML = list.map(function (x, i) {
+        return "<option value='" + x + "'>" + fmt(x, x % 1 ? 1 : 0) + " %" + (i === 0 ? " (" + t("standard_rate") + ")" : "") + "</option>";
+      }).join("") + "<option value='custom'>" + t("custom_rate") + "</option>";
+      VAT.toggleCustom();
+    },
+    toggleCustom: function () {
+      var box = $("#vat-custom-box");
+      if (box) box.hidden = $("#vat-rate").value !== "custom";
+    },
+    render: function () {
+      var amount = val("vat-amount"), mode = $("#vat-mode").value;
+      var rateSel = $("#vat-rate").value, rate = rateSel === "custom" ? val("vat-custom") : num(rateSel);
+      var out = $("#result");
+      if (!isFinite(amount) || !(rate >= 0 && rate < 100)) { out.innerHTML = "<p class='hint'>" + t("fill_fields") + "</p>"; return; }
+      var net, vat, gross;
+      if (mode === "net") { net = amount; vat = Math.round(net * rate) / 100; gross = net + vat; }
+      else { gross = amount; net = Math.round(gross / (1 + rate / 100) * 100) / 100; vat = gross - net; }
+      var c = currency();
+      var h = "<div class='kv'><span>" + t("net_amount") + "</span><b>" + money(net, c) + "</b></div>";
+      h += "<div class='kv'><span>" + t("vat_amount", { rate: fmt(rate, rate % 1 ? 1 : 0) }) + "</span><b>" + money(vat, c) + "</b></div>";
+      h += "<div class='big'><span>" + t("gross_amount") + "</span><strong>" + money(gross, c) + "</strong></div>";
+      h += "<p class='small'>" + (mode === "net" ? t("vat_formula_net", { rate: fmt(rate, rate % 1 ? 1 : 0) }) : t("vat_formula_gross", { rate: fmt(rate, rate % 1 ? 1 : 0) })) + "</p>";
+      out.innerHTML = h;
+    }
+  };
+
+  // ------------------------------------------------------------ Schengen 90/180 (same rules as schengen engine)
+  var Schengen = {
+    LIMIT: 90, WINDOW: 180,
+    collect: function () {
+      var days = {}, errors = [];
+      $all(".stay-row").forEach(function (row, i) {
+        var a = dayNum($("input[name=entry]", row).value), b = dayNum($("input[name=exit]", row).value);
+        if (isNaN(a) && isNaN(b)) return;
+        if (isNaN(a)) { errors.push(t("sch_err_entry", { n: i + 1 })); return; }
+        if (isNaN(b)) b = a;
+        if (b < a) { errors.push(t("sch_err_order", { n: i + 1 })); return; }
+        for (var d = a; d <= b && d - a < 3650; d++) days[d] = true;
+      });
+      return { days: Object.keys(days).map(Number).sort(function (x, y) { return x - y; }), errors: errors };
+    },
+    // number of sorted day numbers within [lo, hi] (binary search, like bisect in the Python engine)
+    count: function (sorted, lo, hi) {
+      if (hi < lo) return 0;
+      function bound(x, strict) {
+        var a = 0, b = sorted.length;
+        while (a < b) { var m = (a + b) >> 1; if (strict ? sorted[m] <= x : sorted[m] < x) a = m + 1; else b = m; }
+        return a;
+      }
+      return bound(hi, true) - bound(lo, false);
+    },
+    usedOn: function (sorted, d) { return Schengen.count(sorted, d - Schengen.WINDOW + 1, d); },
+    usedWithTrip: function (past, start, d) {
+      var lo = d - Schengen.WINDOW + 1, tlo = Math.max(start, lo);
+      var trip = d >= tlo ? d - tlo + 1 : 0;
+      return Schengen.count(past, lo, d) - Schengen.count(past, tlo, d) + trip;
+    },
+    latestExit: function (days, entry) {
+      var past = days.filter(function (d) { return d < entry; });
+      if (Schengen.usedWithTrip(past, entry, entry) > Schengen.LIMIT) return null;
+      var d = entry;
+      while (Schengen.usedWithTrip(past, entry, d) <= Schengen.LIMIT && d - entry < 400) d++;
+      return d - 1;
+    },
+    earliestEntry: function (days, length, notBefore) {
+      for (var off = 0; off < 800; off++) {
+        var s = notBefore + off, past = days.filter(function (d) { return d < s; }), ok = true;
+        for (var d = s; d < s + length; d++) { if (Schengen.usedWithTrip(past, s, d) > Schengen.LIMIT) { ok = false; break; } }
+        if (ok) return s;
+      }
+      return null;
+    },
+    addRow: function (entry, exit) {
+      var tpl = $("#stay-template"), box = $("#stays");
+      var node = tpl.content.firstElementChild.cloneNode(true);
+      if (entry) $("input[name=entry]", node).value = entry;
+      if (exit) $("input[name=exit]", node).value = exit;
+      $("button.remove", node).addEventListener("click", function () { node.remove(); Schengen.render(); });
+      $all("input", node).forEach(function (el) { el.addEventListener("input", Schengen.render); el.addEventListener("change", Schengen.render); });
+      box.appendChild(node);
+    },
+    render: function () {
+      var out = $("#result"), data = Schengen.collect();
+      var control = dayNum($("#sch-control").value); if (isNaN(control)) control = todayNum();
+      if (data.errors.length) { out.innerHTML = "<p class='warn'>" + data.errors.map(esc).join("<br>") + "</p>"; return; }
+      var used = Schengen.usedOn(data.days, control), left = Math.max(Schengen.LIMIT - used, 0);
+      var h = "<div class='big'><span>" + t("sch_days_left", { date: showDate(control) }) + "</span><strong>" + left + " / 90</strong></div>";
+      h += "<div class='kv'><span>" + t("sch_days_used") + "</span><b>" + used + "</b></div>";
+      h += "<div class='kv'><span>" + t("sch_window") + "</span><b>" + showDate(control - 179) + " → " + showDate(control) + "</b></div>";
+      if (used > 90) h += "<p class='warn'>" + t("sch_overstay", { n: used - 90 }) + "</p>";
+      var inWin = data.days.filter(function (d) { return d >= control - 179 && d <= control; });
+      if (inWin.length) h += "<div class='kv'><span>" + t("sch_next_release") + "</span><b>" + showDate(inWin[0] + 180) + "</b></div>";
+      var entry = dayNum($("#sch-entry").value);
+      if (!isNaN(entry)) {
+        var last = Schengen.latestExit(data.days, entry);
+        if (last === null) {
+          var nxt = Schengen.earliestEntry(data.days, 1, entry);
+          h += "<p class='warn'>" + t("sch_cannot_enter", { date: showDate(entry) }) + (nxt !== null ? " " + t("sch_earliest", { date: showDate(nxt) }) : "") + "</p>";
+        } else {
+          h += "<div class='big alt'><span>" + t("sch_latest_exit", { date: showDate(entry) }) + "</span><strong>" + showDate(last) + "</strong></div>";
+          h += "<div class='kv'><span>" + t("sch_max_days") + "</span><b>" + (last - entry + 1) + "</b></div>";
+        }
+      }
+      out.innerHTML = h;
+    }
+  };
+
+  // ------------------------------------------------------------ business days
+  var BizDays = {
+    cache: {},
+    load: function (cc, cb) {
+      if (BizDays.cache[cc]) return cb(BizDays.cache[cc]);
+      if (CP.holidays && CP.holidays.country === cc) { BizDays.cache[cc] = CP.holidays; return cb(CP.holidays); }
+      fetch((CP.base || "/") + "data/holidays/" + cc + ".json").then(function (r) { return r.json(); }).then(function (d) {
+        BizDays.cache[cc] = d; cb(d);
+      }).catch(function () { $("#result").innerHTML = "<p class='warn'>" + t("load_error") + "</p>"; });
+    },
+    calendar: function (data, sub) {
+      var map = {};
+      Object.keys(data.national).forEach(function (k) { map[k] = data.national[k]; });
+      var s = sub && data.subdivisions[sub];
+      if (s) {
+        (s.not_observed || []).forEach(function (k) { delete map[k]; });
+        Object.keys(s.extra || {}).forEach(function (k) { map[k] = s.extra[k]; });
+      }
+      return map;
+    },
+    name: function (entry) { return entry[CP.lang] || entry.en || Object.keys(entry).map(function (k) { return entry[k]; })[0]; },
+    fillSubdivisions: function (data) {
+      var sel = $("#bd-region"), box = $("#bd-region-box");
+      var keys = Object.keys(data.subdivisions || {});
+      if (!keys.length) { box.hidden = true; sel.innerHTML = ""; return; }
+      box.hidden = false;
+      keys.sort(function (a, b) { return data.subdivisions[a].name.localeCompare(data.subdivisions[b].name); });
+      sel.innerHTML = "<option value=''>" + t("bd_national_only") + "</option>" + keys.map(function (k) {
+        return "<option value='" + esc(k) + "'>" + esc(data.subdivisions[k].name) + "</option>";
+      }).join("");
+      if (CP.region && data.subdivisions[CP.region]) sel.value = CP.region;
+    },
+    inRange: function (data) { return { min: dayNum(data.years[0] + "-01-01"), max: dayNum(data.years[data.years.length - 1] + "-12-31") }; },
+    render: function () {
+      var cc = $("#bd-country").value;
+      BizDays.load(cc, function (data) {
+        if ($("#bd-region").dataset.cc !== cc) { BizDays.fillSubdivisions(data); $("#bd-region").dataset.cc = cc; }
+        var cal = BizDays.calendar(data, $("#bd-region").value), rng = BizDays.inRange(data);
+        var out = $("#result"), mode = $("#bd-mode").value;
+        $("#bd-between").hidden = mode !== "between";
+        $("#bd-add").hidden = mode !== "add";
+        var a = dayNum($("#bd-start").value);
+        if (isNaN(a)) { out.innerHTML = "<p class='hint'>" + t("fill_fields") + "</p>"; return; }
+        var sat = $("#bd-saturday") && $("#bd-saturday").checked;
+        function isWeekend(d) { var w = weekday(d); return w === 0 || (w === 6 && !sat); }
+        function isWork(d) { return !isWeekend(d) && !cal[isoOf(d)]; }
+        var h = "", hits = [];
+        if (mode === "between") {
+          var b = dayNum($("#bd-end").value);
+          if (isNaN(b)) { out.innerHTML = "<p class='hint'>" + t("fill_fields") + "</p>"; return; }
+          var sign = 1; if (b < a) { var tmp = a; a = b; b = tmp; sign = -1; }
+          if (a < rng.min || b > rng.max) { out.innerHTML = "<p class='warn'>" + t("bd_out_of_range", { from: data.years[0], to: data.years[data.years.length - 1] }) + "</p>"; return; }
+          var incS = $("#bd-inc-start").checked, incE = $("#bd-inc-end").checked, count = 0, wk = 0;
+          for (var d = a; d <= b; d++) {
+            if ((d === a && !incS) || (d === b && !incE && d !== a)) continue;
+            if (isWeekend(d)) wk++;
+            else if (cal[isoOf(d)]) hits.push(d);
+            else count++;
+          }
+          h += "<div class='big'><span>" + t("bd_result_between") + "</span><strong>" + sign * count + "</strong></div>";
+          h += "<div class='kv'><span>" + t("bd_calendar_days") + "</span><b>" + (b - a + 1) + "</b></div>";
+          h += "<div class='kv'><span>" + t("bd_weekend_days") + "</span><b>" + wk + "</b></div>";
+          h += "<div class='kv'><span>" + t("bd_holidays_weekdays") + "</span><b>" + hits.length + "</b></div>";
+        } else {
+          var n = Math.round(val("bd-n"));
+          if (!isFinite(n)) { out.innerHTML = "<p class='hint'>" + t("fill_fields") + "</p>"; return; }
+          var step = n < 0 ? -1 : 1, left = Math.abs(n), d2 = a;
+          while (left > 0) { d2 += step; if (d2 < rng.min || d2 > rng.max) break; if (isWork(d2)) left--; else if (cal[isoOf(d2)] && !isWeekend(d2)) hits.push(d2); }
+          if (left > 0) { out.innerHTML = "<p class='warn'>" + t("bd_out_of_range", { from: data.years[0], to: data.years[data.years.length - 1] }) + "</p>"; return; }
+          h += "<div class='big'><span>" + t("bd_result_add", { n: n }) + "</span><strong>" + showDate(d2) + "</strong></div>";
+          h += "<div class='kv'><span>" + t("bd_calendar_days") + "</span><b>" + Math.abs(d2 - a) + "</b></div>";
+        }
+        if (hits.length) {
+          h += "<details open><summary>" + t("bd_holidays_list") + "</summary><ul class='hol'>" + hits.map(function (d) {
+            return "<li><time datetime='" + isoOf(d) + "'>" + showDate(d) + "</time> — " + esc(BizDays.name(cal[isoOf(d)])) + "</li>";
+          }).join("") + "</ul></details>";
+        }
+        out.innerHTML = h;
+      });
+    }
+  };
+
+  // ------------------------------------------------------------ EU261 (same rules as eu261 engine)
+  var EU261 = {
+    EU: ["AT","BE","BG","HR","CY","CZ","DK","EE","FI","FR","DE","GR","HU","IE","IT","LV","LT","LU","MT","NL","PL","PT","RO","SK","SI","ES","SE","AX","GP","MQ","GF","RE","YT","MF","IS","NO","LI","CH"],
+    AMOUNTS: { EU261: { a: 250, b: 400, c: 600, cur: "EUR" }, UK261: { a: 220, b: 350, c: 520, cur: "GBP" } },
+    REDUCE: { a: 120, b: 180, c: 240 },
+    airports: null,
+    zone: function (c) { return c === "GB" ? "UK" : (EU261.EU.indexOf(c) >= 0 ? "EU" : "other"); },
+    load: function (cb) {
+      if (EU261.airports) return cb();
+      fetch((CP.base || "/") + "data/airports.json").then(function (r) { return r.json(); }).then(function (d) {
+        EU261.airports = d.airports; EU261.buildIndex(); cb();
+      }).catch(function () { $("#result").innerHTML = "<p class='warn'>" + t("load_error") + "</p>"; });
+    },
+    buildIndex: function () {
+      var list = $("#airport-list"); if (!list) return;
+      EU261.index = Object.keys(EU261.airports).map(function (k) {
+        var a = EU261.airports[k];
+        return { code: k, label: k + " — " + (a[4] ? a[4] + ", " : "") + a[3] + " (" + a[2] + ")", key: (k + " " + a[4] + " " + a[3]).toLowerCase() };
+      });
+    },
+    suggest: function (input) {
+      var q = input.value.trim().toLowerCase(), list = $("#airport-list");
+      if (!EU261.index || q.length < 2) return;
+      var exact = [], other = [];
+      for (var i = 0; i < EU261.index.length && exact.length + other.length < 40; i++) {
+        var it = EU261.index[i];
+        if (it.code.toLowerCase() === q) exact.push(it);
+        else if (it.key.indexOf(q) >= 0) other.push(it);
+      }
+      list.innerHTML = exact.concat(other).slice(0, 12).map(function (it) { return "<option value='" + esc(it.label) + "'>"; }).join("");
+    },
+    code: function (v) {
+      var m = /^\s*([A-Za-z]{3})\b/.exec(v || "");
+      if (!m) return null;
+      var c = m[1].toUpperCase();
+      return EU261.airports && EU261.airports[c] ? c : null;
+    },
+    km: function (a, b) {
+      var R = 6371, p1 = a[0] * Math.PI / 180, p2 = b[0] * Math.PI / 180;
+      var dp = p2 - p1, dl = (b[1] - a[1]) * Math.PI / 180;
+      var h = Math.pow(Math.sin(dp / 2), 2) + Math.cos(p1) * Math.cos(p2) * Math.pow(Math.sin(dl / 2), 2);
+      return 2 * R * Math.asin(Math.sqrt(h));
+    },
+    band: function (km, intra, regime) {
+      if (km <= 1500) return "a";
+      if (regime === "EU261" && intra) return "b";
+      if (km <= 3500) return "b";
+      return "c";
+    },
+    scope: function (za, zb, carrier) {
+      var eu = false, uk = false, why = [];
+      if (za === "EU") { eu = true; why.push("eu_dep"); }
+      else if (zb === "EU" && carrier === "EU") { eu = true; why.push("eu_arr_eu_carrier"); }
+      if (za === "UK") { uk = true; why.push("uk_dep"); }
+      else if (zb === "UK" && (carrier === "UK" || carrier === "EU")) { uk = true; why.push("uk_arr"); }
+      else if (zb === "EU" && carrier === "UK") { uk = true; why.push("uk_carrier_to_eu"); }
+      return { eu: eu, uk: uk, why: why };
+    },
+    claim: function (o, d, carrier, kind, p) {
+      var A = EU261.airports[o], B = EU261.airports[d];
+      var za = EU261.zone(A[2]), zb = EU261.zone(B[2]);
+      var km = EU261.km(A, B), intra = za === "EU" && zb === "EU";
+      var sc = EU261.scope(za, zb, carrier);
+      var regimes = []; if (sc.eu) regimes.push("EU261"); if (sc.uk) regimes.push("UK261");
+      var res = { km: km, regimes: regimes, scope: sc, results: {} };
+      regimes.forEach(function (reg) {
+        var cat = EU261.band(km, intra, reg), full = EU261.AMOUNTS[reg][cat], e = { band: cat, amount: 0, eligible: false, why: [], reduction: null, cur: EU261.AMOUNTS[reg].cur };
+        if (kind === "delay") {
+          if (p.delay < 180) e.why.push("delay_under_3h");
+          else if (p.extraordinary) e.why.push("extraordinary");
+          else { e.eligible = true; e.amount = full; e.why.push("delay_3h"); if (cat === "c" && p.delay < 240) e.reduction = "reduce_delay_c"; }
+        } else if (kind === "cancellation") {
+          var early = p.early, late = p.late, exempt = false, n = p.notice;
+          if (n >= 14) { exempt = true; e.why.push("cancel_14d"); }
+          else if (n >= 7 && early !== null && late !== null && early <= 120 && late < 240) { exempt = true; e.why.push("cancel_7_13_rerouted"); }
+          else if (n < 7 && early !== null && late !== null && early <= 60 && late < 120) { exempt = true; e.why.push("cancel_lt7_rerouted"); }
+          if (!exempt) {
+            if (p.extraordinary) e.why.push("extraordinary");
+            else { e.eligible = true; e.amount = full; e.why.push("cancel_due"); if (late !== null && late <= EU261.REDUCE[cat]) e.reduction = "reduce_reroute"; }
+          }
+        } else {
+          if (p.volunteered) e.why.push("db_volunteer");
+          else if (p.grounds) e.why.push("db_grounds");
+          else { e.eligible = true; e.amount = full; e.why.push("db_due"); if (p.late !== null && p.late <= EU261.REDUCE[cat]) e.reduction = "reduce_reroute"; }
+        }
+        res.results[reg] = e;
+      });
+      return res;
+    },
+    minutes: function (hId, mId) {
+      var h = val(hId), m = val(mId);
+      if (!isFinite(h) && !isFinite(m)) return null;
+      return (isFinite(h) ? h : 0) * 60 + (isFinite(m) ? m : 0);
+    },
+    render: function () {
+      var kind = $("#eu-kind").value;
+      $all("[data-kind]").forEach(function (el) { el.hidden = el.dataset.kind.split(" ").indexOf(kind) < 0; });
+      EU261.load(function () {
+        var out = $("#result"), o = EU261.code($("#eu-from").value), d = EU261.code($("#eu-to").value);
+        if (!o || !d) { out.innerHTML = "<p class='hint'>" + t("eu_pick_airports") + "</p>"; return; }
+        if (o === d) { out.innerHTML = "<p class='warn'>" + t("eu_same_airport") + "</p>"; return; }
+        var p = {
+          delay: EU261.minutes("eu-delay-h", "eu-delay-m"),
+          notice: val("eu-notice"),
+          early: EU261.minutes("eu-early-h", "eu-early-m"),
+          late: EU261.minutes("eu-late-h", "eu-late-m"),
+          extraordinary: $("#eu-extra").checked,
+          volunteered: $("#eu-volunteer") && $("#eu-volunteer").checked,
+          grounds: $("#eu-grounds") && $("#eu-grounds").checked
+        };
+        if (kind === "delay" && p.delay === null) { out.innerHTML = "<p class='hint'>" + t("eu_enter_delay") + "</p>"; return; }
+        if (kind === "cancellation" && !isFinite(p.notice)) { out.innerHTML = "<p class='hint'>" + t("eu_enter_notice") + "</p>"; return; }
+        var res = EU261.claim(o, d, $("#eu-carrier").value, kind, p);
+        var h = "<div class='kv'><span>" + t("eu_distance") + "</span><b>" + fmt(res.km, 0) + " km</b></div>";
+        if (!res.regimes.length) {
+          h += "<div class='big no'><span>" + t("eu_result") + "</span><strong>" + t("eu_not_covered") + "</strong></div><p class='small'>" + t("eu_not_covered_explain") + "</p>";
+          out.innerHTML = h; return;
+        }
+        res.regimes.forEach(function (reg) {
+          var e = res.results[reg];
+          h += "<div class='big " + (e.eligible ? "" : "no") + "'><span>" + t("eu_result_regime", { regime: reg === "EU261" ? t("eu_regime_eu") : t("eu_regime_uk") }) + "</span><strong>" +
+            (e.eligible ? money(e.amount, e.cur) + " " + t("eu_per_passenger") : t("eu_no_compensation")) + "</strong></div>";
+          h += "<ul class='why'>" + e.why.map(function (k) { return "<li>" + t("eu_why_" + k) + "</li>"; }).join("") + "</ul>";
+          if (e.reduction) h += "<p class='small'>" + t("eu_" + e.reduction, { min: money(e.amount / 2, e.cur) }) + "</p>";
+        });
+        if (res.regimes.length === 2) h += "<p class='small'>" + t("eu_both") + "</p>";
+        h += "<p class='small'>" + t("eu_care_note") + "</p>";
+        if (CP.claimUrl && res.regimes.some(function (r) { return res.results[r].eligible; })) {
+          h += "<p><a class='cta' href='" + esc(CP.claimUrl) + "' rel='sponsored noopener' target='_blank'>" + t("eu_claim_cta") + "</a></p>";
+        }
+        out.innerHTML = h;
+      });
+    }
+  };
+
+  // ------------------------------------------------------------ French salary, gross to net (2026)
+  // Same rules as the salaryfr engine of the CalcPronto AI tools. Integer cents, half-up rounding per line.
+  var Salary = {
+    PMSS: 400500, // cents
+    // rates in thousandths of a percent (6.90 % -> 6900)
+    R: { vieillesse_plafonnee: 6900, vieillesse_deplafonnee: 400, agirc_arrco_t1: 3150, agirc_arrco_t2: 8640,
+         ceg_t1: 860, ceg_t2: 1080, cet: 140, apec: 24, alsace_moselle_maladie: 1300,
+         csg_deductible: 6800, csg_non_deductible: 2400, crds: 500, death: 1500 },
+    GRID: [[0, 0], [163500, 500], [169800, 1300], [180700, 2100], [192800, 2900], [206000, 3500], [217000, 4100],
+           [231500, 5300], [273800, 7500], [313500, 9900], [357100, 11900], [401900, 13800], [469000, 15800],
+           [562400, 17900], [703700, 20000], [878900, 24000], [1220000, 28000], [1652300, 33000], [2593700, 38000],
+           [5555800, 43000]],
+    div: function (n, d) { return Math.floor((2 * n + d) / (2 * d)); }, // half-up for n >= 0
+    pct: function (base, r) { return Salary.div(base * r, 100000); },
+    neutral: function (taxable) {
+      var r = 0;
+      for (var i = 0; i < Salary.GRID.length; i++) { if (taxable >= Salary.GRID[i][0]) r = Salary.GRID[i][1]; else break; }
+      return r;
+    },
+    compute: function (gross, cadre, am, ratioBp, pasMilli) {
+      var R = Salary.R, ceil = Salary.div(Salary.PMSS * ratioBp, 10000);
+      var t1 = Math.min(gross, ceil), t2 = Math.max(0, Math.min(gross, 8 * ceil) - ceil), lines = [];
+      function add(code, base, r, ded) { lines.push({ code: code, base: base, rate: r, amount: Salary.pct(base, r), ded: ded }); }
+      add("vieillesse_plafonnee", t1, R.vieillesse_plafonnee, true);
+      add("vieillesse_deplafonnee", gross, R.vieillesse_deplafonnee, true);
+      add("agirc_arrco_t1", t1, R.agirc_arrco_t1, true);
+      add("ceg_t1", t1, R.ceg_t1, true);
+      if (t2 > 0) { add("agirc_arrco_t2", t2, R.agirc_arrco_t2, true); add("ceg_t2", t2, R.ceg_t2, true); add("cet", t1 + t2, R.cet, true); }
+      if (cadre) add("apec", Math.min(gross, 4 * ceil), R.apec, true);
+      if (am) add("alsace_moselle_maladie", gross, R.alsace_moselle_maladie, true);
+      var cap = 4 * ceil, death = cadre ? Salary.pct(t1, R.death) : 0;
+      var csgBase = Salary.div(Math.min(gross, cap) * 9825, 10000) + Math.max(0, gross - cap) + death;
+      add("csg_deductible", csgBase, R.csg_deductible, true);
+      add("csg_non_deductible", csgBase, R.csg_non_deductible, false);
+      add("crds", csgBase, R.crds, false);
+      var social = 0, ded = 0;
+      lines.forEach(function (l) { social += l.amount; if (l.ded) ded += l.amount; });
+      var netBefore = gross - social, taxable = gross - ded;
+      var kind = pasMilli === null ? "neutral" : "personal";
+      var rate = pasMilli === null ? Salary.neutral(taxable) : pasMilli;
+      var withheld = taxable > 0 ? Salary.pct(taxable, rate) : 0;
+      return { gross: gross, lines: lines, social: social, netBefore: netBefore, taxable: taxable, rate: rate,
+               kind: kind, withheld: withheld, netPaid: netBefore - withheld, csgBase: csgBase, ceiling: ceil };
+    },
+    grossFor: function (target, after, cadre, am, ratioBp, pasMilli) {
+      function net(g) { var r = Salary.compute(g, cadre, am, ratioBp, pasMilli); return after ? r.netPaid : r.netBefore; }
+      var lo = target, hi = target * 3 + 10000;
+      if (net(hi) < target) return null;
+      while (hi - lo > 1) { var mid = Math.floor((lo + hi) / 2); if (net(mid) < target) lo = mid; else hi = mid; }
+      var g = hi;
+      while (net(g) < target) g += 1;
+      var best = g; // rounding per line: keep the lowest gross within 20 cents
+      for (var k = 1; k <= 20; k++) { if (g - k > 0 && net(g - k) >= target) best = g - k; }
+      return best;
+    },
+    toggle: function () {
+      var n2g = $("#sal-dir").value === "n2g";
+      $("#sal-nt-box").hidden = !n2g;
+      $("#sal-amount-label").textContent = n2g ? t("sal_amount_net") : t("sal_amount_gross");
+    },
+    render: function () {
+      var out = $("#result"), amount = val("sal-amount");
+      if (!isFinite(amount) || amount <= 0) { out.innerHTML = "<p class='hint'>" + t("fill_fields") + "</p>"; return; }
+      var annual = $("#sal-period").value === "annual", cadre = $("#sal-status").value === "cadre", am = $("#sal-am").checked;
+      var timePct = val("sal-time"); if (!isFinite(timePct) || timePct <= 0 || timePct > 100) timePct = 100;
+      var pasRaw = $("#sal-pas").value.trim(), pas = pasRaw === "" ? null : num(pasRaw);
+      if (pas !== null && (!isFinite(pas) || pas < 0 || pas > 43)) pas = null;
+      var ratioBp = Math.round(timePct * 100), pasMilli = pas === null ? null : Math.round(pas * 1000);
+      var cents = Math.round(amount * 100), monthly = annual ? Salary.div(cents, 12) : cents;
+      var n2g = $("#sal-dir").value === "n2g", gross = monthly;
+      if (n2g) {
+        gross = Salary.grossFor(monthly, $("#sal-nt").value === "after", cadre, am, ratioBp, pasMilli);
+        if (gross === null) { out.innerHTML = "<p class='hint'>" + t("fill_fields") + "</p>"; return; }
+      }
+      var r = Salary.compute(gross, cadre, am, ratioBp, pasMilli), e = function (c) { return money(c / 100, "EUR"); };
+      var h = "";
+      if (n2g) h += "<div class='big'><span>" + t("sal_gross_needed") + " (" + t("sal_per_month") + ")</span><strong>" + e(gross) + "</strong></div>";
+      else h += "<div class='kv'><span>" + t("sal_gross") + "</span><b>" + e(gross) + "</b></div>";
+      h += "<div class='kv'><span>" + t("sal_contrib") + "</span><b>− " + e(r.social) + "</b></div>";
+      h += (n2g ? "<div class='kv'><span>" : "<div class='big'><span>") + t("sal_net_before") + (n2g ? "</span><b>" + e(r.netBefore) + "</b></div>" : "</span><strong>" + e(r.netBefore) + "</strong></div>");
+      h += "<div class='kv'><span>" + t("sal_net_taxable") + "</span><b>" + e(r.taxable) + "</b></div>";
+      h += "<div class='kv'><span>" + t("sal_withheld", { rate: fmt(r.rate / 1000, r.rate % 1000 ? (r.rate % 100 ? 2 : 1) : 0), kind: t(r.kind === "neutral" ? "sal_kind_neutral" : "sal_kind_personal") }) + "</span><b>− " + e(r.withheld) + "</b></div>";
+      h += "<div class='kv'><span><b>" + t("sal_net_paid") + "</b></span><b>" + e(r.netPaid) + "</b></div>";
+      h += "<p class='small'>" + t("sal_per_year") + (CP.lang === "fr" ? " : " : ": ") + t("sal_gross") + " " + e(gross * 12) + " · " + t("sal_net_before") + " " + e(r.netBefore * 12) + " · " + t("sal_net_paid") + " " + e(r.netPaid * 12) + "</p>";
+      h += "<h3>" + t("sal_table") + "</h3><div class='table-wrap'><table class='data'><thead><tr><th>" + t("sal_col_line") + "</th><th>" + t("sal_col_base") + "</th><th>" + t("sal_col_rate") + "</th><th>" + t("sal_col_amount") + "</th></tr></thead><tbody>";
+      r.lines.forEach(function (l) {
+        h += "<tr><td>" + esc(t("sal_l_" + l.code)) + "</td><td>" + e(l.base) + "</td><td>" + fmt(l.rate / 1000, l.rate % 10 ? 3 : 2) + " %</td><td>" + e(l.amount) + "</td></tr>";
+      });
+      h += "<tr><th>" + t("sal_total") + "</th><td></td><td></td><th>" + e(r.social) + "</th></tr></tbody></table></div>";
+      h += "<p class='small'>" + t("sal_rate_total", { rate: fmt(r.social / gross * 100, 2) }) + " " + t("sal_note") + "</p>";
+      out.innerHTML = h;
+    }
+  };
+
+  // ------------------------------------------------------------ French income tax 2026 (on 2025 income)
+  // Same rules as the incometaxfr engine of the CalcPronto AI tools. Exact integer arithmetic: incomes in euros,
+  // caps in cents, scale tax in 1/10000 €, parts in quarters. Rounding half up to the euro at the same steps.
+  var IncomeTax = {
+    B: [[0, 0], [11600, 11], [29579, 30], [84577, 41], [181917, 45]], // one-part scale: lower bound (€), rate %
+    CAP: 180700, CAP_T1: 426200, CAP_L: 107900, COMP: 180100,          // cents
+    DEC: { single: 897, couple: 1483 }, DEC_RATE: 4525,                 // décote ceiling (€), 45.25 % in 1/100 %
+    SAL: [509, 14555], PEN: [454, 4439],
+    rhu: function (n, d) { return n >= 0 ? Math.floor((2 * n + d) / (2 * d)) : -Math.floor((-2 * n + d) / (2 * d)); },
+    scale: function (inc, q4) { // tax in 1/10000 € for income inc (€) and q4 quarter parts
+      var B = IncomeTax.B, incC = inc * 100, t = 0;
+      for (var i = 0; i < B.length; i++) {
+        var lo = B[i][0] * q4 * 25, top = i + 1 < B.length ? Math.min(incC, B[i + 1][0] * q4 * 25) : incC;
+        if (top > lo) t += (top - lo) * B[i][1];
+      }
+      return t;
+    },
+    rows: function (inc, q4) {
+      var B = IncomeTax.B, incC = inc * 100, out = [];
+      for (var i = 0; i < B.length; i++) {
+        var lo = B[i][0] * q4 * 25, top = i + 1 < B.length ? Math.min(incC, B[i + 1][0] * q4 * 25) : incC;
+        var s = Math.max(0, top - lo);
+        out.push({ from: B[i][0], to: i + 1 < B.length ? B[i + 1][0] : null, rate: B[i][1], income: s, tax: IncomeTax.rhu(s * B[i][1], 100) });
+      }
+      return out;
+    },
+    // o: {couple, children, shared, alone, disabled, veteran, caseL, dchildren, dshared}
+    parts: function (o) {
+      var c = [], rank = 0, k, CAP = IncomeTax.CAP, dep = o.children + o.shared;
+      function add(code, q4, cap, comp) { c.push({ code: code, q4: q4, cap: cap, comp: comp || 0 }); }
+      for (k = 0; k < o.children; k++) { rank++; var q = rank <= 2 ? 2 : 4; add("child", q, CAP / 2 * q); }
+      for (k = 0; k < o.shared; k++) { rank++; var qs = rank <= 2 ? 1 : 2; add("shared_child", qs, CAP / 2 * qs); }
+      if (!o.couple && o.alone && dep) {
+        if (o.children) add("single_parent", 2, IncomeTax.CAP_T1 - CAP);
+        else { var n = Math.min(o.shared, 2); add("single_parent", n, (IncomeTax.CAP_T1 - CAP) / 2 * n); }
+      }
+      for (k = 0; k < (o.dchildren || 0); k++) add("disabled_child", 2, CAP, IncomeTax.COMP);
+      for (k = 0; k < (o.dshared || 0); k++) add("disabled_shared_child", 1, CAP / 2, IncomeTax.COMP / 2);
+      if (!o.couple) {
+        if (o.disabled || (o.veteran && !dep)) add(o.disabled ? "disability" : "veteran", 2, CAP, IncomeTax.COMP);
+        else if (o.caseL && !dep) add("raised_children_alone", 2, IncomeTax.CAP_L);
+      } else {
+        for (k = 0; k < o.disabled; k++) add("disability", 2, CAP, IncomeTax.COMP);
+        if (o.veteran && !o.disabled) add("veteran", 2, CAP, IncomeTax.COMP);
+      }
+      var base4 = o.couple ? 8 : 4, q4 = base4, cap = 0, comp = 0;
+      c.forEach(function (x) { q4 += x.q4; cap += x.cap; comp += x.comp; });
+      return { base4: base4, q4: q4, cap: cap, comp: comp, items: c };
+    },
+    deductions: function (sal, pen) {
+      var sd = 0, pd = 0, S = IncomeTax.SAL, P = IncomeTax.PEN;
+      sal.forEach(function (s) { var a = IncomeTax.rhu(s, 10); sd += Math.max(Math.min(a, S[1]), Math.min(S[0], s)); });
+      pen.forEach(function (p) { pd += Math.max(IncomeTax.rhu(p, 10), Math.min(P[0], p)); });
+      pd = Math.min(pd, P[1]);
+      var tot = 0; sal.concat(pen).forEach(function (x) { tot += x; });
+      return { salary: sd, pension: pd, income: Math.max(0, tot - sd - pd), base: tot };
+    },
+    compute: function (inc, o) {
+      var p = IncomeTax.parts(o), rhu = IncomeTax.rhu;
+      var all = rhu(IncomeTax.scale(inc, p.q4), 10000), base = null, gross = all, capped = false;
+      if (p.q4 > p.base4) {
+        base = rhu(IncomeTax.scale(inc, p.base4), 10000);
+        var limit = rhu(base * 100 - p.cap - p.comp, 100);
+        capped = limit > all; gross = Math.max(all, limit);
+      }
+      var dec = rhu(IncomeTax.DEC[o.couple ? "couple" : "single"] * 10000 - gross * IncomeTax.DEC_RATE, 10000);
+      dec = Math.max(0, Math.min(dec, gross));
+      var after = gross - dec, used4 = capped ? p.base4 : p.q4, marginal = 0;
+      IncomeTax.B.forEach(function (b) { if (inc * 4 > b[0] * used4) marginal = b[1]; });
+      return { income: inc, parts: p, all: all, base: base, capped: capped, gross: gross, decote: dec, after: after,
+               due: after >= 61 ? after : 0, used4: used4, marginal: marginal };
+    },
+    pas: function (after, base) { return base > 0 ? IncomeTax.rhu(after * 1000, base) / 10 : null; },
+    int: function (id) { var v = val(id); return isFinite(v) && v > 0 ? Math.min(20, Math.floor(v)) : 0; },
+    euros: function (id) { var v = val(id); return isFinite(v) && v > 0 ? IncomeTax.rhu(Math.round(v * 100), 100) : 0; },
+    opts: function () {
+      var sit = $("#ir-situation").value, couple = sit === "couple";
+      var o = { couple: couple, widowed: sit === "widowed", children: IncomeTax.int("ir-children"), shared: IncomeTax.int("ir-shared"),
+                alone: $("#ir-alone").checked, disabled: Math.min(couple ? 2 : 1, +$("#ir-disabled").value || 0),
+                veteran: $("#ir-veteran").checked, caseL: $("#ir-casel").checked, dchildren: 0, dshared: 0 };
+      o.dchildren = Math.min(IncomeTax.int("ir-dchildren"), o.children);
+      return o;
+    },
+    toggle: function () {
+      var sal = $("#ir-mode").value === "salaries", sit = $("#ir-situation").value, couple = sit === "couple";
+      var dep = IncomeTax.int("ir-children") + IncomeTax.int("ir-shared");
+      $("#ir-taxable-box").hidden = sal; $("#ir-salaries-box").hidden = !sal; $("#ir-decl2-box").hidden = !couple;
+      $("#ir-alone-box").hidden = couple || !dep; $("#ir-casel-box").hidden = couple || dep > 0;
+      $("#ir-veteran-box").hidden = !couple && dep > 0;
+      $("#ir-disabled-2").disabled = !couple; if (!couple && $("#ir-disabled").value === "2") $("#ir-disabled").value = "1";
+    },
+    render: function () {
+      IncomeTax.toggle();
+      var out = $("#result"), o = IncomeTax.opts(), sal = $("#ir-mode").value === "salaries", inc, base = null, d = null;
+      if (o.widowed && (o.children || o.shared)) { out.innerHTML = "<p class='warn'>" + esc(t("ir_widow_kids")) + "</p>"; return; }
+      if (sal) {
+        var s = [IncomeTax.euros("ir-sal1")], p = [IncomeTax.euros("ir-pen1")];
+        if (o.couple) { s.push(IncomeTax.euros("ir-sal2")); p.push(IncomeTax.euros("ir-pen2")); }
+        s = s.filter(function (x) { return x > 0; }); p = p.filter(function (x) { return x > 0; });
+        if (!s.length && !p.length) { out.innerHTML = "<p class='hint'>" + t("fill_fields") + "</p>"; return; }
+        d = IncomeTax.deductions(s, p); inc = d.income; base = d.base;
+      } else {
+        var raw = val("ir-income");
+        if (!isFinite(raw) || raw < 0) { out.innerHTML = "<p class='hint'>" + t("fill_fields") + "</p>"; return; }
+        inc = IncomeTax.euros("ir-income");
+      }
+      if (o.veteran && !o.couple && (o.children || o.shared)) o.veteran = false;
+      if (o.caseL && (o.couple || o.children || o.shared)) o.caseL = false;
+      var r = IncomeTax.compute(inc, o), P = r.parts;
+      var e0 = function (x) { return new Intl.NumberFormat(LOCALE, { style: "currency", currency: "EUR", maximumFractionDigits: 0 }).format(x); };
+      var ec = function (c) { return money(c / 100, "EUR"); };
+      var fp = function (q4) { return fmt(q4 / 4, q4 % 4 ? 2 : (q4 % 2 ? 1 : 0)).replace(/([.,]\d)0$/, "$1"); };
+      var h = "<div class='big'><span>" + t("ir_tax") + "</span><strong>" + e0(r.due) + "</strong></div>";
+      if (d) h += "<div class='kv'><span>" + t("ir_deduction") + "</span><b>− " + e0(d.salary + d.pension) + "</b></div>";
+      h += "<div class='kv'><span>" + t("ir_taxable") + "</span><b>" + e0(inc) + "</b></div>";
+      h += "<div class='kv'><span>" + t("ir_parts") + "</span><b>" + fp(P.q4) + "</b></div>";
+      h += "<div class='kv'><span>" + t("ir_quotient") + "</span><b>" + money(inc * 4 / P.q4, "EUR") + "</b></div>";
+      h += "<div class='kv'><span>" + t("ir_tax_all") + "</span><b>" + e0(r.all) + "</b></div>";
+      if (r.base !== null) h += "<div class='kv'><span>" + t("ir_tax_base", { parts: fp(P.base4), cap: ec(P.cap + P.comp) }) + "</span><b>" + e0(Math.max(0, IncomeTax.rhu(r.base * 100 - P.cap - P.comp, 100))) + "</b></div>";
+      if (r.capped) h += "<p class='small'>" + t("ir_cap_applies") + "</p>";
+      h += "<div class='kv'><span>" + t("ir_gross") + "</span><b>" + e0(r.gross) + "</b></div>";
+      if (r.decote) h += "<div class='kv'><span>" + t("ir_decote") + "</span><b>− " + e0(r.decote) + "</b></div>";
+      h += "<div class='kv'><span><b>" + t("ir_after") + "</b></span><b>" + e0(r.after) + "</b></div>";
+      if (r.after > 0 && r.after < 61) h += "<p class='small'>" + t("ir_not_collected") + "</p>";
+      h += "<div class='kv'><span>" + t("ir_avg") + "</span><b>" + fmt(inc > 0 ? r.after / inc * 100 : 0, 2) + " %</b></div>";
+      h += "<div class='kv'><span>" + t("ir_marginal") + "</span><b>" + r.marginal + " %</b></div>";
+      if (base) h += "<div class='kv'><span>" + t("ir_pas") + "</span><b>" + fmt(IncomeTax.pas(r.after, base), 1) + " %</b></div>";
+      if (r.decote && r.marginal) h += "<p class='small'>" + t("ir_decote_marginal", { rate: fmt(r.marginal * 1.4525, 2) }) + "</p>";
+      h += "<h3>" + t("ir_table", { parts: fp(r.used4) }) + "</h3><div class='table-wrap'><table class='data'><thead><tr><th>" + t("ir_col_bracket") + "</th><th>" + t("ir_col_rate") + "</th><th>" + t("ir_col_income") + "</th><th>" + t("ir_col_tax") + "</th></tr></thead><tbody>";
+      IncomeTax.rows(inc, r.used4).forEach(function (b) {
+        var label = b.to === null ? t("ir_above", { x: e0(b.from) }) : (b.from === 0 ? t("ir_upto", { x: e0(b.to) }) : e0(b.from) + " – " + e0(b.to));
+        h += "<tr><td>" + label + "</td><td>" + b.rate + "\u00a0%</td><td>" + ec(b.income) + "</td><td>" + ec(b.tax) + "</td></tr>";
+      });
+      h += "</tbody></table></div><p class='small'>" + t("ir_note") + "</p>";
+      out.innerHTML = h;
+    }
+  };
+
+  // ------------------------------------------------------------ French notary fees 2026 (frais de notaire)
+  // Same rules as the notaryfeesfr engine of the CalcPronto AI tools. Exact integer arithmetic: amounts in cents,
+  // rates in 1/1000 % (5.00 % -> 5000), each line rounded half up to the cent.
+  var Notary = {
+    SCALE: [[0, 3870], [650000, 1596], [1700000, 1064], [6000000, 799]], // lower bound (cents), rate (1/1000 %)
+    COMMUNAL: 1200, FEE: 2370, NEW_RATE: 700, NEW_FEE: 2140, CSI: 100, CSI_MIN: 1500, VAT: 20000,
+    AM: { "57": 1, "67": 1, "68": 1 }, MIN: 1000000, MAX: 10000000000,
+    rhu: function (n, d) { return n >= 0 ? Math.floor((2 * n + d) / (2 * d)) : -Math.floor((-2 * n + d) / (2 * d)); },
+    pct: function (c, r) { return Notary.rhu(c * r, 100000); },
+    dept: function (code) {
+      var L = CP.nfDepts || [];
+      for (var i = 0; i < L.length; i++) if (L[i][0] === code) return { code: L[i][0], name: L[i][1], std: L[i][2], ftb: L[i][3] };
+      return null;
+    },
+    brackets: function (P) {
+      var S = Notary.SCALE, out = [];
+      for (var i = 0; i < S.length; i++) {
+        var lo = S[i][0], hi = i + 1 < S.length ? S[i + 1][0] : null, top = hi === null ? P : Math.min(P, hi);
+        var part = Math.max(0, top - lo);
+        out.push({ from: lo, to: hi, rate: S[i][1], base: part, fee: Notary.pct(part, S[i][1]) });
+      }
+      return out;
+    },
+    // P: price in cents; share: % of the price bought by first-time buyers (0, 50, 100); extra: cents
+    compute: function (P, code, kind, share, extra) {
+      var d = Notary.dept(code), r = { price: P, dept: d, kind: kind, share: share };
+      if (kind === "new") {
+        r.rate = Notary.NEW_RATE; r.deptTax = Notary.pct(P, Notary.NEW_RATE); r.communal = 0; r.feeRate = Notary.NEW_FEE;
+      } else {
+        var mix = share * d.ftb + (100 - share) * d.std;            // rate x 100, in 1/1000 %
+        r.rate = mix / 100; r.deptTax = Notary.rhu(P * mix, 100 * 100000);
+        r.communal = Notary.pct(P, Notary.COMMUNAL); r.feeRate = Notary.FEE;
+      }
+      r.collection = Notary.pct(r.deptTax, r.feeRate);
+      r.transfer = r.deptTax + r.communal + r.collection;
+      r.rows = Notary.brackets(P);
+      r.feeHT = 0; r.rows.forEach(function (b) { r.feeHT += b.fee; });
+      r.vat = Notary.pct(r.feeHT, Notary.VAT); r.feeTTC = r.feeHT + r.vat;
+      r.csi = Notary.AM[code] ? 0 : Math.max(Notary.pct(P, Notary.CSI), Notary.CSI_MIN);
+      r.extra = extra || 0;
+      r.total = r.transfer + r.feeTTC + r.csi + r.extra;
+      r.pct = Notary.rhu(r.total * 10000, P) / 100;                  // % of the price, 2 decimals, half up
+      if (kind !== "new" && share === 0 && d.ftb < d.std) {
+        var alt = Notary.pct(P, d.ftb);
+        r.saving = r.deptTax + r.collection - (alt + Notary.pct(alt, Notary.FEE));
+      }
+      return r;
+    },
+    render: function () {
+      var out = $("#result"), kind = $("#nf-type").value, code = $("#nf-dept").value;
+      $("#nf-ftb-box").hidden = kind === "new";
+      var v = val("nf-price");
+      if (!isFinite(v) || v <= 0) { out.innerHTML = "<p class='hint'>" + t("fill_fields") + "</p>"; return; }
+      var P = Math.round(v * 100);
+      if (P < Notary.MIN || P > Notary.MAX) { out.innerHTML = "<p class='hint'>" + esc(t("nf_min")) + "</p>"; return; }
+      var ex = val("nf-extra"), extra = isFinite(ex) && ex > 0 ? Math.round(ex * 100) : 0;
+      var share = kind === "new" ? 0 : (+$("#nf-ftb").value || 0);
+      var r = Notary.compute(P, code, kind, share, extra);
+      var ec = function (c) { return money(c / 100, "EUR"); };
+      var rp = function (milli) { return fmt(milli / 1000, 2).replace(/[.,]00$/, "").replace(/([.,]\d)0$/, "$1"); };
+      var h = "<div class='big'><span>" + t("nf_total") + "</span><strong>" + ec(r.total) + "</strong></div>";
+      h += "<p class='small'>" + t("nf_pct", { pct: fmt(r.pct, 2) }) + "</p>";
+      h += "<h3>" + (kind === "new" ? t("nf_tpf") : t("nf_dmto")) + "</h3>";
+      h += "<div class='kv'><span>" + (kind === "new" ? t("nf_tpf_tax") : t("nf_dept_tax", { rate: rp(r.rate) })) + "</span><b>" + ec(r.deptTax) + "</b></div>";
+      if (kind !== "new") h += "<div class='kv'><span>" + t("nf_comm_tax") + "</span><b>" + ec(r.communal) + "</b></div>";
+      h += "<div class='kv'><span>" + t("nf_fee", { rate: fmt(r.feeRate / 1000, 2) }) + "</span><b>" + ec(r.collection) + "</b></div>";
+      h += "<div class='kv total'><span><b>" + (kind === "new" ? t("nf_tpf") : t("nf_dmto")) + "</b></span><b>" + ec(r.transfer) + "</b></div>";
+      h += "<h3>" + t("nf_notary_total") + "</h3>";
+      h += "<div class='kv'><span>" + t("nf_emol") + "</span><b>" + ec(r.feeHT) + "</b></div>";
+      h += "<div class='kv'><span>" + t("nf_vat") + "</span><b>" + ec(r.vat) + "</b></div>";
+      h += "<div class='kv'><span>" + t("nf_csi") + "</span><b>" + (Notary.AM[code] ? esc(t("nf_csi_none")) : ec(r.csi)) + "</b></div>";
+      if (r.extra) h += "<div class='kv'><span>" + t("nf_extra_line") + "</span><b>" + ec(r.extra) + "</b></div>";
+      h += "<div class='kv total'><span><b>" + t("nf_cost") + "</b></span><b>" + ec(P + r.total) + "</b></div>";
+      if (r.saving) h += "<p class='small'>" + t("nf_saving", { x: ec(r.saving) }) + "</p>";
+      var notes = [];
+      if (kind === "new") notes.push(t("nf_note_new"));
+      else {
+        if (code === "14") notes.push(t("nf_note_14"));
+        if (code === "65") notes.push(t("nf_note_65"));
+        if (code === "73") notes.push(t("nf_note_73"));
+      }
+      if (Notary.AM[code]) notes.push(t("nf_note_am"));
+      notes.forEach(function (n) { h += "<p class='small'>" + esc(n) + "</p>"; });
+      var e0 = function (c) { return new Intl.NumberFormat(LOCALE, { style: "currency", currency: "EUR", maximumFractionDigits: 0 }).format(c / 100); };
+      h += "<h3>" + t("nf_table") + "</h3><div class='table-wrap'><table class='data'><thead><tr><th>" + t("nf_col_bracket") + "</th><th>" + t("nf_col_rate") + "</th><th>" + t("nf_col_base") + "</th><th>" + t("nf_col_fee") + "</th></tr></thead><tbody>";
+      r.rows.forEach(function (b) {
+        var label = b.to === null ? t("nf_above", { x: e0(b.from) }) : (b.from === 0 ? t("nf_upto", { x: e0(b.to) }) : e0(b.from) + " – " + e0(b.to));
+        h += "<tr><td>" + label + "</td><td>" + fmt(b.rate / 1000, 3) + " %</td><td>" + ec(b.base) + "</td><td>" + ec(b.fee) + "</td></tr>";
+      });
+      h += "</tbody></table></div><p class='small'>" + t("nf_note") + "</p>";
+      out.innerHTML = h;
+    }
+  };
+
+  // ------------------------------------------------------------ wiring
+  function bind(ids, fn) {
+    ids.forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el) { el.addEventListener("input", fn); el.addEventListener("change", fn); }
+    });
+  }
+
+  function init() {
+    var page = CP.page;
+    if (page === "loan") { bind(["loan-amount", "loan-rate", "loan-years", "loan-ins", "loan-fees", "currency"], Loan.render); Loan.render(); }
+    if (page === "capacity") { bind(["cap-income", "cap-debts", "cap-rate", "cap-years", "cap-ratio", "cap-ins", "cap-down", "currency"], Capacity.render); Capacity.render(); }
+    if (page === "vat") {
+      $("#vat-country").addEventListener("change", function () { VAT.fillRates(); VAT.render(); });
+      $("#vat-rate").addEventListener("change", function () { VAT.toggleCustom(); VAT.render(); });
+      bind(["vat-amount", "vat-mode", "vat-custom", "currency"], VAT.render);
+      VAT.fillRates(); VAT.render();
+    }
+    if (page === "schengen") {
+      var c = $("#sch-control"); if (!c.value) c.value = isoOf(todayNum());
+      (CP.exampleStays || [null]).forEach(function (s) { Schengen.addRow(s && s[0], s && s[1]); });
+      $("#add-stay").addEventListener("click", function () { Schengen.addRow(); });
+      bind(["sch-control", "sch-entry"], Schengen.render);
+      Schengen.render();
+    }
+    if (page === "bizdays") {
+      var s = $("#bd-start"), e = $("#bd-end"), tn = todayNum();
+      if (!s.value) s.value = isoOf(tn);
+      if (!e.value) e.value = isoOf(tn + 30);
+      bind(["bd-country", "bd-region", "bd-mode", "bd-start", "bd-end", "bd-n", "bd-inc-start", "bd-inc-end", "bd-saturday"], BizDays.render);
+      BizDays.render();
+    }
+    if (page === "salary") {
+      if (CP.prefill) $("#sal-amount").value = CP.prefill;
+      $("#sal-dir").addEventListener("change", function () { Salary.toggle(); Salary.render(); });
+      bind(["sal-amount", "sal-nt", "sal-period", "sal-status", "sal-am", "sal-time", "sal-pas"], Salary.render);
+      Salary.toggle(); Salary.render();
+    }
+    if (page === "notary") {
+      bind(["nf-price", "nf-dept", "nf-type", "nf-ftb", "nf-extra"], Notary.render);
+      Notary.render();
+    }
+    if (page === "incometax") {
+      if (CP.prefillIncome) $("#ir-income").value = CP.prefillIncome;
+      bind(["ir-mode", "ir-income", "ir-sal1", "ir-pen1", "ir-sal2", "ir-pen2", "ir-situation", "ir-children", "ir-shared",
+            "ir-alone", "ir-casel", "ir-disabled", "ir-dchildren", "ir-veteran"], IncomeTax.render);
+      IncomeTax.render();
+    }
+    if (page === "eu261") {
+      ["eu-from", "eu-to"].forEach(function (id) {
+        var el = document.getElementById(id);
+        el.addEventListener("focus", function () { EU261.load(function () {}); }, { once: true });
+        el.addEventListener("input", function () { EU261.load(function () { EU261.suggest(el); EU261.render(); }); });
+        el.addEventListener("change", EU261.render);
+      });
+      bind(["eu-carrier", "eu-kind", "eu-delay-h", "eu-delay-m", "eu-notice", "eu-early-h", "eu-early-m", "eu-late-h", "eu-late-m", "eu-extra", "eu-volunteer", "eu-grounds"], EU261.render);
+      $all("[data-kind]").forEach(function (el) { el.hidden = el.dataset.kind.split(" ").indexOf($("#eu-kind").value) < 0; });
+      if ($("#eu-from").value) EU261.render();
+    }
+  }
+
+  window.CalcPronto = { Salary: Salary, IncomeTax: IncomeTax, Notary: Notary, Loan: Loan, Capacity: Capacity, VAT: VAT, Schengen: Schengen, BizDays: BizDays, EU261: EU261, dayNum: dayNum, isoOf: isoOf, num: num };
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init); else init();
+})();
