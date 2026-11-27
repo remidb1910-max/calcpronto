@@ -246,3 +246,25 @@ nav.top .dd-panel a{padding:10px 8px}
 .offer em{margin-top:auto;background:var(--brand);color:#fff;border-radius:9px;padding:10px 12px;text-align:center;font-weight:700}
 .offer span:not(.partner-tag){margin-bottom:10px}
 .offer:hover em{filter:brightness(1.08)}
+/* Home: highlighted entries to the best-paying calculators */
+.features{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin:22px 0 6px}
+.features[hidden]{display:none}
+.feature{display:flex;flex-direction:column;gap:10px;padding:18px;border-radius:14px;border:2px solid var(--brand);background:var(--brand-2);text-decoration:none;color:var(--ink);transition:transform .15s,box-shadow .15s}
+.feature.gold{border-color:var(--accent);background:#fff8e6}
+.feature:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(22,32,43,.1)}
+.feature .emo{font-size:1.7rem;line-height:1}
+.feature .ft b{display:block;font-size:1.2rem;line-height:1.3;margin-bottom:4px}
+.feature .ft span{color:var(--muted);font-size:.95rem}
+.feature em{font-style:normal;align-self:flex-start;margin-top:auto;background:var(--brand);color:#fff;font-weight:700;border-radius:9px;padding:10px 16px;box-shadow:0 2px 0 rgba(0,0,0,.12)}
+/* Sections of a calculator page: clearer separation */
+.content>h2{margin-top:2.2em;padding:.15em 0 .15em 12px;border-left:5px solid var(--brand)}
+.band h2,.guide>h2#offres{border-left:0;padding-left:0}
+/* Partner bar fixed at the bottom of small screens (flight compensation, when eligible) */
+.sticky-cta{position:fixed;left:0;right:0;bottom:0;z-index:60;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px calc(10px + env(safe-area-inset-bottom));background:#fff8e6;border-top:2px solid var(--accent);box-shadow:0 -6px 18px rgba(22,32,43,.14)}
+.sticky-cta[hidden]{display:none}
+.sticky-cta span{display:flex;flex-direction:column;line-height:1.25;min-width:0}
+.sticky-cta small{color:var(--muted);font-size:.7rem}
+.sticky-cta b{font-size:1rem}
+.sticky-cta .cta{white-space:nowrap;padding:11px 14px}
+body.has-sticky{padding-bottom:76px}
+@media(min-width:900px){.sticky-cta{display:none}body.has-sticky{padding-bottom:0}}

@@ -426,6 +426,17 @@
       else if (zb === "EU" && carrier === "UK") { uk = true; why.push("uk_carrier_to_eu"); }
       return { eu: eu, uk: uk, why: why };
     },
+    // Small screens: a bar fixed at the bottom repeats the partner button while the action box is out of view.
+    sticky: function (amount) {
+      var old = document.getElementById("sticky-cta"); if (old) old.remove();
+      document.body.classList.remove("has-sticky");
+      var box = document.querySelector("#result .action");
+      if (!amount || !CP.claimUrl || !box) return;
+      var bar = document.createElement("div"); bar.id = "sticky-cta"; bar.className = "sticky-cta";
+      bar.innerHTML = "<span><small>" + t("partner_tag") + "</small><b>" + esc(amount) + "</b></span><a class='cta' href='" + esc(CP.claimUrl) + "' rel='sponsored nofollow noopener' target='_blank'>" + t("eu_claim_cta") + " →</a>";
+      document.body.appendChild(bar); document.body.classList.add("has-sticky");
+      if ("IntersectionObserver" in window) new IntersectionObserver(function (en) { bar.hidden = en[0].isIntersecting; }).observe(box);
+    },
     claim: function (o, d, carrier, kind, p) {
       var A = EU261.airports[o], B = EU261.airports[d];
       var za = EU261.zone(A[2]), zb = EU261.zone(B[2]);
@@ -481,6 +492,7 @@
         if (kind === "delay" && p.delay === null) { out.innerHTML = "<p class='hint'>" + t("eu_enter_delay") + "</p>"; return; }
         if (kind === "cancellation" && !isFinite(p.notice)) { out.innerHTML = "<p class='hint'>" + t("eu_enter_notice") + "</p>"; return; }
         var res = EU261.claim(o, d, $("#eu-carrier").value, kind, p);
+        var shownAction = false, stickyAmount = null;
         var h = "<div class='kv'><span>" + t("eu_distance") + "</span><b>" + fmt(res.km, 0) + " km</b></div>";
         if (!res.regimes.length) {
           h += "<div class='big no'><span>" + t("eu_result") + "</span><strong>" + t("eu_not_covered") + "</strong></div><p class='small'>" + t("eu_not_covered_explain") + "</p>";
@@ -490,15 +502,17 @@
           var e = res.results[reg];
           h += "<div class='big " + (e.eligible ? "" : "no") + "'><span>" + t("eu_result_regime", { regime: reg === "EU261" ? t("eu_regime_eu") : t("eu_regime_uk") }) + "</span><strong>" +
             (e.eligible ? money(e.amount, e.cur) + " " + t("eu_per_passenger") : t("eu_no_compensation")) + "</strong></div>";
+          if (e.eligible && CP.claimUrl && !shownAction) {
+            shownAction = true; stickyAmount = money(e.amount, e.cur) + " " + t("eu_per_passenger");
+            h += "<div class='action'><b>" + t("eu_claim_title") + "</b><a class='cta' href='" + esc(CP.claimUrl) + "' rel='sponsored nofollow noopener' target='_blank'>" + t("eu_claim_cta") + " →</a><p class='small'>" + t("eu_claim_note") + "</p></div>";
+          }
           h += "<ul class='why'>" + e.why.map(function (k) { return "<li>" + t("eu_why_" + k) + "</li>"; }).join("") + "</ul>";
           if (e.reduction) h += "<p class='small'>" + t("eu_" + e.reduction, { min: money(e.amount / 2, e.cur) }) + "</p>";
         });
         if (res.regimes.length === 2) h += "<p class='small'>" + t("eu_both") + "</p>";
         h += "<p class='small'>" + t("eu_care_note") + "</p>";
-        if (CP.claimUrl && res.regimes.some(function (r) { return res.results[r].eligible; })) {
-          h += "<div class='action'><b>" + t("eu_claim_title") + "</b><a class='cta' href='" + esc(CP.claimUrl) + "' rel='sponsored nofollow noopener' target='_blank'>" + t("eu_claim_cta") + " →</a><p class='small'>" + t("eu_claim_note") + "</p></div>";
-        }
         out.innerHTML = h;
+        EU261.sticky(stickyAmount);
       });
     }
   };
