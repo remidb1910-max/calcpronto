@@ -79,7 +79,9 @@ table.data td,table.data th{text-align:left;white-space:normal}
 .pills a:hover{border-color:var(--brand);color:var(--brand)}
 .ai-box{background:linear-gradient(135deg,#0b6e4f,#0e8a64);color:#fff;border-radius:var(--radius);padding:18px;margin-top:24px}
 .ai-box a{color:#fff;font-weight:700}
-.ad-slot{margin:20px 0;min-height:100px}
+/* The ad slot takes no room until AdSense reports a filled ad (no blank gap while the site is under review or unfilled). */
+.ad-slot{max-height:0;overflow:hidden;margin:0}
+.ad-slot:has(ins[data-ad-status="filled"]){max-height:none;overflow:visible;margin:20px 0}
 footer.site{border-top:1px solid var(--line);background:#fff;padding:22px 0;font-size:.9rem;color:var(--muted)}
 footer.site a{color:var(--muted)}
 footer.site .cols{display:flex;flex-wrap:wrap;gap:18px;justify-content:space-between}
