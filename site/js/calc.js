@@ -61,7 +61,7 @@
     var list = (CP.tips || []).filter(function (x) { return !x.when || (flags && flags[x.when]); });
     if (!list.length) return "";
     var h = "<div class='next'><b>" + esc(CP.tipsTitle || "") + "</b><ul>";
-    list.forEach(function (x) { h += "<li>" + esc(x.text) + " <a href='" + esc(x.url) + "'>" + esc(x.label) + " →</a></li>"; });
+    list.forEach(function (x) { h += "<li><span>" + esc(x.text) + "</span><a class='btn' href='" + esc(x.url) + "'>" + esc(x.label) + " →</a></li>"; });
     return h + "</ul></div>";
   }
   function currency() { var el = document.getElementById("currency"); return el ? el.value : (CP.currency || "EUR"); }
@@ -496,7 +496,7 @@
         if (res.regimes.length === 2) h += "<p class='small'>" + t("eu_both") + "</p>";
         h += "<p class='small'>" + t("eu_care_note") + "</p>";
         if (CP.claimUrl && res.regimes.some(function (r) { return res.results[r].eligible; })) {
-          h += "<p><a class='cta' href='" + esc(CP.claimUrl) + "' rel='sponsored nofollow noopener' target='_blank'>" + t("eu_claim_cta") + "</a></p><p class='small'>" + t("eu_claim_note") + "</p>";
+          h += "<div class='action'><b>" + t("eu_claim_title") + "</b><a class='cta' href='" + esc(CP.claimUrl) + "' rel='sponsored nofollow noopener' target='_blank'>" + t("eu_claim_cta") + " →</a><p class='small'>" + t("eu_claim_note") + "</p></div>";
         }
         out.innerHTML = h;
       });
