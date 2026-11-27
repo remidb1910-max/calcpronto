@@ -898,6 +898,87 @@
     }
   };
 
+  // ------------------------------------------------------------ French zero-interest home loan (same rules as the ptzfr engine)
+  var Ptz = {
+    CEIL: { A: [49000, 73500, 88200, 102900, 117600, 132300, 147000, 161700], B1: [34500, 51750, 62100, 72450, 82800, 93150, 103500, 113850],
+            B2: [31500, 47250, 56700, 66150, 75600, 85050, 94500, 103950], C: [28500, 42750, 51300, 59850, 68400, 76950, 85500, 94050] },
+    COEF10: [10, 15, 18, 21, 24, 27, 30, 33],                               // family coefficient x 10, 1 to 8+ persons
+    LIMIT: { A: [25000, 31000, 37000, 49000], B1: [21500, 26000, 30000, 34500], B2: [18000, 22500, 27000, 31500], C: [15000, 19500, 24000, 28500] },
+    COST: { A: [150000, 225000, 270000, 315000, 360000], B1: [135000, 202500, 243000, 283500, 324000],
+            B2: [110000, 165000, 198000, 231000, 264000], C: [100000, 150000, 180000, 210000, 240000] },
+    Q: { new_collective: [50, 40, 40, 20], new_individual: [30, 20, 20, 10], new_assisted: [50, 40, 40, 20],
+         old_with_works: [50, 40, 40, 20], social_sale: [20, 20, 20, 20] },
+    DUR: [[10, 15], [8, 12], [2, 13], [0, 10]],                              // [deferral, repayment] years by tranche
+    MAX: 1000000000,                                                          // 10 000 000 € in cents
+    halfUp: function (num, den) { return Math.floor((2 * num + den) / (2 * den)); },
+    // Amounts in cents; zone "A" (also A bis), "B1", "B2" or "C"; works in cents or null when not given.
+    compute: function (zone, persons, rfr, cost, op, works) {
+      var i8 = Math.min(persons, 8) - 1, c = Ptz.COEF10[i8];
+      var scaled = Math.max(rfr * 9, cost), tranche = null;                   // resources x 9, exact
+      for (var k = 0; k < 4; k++) if (scaled * 10 <= Ptz.LIMIT[zone][k] * 100 * 9 * c) { tranche = k + 1; break; }
+      var ceiling = Ptz.CEIL[zone][i8], cap = Ptz.COST[zone][Math.min(persons, 5) - 1];
+      var costTaken = Math.min(cost, cap * 100), reasons = [];
+      if (scaled > ceiling * 100 * 9) reasons.push("ceiling");
+      if (op === "old_with_works" && zone !== "B2" && zone !== "C") reasons.push("zone");
+      if (op === "old_with_works" && works !== null && works * 100 < cost * 25) reasons.push("works");
+      var r = { tranche: tranche, ceiling: ceiling, cap: cap, coef: c, retained: Ptz.halfUp(scaled, 9),
+                perCoef: Ptz.halfUp(scaled * 10, 9 * c), floorApplies: cost > rfr * 9, costTaken: costTaken, reasons: reasons,
+                eligible: !reasons.length && tranche !== null, amount: 0, quotite: null, deferral: null, years: null,
+                months: null, monthly: null, last: null, others: null };
+      if (r.eligible) {
+        var q = Ptz.Q[op][tranche - 1], amount = Math.floor(costTaken * q / 100), d = Ptz.DUR[tranche - 1];
+        r.quotite = q; r.amount = amount; r.deferral = d[0]; r.years = d[1]; r.months = d[1] * 12;
+        r.monthly = Ptz.halfUp(amount, r.months); r.last = amount - r.monthly * (r.months - 1);
+        r.others = q === 50 ? Math.ceil(amount * 100 / 125) : amount;
+      }
+      return r;
+    },
+    render: function () {
+      var op = $("#pz-type").value;
+      $("#pz-works-box").hidden = op !== "old_with_works";
+      var out = $("#result"), rfr = val("pz-rfr"), cost = val("pz-cost"), w = val("pz-works");
+      if (!isFinite(rfr) || rfr < 0 || !isFinite(cost) || cost <= 0) { out.innerHTML = "<p class='hint'>" + t("fill_fields") + "</p>"; return; }
+      var rc = Math.round(cost * 100), works = (op === "old_with_works" && isFinite(w) && w > 0) ? Math.round(w * 100) : null;
+      if (Math.round(rfr * 100) > Ptz.MAX || rc > Ptz.MAX) { out.innerHTML = "<p class='hint'>" + esc(t("pz_max")) + "</p>"; return; }
+      if (works !== null && works > rc) { out.innerHTML = "<p class='hint'>" + esc(t("pz_works_max")) + "</p>"; return; }
+      var zv = $("#pz-zone").value, zone = zv === "Abis" ? "A" : zv;
+      var r = Ptz.compute(zone, +$("#pz-persons").value, Math.round(rfr * 100), rc, op, works);
+      var e = function (c) { return money(c / 100, "EUR"); };
+      var e0 = function (n) { return new Intl.NumberFormat(LOCALE, { style: "currency", currency: "EUR", maximumFractionDigits: 0 }).format(n); };
+      var pc = function (x) { return fmt(x, 0) + (CP.lang === "en" ? "%" : " %"); };
+      var kv = function (k, v) { return "<div class='kv'><span>" + k + "</span><b>" + v + "</b></div>"; };
+      var h = "", notes = [];
+      if (!r.eligible) {
+        h += "<div class='big'><span>" + t("pz_amount") + "</span><strong>" + t("pz_none") + "</strong></div>";
+        r.reasons.forEach(function (x) {
+          var s = x === "ceiling" ? t("pz_reason_ceiling", { x: e(r.retained), y: e0(r.ceiling) })
+            : x === "zone" ? t("pz_reason_zone") : t("pz_reason_works", { x: e(Math.ceil(rc * 25 / 100)) });
+          h += "<p class='warn'>" + esc(s) + "</p>";
+        });
+        h += kv(t("pz_resources"), e(r.retained));
+      } else {
+        h += "<div class='big'><span>" + t("pz_amount") + "</span><strong>" + e(r.amount) + "</strong></div>";
+        h += kv(t("pz_resources"), e(r.retained));
+        h += kv(t("pz_per_coef", { c: fmt(r.coef / 10, r.coef % 10 ? 1 : 0) }), e(r.perCoef));
+        h += kv(t("pz_tranche"), t("pz_tranche_val", { t: String(r.tranche) }));
+        h += kv(t("pz_cost_taken"), e(r.costTaken));
+        h += kv(t("pz_quotite"), pc(r.quotite));
+        h += kv(t("pz_duration"), r.deferral ? t("pz_duration_def", { n: String(r.deferral + r.years), d: String(r.deferral) }) : t("pz_duration_nodef", { n: String(r.years) }));
+        h += "<div class='kv total'><span><b>" + t("pz_monthly") + "</b></span><b>" + t("pz_monthly_val", { m: e(r.monthly), k: String(r.months) }) + "</b></div>";
+        notes.push(r.deferral ? t("pz_after_def", { d: String(r.deferral), k: String(r.months), m: e(r.monthly), l: e(r.last) })
+                              : t("pz_no_def", { k: String(r.months), m: e(r.monthly), l: e(r.last) }));
+        notes.push(t("pz_others", { x: e(r.others) }));
+        if (r.costTaken < rc) notes.push(t("pz_note_cap", { x: e0(r.cap) }));
+        if (op === "new_individual") notes.push(t("pz_note_house"));
+      }
+      if (r.floorApplies) notes.push(t("pz_note_floor", { x: e(r.retained) }));
+      if (op === "old_with_works") notes.push(t("pz_note_old"));
+      notes.push(t("pz_note_conditions"));
+      notes.forEach(function (n) { h += "<p class='small'>" + esc(n) + "</p>"; });
+      out.innerHTML = h;
+    }
+  };
+
   // ------------------------------------------------------------ wiring
   function bind(ids, fn) {
     ids.forEach(function (id) {
@@ -951,6 +1032,12 @@
       bind(["me-activity", "me-trade", "me-amount", "me-period", "me-acre", "me-flat", "me-chamber", "me-zone"], Micro.render);
       Micro.render();
     }
+    if (page === "ptz") {
+      var pz = CP.prefillPtz;
+      if (pz) { $("#pz-zone").value = pz.zone; $("#pz-persons").value = pz.persons; $("#pz-rfr").value = pz.rfr; $("#pz-cost").value = pz.cost; $("#pz-type").value = pz.type; }
+      bind(["pz-zone", "pz-persons", "pz-rfr", "pz-type", "pz-cost", "pz-works"], Ptz.render);
+      Ptz.render();
+    }
     if (page === "incometax") {
       if (CP.prefillIncome) $("#ir-income").value = CP.prefillIncome;
       bind(["ir-mode", "ir-income", "ir-sal1", "ir-pen1", "ir-sal2", "ir-pen2", "ir-situation", "ir-children", "ir-shared",
@@ -970,6 +1057,6 @@
     }
   }
 
-  window.CalcPronto = { Salary: Salary, IncomeTax: IncomeTax, Notary: Notary, Micro: Micro, Loan: Loan, Capacity: Capacity, VAT: VAT, Schengen: Schengen, BizDays: BizDays, EU261: EU261, dayNum: dayNum, isoOf: isoOf, num: num };
+  window.CalcPronto = { Salary: Salary, IncomeTax: IncomeTax, Notary: Notary, Micro: Micro, Ptz: Ptz, Loan: Loan, Capacity: Capacity, VAT: VAT, Schengen: Schengen, BizDays: BizDays, EU261: EU261, dayNum: dayNum, isoOf: isoOf, num: num };
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init); else init();
 })();

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Méthode et sources : comment CalcPronto vérifie ses calculateurs</title>
-<meta name="description" content="Règles officielles datées, moteurs de calcul testés sur des exemples officiels, 243 340 contrôles automatiques avant chaque mise en ligne : comment chaque calculateur CalcPronto est vérifié.">
+<meta name="description" content="Règles officielles datées, moteurs de calcul testés sur des exemples officiels, 311 966 contrôles automatiques avant chaque mise en ligne : comment chaque calculateur CalcPronto est vérifié.">
 <link rel="canonical" href="https://calcpronto.com/fr/methode-et-sources/">
 <link rel="alternate" hreflang="fr" href="https://calcpronto.com/fr/methode-et-sources/">
 <link rel="alternate" hreflang="en" href="https://calcpronto.com/en/methodology/">
@@ -15,14 +15,14 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="CalcPronto">
 <meta property="og:title" content="Méthode et sources : comment CalcPronto vérifie ses calculateurs">
-<meta property="og:description" content="Règles officielles datées, moteurs de calcul testés sur des exemples officiels, 243 340 contrôles automatiques avant chaque mise en ligne : comment chaque calculateur CalcPronto est vérifié.">
+<meta property="og:description" content="Règles officielles datées, moteurs de calcul testés sur des exemples officiels, 311 966 contrôles automatiques avant chaque mise en ligne : comment chaque calculateur CalcPronto est vérifié.">
 <meta property="og:url" content="https://calcpronto.com/fr/methode-et-sources/">
 <meta property="og:locale" content="fr_FR">
 <meta name="theme-color" content="#0b6e4f">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/css/style.css?v=96ad6cd2">
+<link rel="stylesheet" href="/css/style.css?v=2ed45c7c">
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3625379884205520" crossorigin="anonymous"></script>
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "AboutPage", "name": "Méthode et sources", "url": "https://calcpronto.com/fr/methode-et-sources/", "inLanguage": "fr", "description": "Règles officielles datées, moteurs de calcul testés sur des exemples officiels, 243 340 contrôles automatiques avant chaque mise en ligne : comment chaque calculateur CalcPronto est vérifié.", "dateModified": "2026-11-27", "publisher": {"@type": "Organization", "name": "CalcPronto", "url": "https://calcpronto.com"}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "AboutPage", "name": "Méthode et sources", "url": "https://calcpronto.com/fr/methode-et-sources/", "inLanguage": "fr", "description": "Règles officielles datées, moteurs de calcul testés sur des exemples officiels, 311 966 contrôles automatiques avant chaque mise en ligne : comment chaque calculateur CalcPronto est vérifié.", "dateModified": "2026-11-27", "publisher": {"@type": "Organization", "name": "CalcPronto", "url": "https://calcpronto.com"}}</script>
 </head>
 <body>
 <header class="site">
@@ -37,7 +37,7 @@
       <details class="dd">
         <summary>Immobilier et crédit</summary>
         <div class="dd-panel">
-<a href="/fr/calcul-mensualite-pret/">Mensualité de prêt</a><a href="/fr/capacite-emprunt/">Capacité d&#39;emprunt</a><a href="/fr/frais-de-notaire/">Frais de notaire</a>        </div>
+<a href="/fr/calcul-mensualite-pret/">Mensualité de prêt</a><a href="/fr/capacite-emprunt/">Capacité d&#39;emprunt</a><a href="/fr/frais-de-notaire/">Frais de notaire</a><a href="/fr/simulation-ptz/">Prêt à taux zéro (PTZ)</a>        </div>
       </details>
       <details class="dd">
         <summary>Impôts et argent</summary>
@@ -68,13 +68,13 @@
   <div class="wrap">
 <nav class="crumbs"><a href="/fr/">Accueil</a></nav>
 <h1>Méthode et sources</h1>
-<p class="lead" id="method-lead">Chaque calculateur de CalcPronto applique des règles officielles et datées. Avant chaque mise en ligne, 253 tests automatiques vérifient les 9 moteurs de calcul de référence, puis 243 340 contrôles comparent le site à ces moteurs. Dernière vérification complète : le 27 novembre 2026.</p>
+<p class="lead" id="method-lead">Chaque calculateur de CalcPronto applique des règles officielles et datées. Avant chaque mise en ligne, 312 tests automatiques vérifient les 10 moteurs de calcul de référence, puis 311 966 contrôles comparent le site à ces moteurs. Dernière vérification complète : le 27 novembre 2026.</p>
 <div class="content">
   <h2>Comment chaque calculateur est vérifié</h2>
   <ol><li><b>Des règles tirées des textes officiels.</b> Chaque taux, plafond et barème est relevé sur une source officielle datée : Légifrance, BOFiP, impots.gouv.fr, Urssaf, Service-Public.fr, Journal officiel de l'Union européenne… Les sources de chaque calculateur sont citées en bas de sa page et reprises plus bas. Quand une règle est incertaine, le calculateur la laisse hors de son périmètre et le signale, plutôt que de deviner.</li><li><b>Un moteur de calcul de référence, testé sur des exemples officiels.</b> Chaque calcul est d'abord programmé dans un moteur de référence (en Python), avec des tests automatiques qui reprennent les exemples chiffrés publiés par l'administration : barème des émoluments des notaires, exemples de calcul de l'impôt sur le revenu, taux des droits de mutation de chaque département, etc. Les mêmes moteurs répondent aux assistants IA grâce au <a href="/fr/ia/">connecteur CalcPronto</a>.</li><li><b>Le site comparé au moteur, au centime.</b> Les calculateurs du site fonctionnent dans votre navigateur. Pour chacun, des centaines à des milliers de cas sont calculés par le moteur de référence, puis recalculés par le site dans un navigateur simulé : chaque montant est comparé au centime près, ainsi que les titres, les tableaux, les liens et les formulaires pré-remplis des pages par montant.</li><li><b>Rien n&#39;est publié si un contrôle échoue.</b> Le site et le connecteur ne sont mis en ligne que si tous les tests et tous les contrôles passent. Les chiffres de cette page sont produits automatiquement à partir de ces tests, à chaque construction du site.</li></ol>
 
   <h2>Vérifications par calculateur</h2>
-  <div class="table-wrap"><table class="data" id="verification" data-engine-tests="253" data-engines="9" data-checks="243340" data-date="2026-11-27">
+  <div class="table-wrap"><table class="data" id="verification" data-engine-tests="312" data-engines="10" data-checks="311966" data-date="2026-11-27">
     <thead><tr><th>Calculateur</th><th>Tests du moteur</th><th>Contrôles du site</th><th>Dernière vérification</th></tr></thead>
     <tbody>
 <tr data-calc="loan" data-engine-tests="12" data-checks="48393" data-date="2026-11-27"><th><a href="#loan">Mensualité de prêt</a></th><td>12</td><td>48 393</td><td>27 novembre 2026</td></tr>
@@ -82,13 +82,14 @@
 <tr data-calc="salary" data-engine-tests="18" data-checks="15502" data-date="2026-11-27"><th><a href="#salary">Salaire brut en net</a></th><td>18</td><td>15 502</td><td>27 novembre 2026</td></tr>
 <tr data-calc="incometax" data-engine-tests="46" data-checks="33877" data-date="2026-11-27"><th><a href="#incometax">Impôt sur le revenu</a></th><td>46</td><td>33 877</td><td>27 novembre 2026</td></tr>
 <tr data-calc="notary" data-engine-tests="70" data-checks="63374" data-date="2026-11-27"><th><a href="#notary">Frais de notaire</a></th><td>70</td><td>63 374</td><td>27 novembre 2026</td></tr>
+<tr data-calc="ptz" data-engine-tests="59" data-checks="68626" data-date="2026-11-27"><th><a href="#ptz">Prêt à taux zéro (PTZ)</a></th><td>59</td><td>68 626</td><td>27 novembre 2026</td></tr>
 <tr data-calc="micro" data-engine-tests="58" data-checks="73986" data-date="2026-11-27"><th><a href="#micro">Auto-entrepreneur</a></th><td>58</td><td>73 986</td><td>27 novembre 2026</td></tr>
 <tr data-calc="vat" data-engine-tests="16" data-checks="1228" data-date="2026-11-27"><th><a href="#vat">TVA</a></th><td>16</td><td>1 228</td><td>27 novembre 2026</td></tr>
 <tr data-calc="schengen" data-engine-tests="10" data-checks="1261" data-date="2026-11-27"><th><a href="#schengen">Schengen 90/180</a></th><td>10</td><td>1 261</td><td>27 novembre 2026</td></tr>
 <tr data-calc="bizdays" data-engine-tests="15" data-checks="800" data-date="2026-11-27"><th><a href="#bizdays">Jours ouvrés</a></th><td>15</td><td>800</td><td>27 novembre 2026</td></tr>
 <tr data-calc="eu261" data-engine-tests="8" data-checks="1811" data-date="2026-11-27"><th><a href="#eu261">Retard de vol</a></th><td>8</td><td>1 811</td><td>27 novembre 2026</td></tr>
     </tbody>
-    <tfoot><tr><th>Total (9 moteurs)</th><td>253</td><td>243 340</td><td>27 novembre 2026</td></tr></tfoot>
+    <tfoot><tr><th>Total (10 moteurs)</th><td>312</td><td>311 966</td><td>27 novembre 2026</td></tr></tfoot>
   </table></div>
   <p class="small">Tests du moteur : tests automatiques du moteur de référence, comptés dans le code au moment de la construction du site (le prêt et la capacité d&#39;emprunt partagent le même moteur). Contrôles du site : comparaisons automatiques réussies lors de la dernière vérification (montants comparés au moteur, mais aussi titres, tableaux, liens et formulaires des pages par montant).</p>
 
@@ -108,6 +109,9 @@
   <h3 id="notary"><a href="/fr/frais-de-notaire/">Calcul des frais de notaire 2026</a></h3>
   <p class="small">70 tests du moteur, 63 374 contrôles du site, dernière vérification le 27 novembre 2026.</p>
   <ul><li><a href="https://www.impots.gouv.fr/sites/default/files/media/1_metier/3_partenaire/notaires/dmto/dmto_2026-06.pdf" rel="noopener" target="_blank">DGFiP — taux des droits d&#39;enregistrement applicables au 1er juin 2026, par département</a></li><li><a href="https://www.impots.gouv.fr/particulier/questions/jachete-un-bien-immobilier-quaurai-je-payer-comme-frais-au-notaire" rel="noopener" target="_blank">impots.gouv.fr — J&#39;achète un bien immobilier : quels frais dois-je payer chez le notaire ? (mis à jour le 17 juillet 2026)</a></li><li><a href="https://bofip.impots.gouv.fr/bofip/3311-PGP" rel="noopener" target="_blank">BOFiP — droits de mutation : taux, plafond de 5 % et primo-accédants (BOI-ENR-DMTOI-10-20, 17 juin 2026)</a></li><li><a href="https://www.legifrance.gouv.fr/jorf/id/JORFTEXT000053593921" rel="noopener" target="_blank">Arrêté du 25 février 2026 fixant les tarifs réglementés des notaires (Légifrance)</a></li><li><a href="https://www.justice.fr/fiche/frais-notaire-agit" rel="noopener" target="_blank">Justice.fr — Frais de notaire : émoluments, débours, TVA</a></li></ul>
+  <h3 id="ptz"><a href="/fr/simulation-ptz/">Simulation PTZ 2026 (prêt à taux zéro)</a></h3>
+  <p class="small">59 tests du moteur, 68 626 contrôles du site, dernière vérification le 27 novembre 2026.</p>
+  <ul><li><a href="https://www.service-public.gouv.fr/particuliers/vosdroits/F10871" rel="noopener" target="_blank">Service-Public.fr — Prêt à taux zéro (PTZ), vérifié le 15 septembre 2026</a></li><li><a href="https://bofip.impots.gouv.fr/bofip/6961-PGP.html/identifiant%3DBOI-BIC-RICI-10-140-20250521" rel="noopener" target="_blank">BOFiP — crédit d&#39;impôt PTZ : logements neufs sur tout le territoire depuis le 1er avril 2025 (BOI-BIC-RICI-10-140, 21 mai 2025)</a></li><li><a href="https://www.ecologie.gouv.fr/presse/decret-pret-taux-zero-ptz-publie-avancee-primo-accedants" rel="noopener" target="_blank">Ministère du Logement — décret PTZ du 29 mars 2025 et exemples chiffrés</a></li><li><a href="https://www.service-public.gouv.fr/simulateur/calcul/zonage-abc" rel="noopener" target="_blank">Service-Public.fr — trouver la zone A, A bis, B1, B2 ou C de sa commune</a></li><li><a href="https://www.fgas.fr/pret-a-0" rel="noopener" target="_blank">FGAS — Prêt à 0 % (plafonds, tranches, durées)</a></li></ul>
   <h3 id="micro"><a href="/fr/cotisations-auto-entrepreneur/">Calcul des cotisations auto-entrepreneur 2026</a></h3>
   <p class="small">58 tests du moteur, 73 986 contrôles du site, dernière vérification le 27 novembre 2026.</p>
   <ul><li><a href="https://www.urssaf.fr/accueil/actualites/taux-cotisations-autoentrepeneur.html" rel="noopener" target="_blank">Urssaf — taux de cotisations des auto-entrepreneurs (2026)</a></li><li><a href="https://www.autoentrepreneur.urssaf.fr/portail/accueil/sinformer-sur-le-statut/lessentiel-du-statut.html" rel="noopener" target="_blank">Urssaf — l&#39;essentiel du statut d&#39;auto-entrepreneur (taux, formation professionnelle, taxe de chambre, Acre)</a></li><li><a href="https://entreprendre.service-public.gouv.fr/vosdroits/F36232" rel="noopener" target="_blank">Service-Public.fr — cotisations sociales du micro-entrepreneur</a></li><li><a href="https://entreprendre.service-public.gouv.fr/vosdroits/F11677" rel="noopener" target="_blank">Service-Public.fr — Acre</a></li><li><a href="https://entreprendre.service-public.gouv.fr/vosdroits/F23267" rel="noopener" target="_blank">Service-Public.fr — régime fiscal de la micro-entreprise (abattements, plafonds)</a></li><li><a href="https://www.impots.gouv.fr/professionnel/questions/en-tant-que-micro-entrepreneur-sous-quelles-conditions-puis-je-opter-pour-l" rel="noopener" target="_blank">impots.gouv.fr — conditions du versement libératoire</a></li></ul>
@@ -135,7 +139,7 @@
   <h2>Éditeur</h2>
   <p id="publisher">CalcPronto est édité par Rémi Dubois, Entrepreneur individuel (micro-entreprise en cours d&#39;immatriculation). Contact : <a href="mailto:remidb@outlook.fr">remidb@outlook.fr</a>. <a href="/fr/mentions-legales/">Mentions légales</a></p>
 </div>
-<script type="application/json" id="verification-records">[{"test": "incometax_test.js", "date": "2026-11-27", "checks": {"incometax": 33877}}, {"test": "loan_pages_test.js", "date": "2026-11-27", "checks": {"capacity": 2808, "loan": 47493}}, {"test": "micro_test.js", "date": "2026-11-27", "checks": {"micro": 73986}}, {"test": "notary_pages_test.js", "date": "2026-11-27", "checks": {"notary": 15368}}, {"test": "notary_test.js", "date": "2026-11-27", "checks": {"notary": 48006}}, {"test": "salary_test.js", "date": "2026-11-27", "checks": {"salary": 15502}}, {"test": "test.js", "date": "2026-11-27", "checks": {"bizdays": 800, "capacity": 300, "eu261": 1811, "loan": 900, "schengen": 1261, "vat": 1228}}]</script>
+<script type="application/json" id="verification-records">[{"test": "incometax_test.js", "date": "2026-11-27", "checks": {"incometax": 33877}}, {"test": "loan_pages_test.js", "date": "2026-11-27", "checks": {"capacity": 2808, "loan": 47493}}, {"test": "micro_test.js", "date": "2026-11-27", "checks": {"micro": 73986}}, {"test": "notary_pages_test.js", "date": "2026-11-27", "checks": {"notary": 15368}}, {"test": "notary_test.js", "date": "2026-11-27", "checks": {"notary": 48006}}, {"test": "ptz_test.js", "date": "2026-11-27", "checks": {"ptz": 68626}}, {"test": "salary_test.js", "date": "2026-11-27", "checks": {"salary": 15502}}, {"test": "test.js", "date": "2026-11-27", "checks": {"bizdays": 800, "capacity": 300, "eu261": 1811, "loan": 900, "schengen": 1261, "vat": 1228}}]</script>
   </div>
 </main>
 <footer class="site">
