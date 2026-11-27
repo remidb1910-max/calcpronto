@@ -41,6 +41,20 @@
       return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
     });
   }
+  // Stacked bar showing how a total splits (parts: [{l: label, v: value}], zero or missing parts are dropped).
+  var CHART_COLORS = ["#0b6e4f", "#f2a900", "#5b7c99", "#b42318"];
+  function chart(parts) {
+    parts = parts.filter(function (p) { return isFinite(p.v) && p.v > 0; });
+    var total = parts.reduce(function (a, p) { return a + p.v; }, 0);
+    if (parts.length < 2 || !(total > 0)) return "";
+    var bar = "", legend = "";
+    parts.forEach(function (p, i) {
+      var pct = p.v / total * 100, col = CHART_COLORS[i % CHART_COLORS.length];
+      bar += "<i style='width:" + pct.toFixed(2) + "%;background:" + col + "'></i>";
+      legend += "<li><i style='background:" + col + "'></i>" + esc(p.l) + " <span>" + fmt(pct, 1) + " %</span></li>";
+    });
+    return "<div class='chart'><div class='chart-bar' aria-hidden='true'>" + bar + "</div><ul class='chart-legend'>" + legend + "</ul></div>";
+  }
   function currency() { var el = document.getElementById("currency"); return el ? el.value : (CP.currency || "EUR"); }
 
   // Dates as day numbers (UTC) to avoid time-zone and DST issues.
@@ -103,6 +117,7 @@
       if (ins > 0) h += "<div class='kv'><span>" + t("total_insurance") + "</span><b>" + money(res.totalIns, c) + "</b></div>";
       if (fees > 0) h += "<div class='kv'><span>" + t("fees") + "</span><b>" + money(res.fees, c) + "</b></div>";
       h += "<div class='kv total'><span>" + t("total_cost") + "</span><b>" + money(res.cost, c) + "</b></div>";
+      h += chart([{ l: t("ch_capital"), v: P }, { l: t("total_interest"), v: res.interest }, { l: t("total_insurance"), v: ins > 0 ? res.totalIns : 0 }, { l: t("fees"), v: fees > 0 ? res.fees : 0 }]);
       h += "<details><summary>" + t("amortization_table") + "</summary><div class='table-wrap'><table><thead><tr><th>" + t("year") + "</th><th>" + t("paid") + "</th><th>" + t("interest") + "</th><th>" + t("principal") + "</th><th>" + t("balance") + "</th></tr></thead><tbody>";
       res.rows.forEach(function (r) {
         h += "<tr><td>" + r.year + "</td><td>" + money(r.paid, c) + "</td><td>" + money(r.interest, c) + "</td><td>" + money(r.principal, c) + "</td><td>" + money(r.balance, c) + "</td></tr>";
@@ -562,6 +577,7 @@
       h += "<div class='kv'><span>" + t("sal_net_taxable") + "</span><b>" + e(r.taxable) + "</b></div>";
       h += "<div class='kv'><span>" + t("sal_withheld", { rate: fmt(r.rate / 1000, r.rate % 1000 ? (r.rate % 100 ? 2 : 1) : 0), kind: t(r.kind === "neutral" ? "sal_kind_neutral" : "sal_kind_personal") }) + "</span><b>− " + e(r.withheld) + "</b></div>";
       h += "<div class='kv'><span><b>" + t("sal_net_paid") + "</b></span><b>" + e(r.netPaid) + "</b></div>";
+      h += chart([{ l: t("ch_net"), v: r.netPaid }, { l: t("ch_contrib"), v: r.social }, { l: t("ch_tax"), v: r.withheld }]);
       h += "<p class='small'>" + t("sal_per_year") + (CP.lang === "fr" ? " : " : ": ") + t("sal_gross") + " " + e(gross * 12) + " · " + t("sal_net_before") + " " + e(r.netBefore * 12) + " · " + t("sal_net_paid") + " " + e(r.netPaid * 12) + "</p>";
       h += "<h3>" + t("sal_table") + "</h3><div class='table-wrap'><table class='data'><thead><tr><th>" + t("sal_col_line") + "</th><th>" + t("sal_col_base") + "</th><th>" + t("sal_col_rate") + "</th><th>" + t("sal_col_amount") + "</th></tr></thead><tbody>";
       r.lines.forEach(function (l) {
@@ -686,6 +702,7 @@
       var ec = function (c) { return money(c / 100, "EUR"); };
       var fp = function (q4) { return fmt(q4 / 4, q4 % 4 ? 2 : (q4 % 2 ? 1 : 0)).replace(/([.,]\d)0$/, "$1"); };
       var h = "<div class='big'><span>" + t("ir_tax") + "</span><strong>" + e0(r.due) + "</strong></div>";
+      h += chart([{ l: t("ch_after"), v: inc - r.due }, { l: t("ch_tax"), v: r.due }]);
       if (d) h += "<div class='kv'><span>" + t("ir_deduction") + "</span><b>− " + e0(d.salary + d.pension) + "</b></div>";
       h += "<div class='kv'><span>" + t("ir_taxable") + "</span><b>" + e0(inc) + "</b></div>";
       h += "<div class='kv'><span>" + t("ir_parts") + "</span><b>" + fp(P.q4) + "</b></div>";
@@ -773,6 +790,7 @@
       var rp = function (milli) { return fmt(milli / 1000, 2).replace(/[.,]00$/, "").replace(/([.,]\d)0$/, "$1"); };
       var h = "<div class='big'><span>" + t("nf_total") + "</span><strong>" + ec(r.total) + "</strong></div>";
       h += "<p class='small'>" + t("nf_pct", { pct: fmt(r.pct, 2) }) + "</p>";
+      h += chart([{ l: t(kind === "new" ? "nf_tpf" : "nf_dmto"), v: r.transfer }, { l: t("ch_notary"), v: r.feeTTC }, { l: t("ch_other"), v: r.csi + r.extra }]);
       h += "<h3>" + (kind === "new" ? t("nf_tpf") : t("nf_dmto")) + "</h3>";
       h += "<div class='kv'><span>" + (kind === "new" ? t("nf_tpf_tax") : t("nf_dept_tax", { rate: rp(r.rate) })) + "</span><b>" + ec(r.deptTax) + "</b></div>";
       if (kind !== "new") h += "<div class='kv'><span>" + t("nf_comm_tax") + "</span><b>" + ec(r.communal) + "</b></div>";
@@ -869,6 +887,7 @@
       var rp = function (m) { return fmt(m / 1000, m % 10 ? 3 : (m % 100 ? 2 : (m % 1000 ? 1 : 0))); };
       var p = r.period, h = "";
       h += "<div class='big'><span>" + t(flat ? "me_net_vl" : "me_net") + "</span><strong>" + e(flat ? p.netAfter : p.net) + "</strong></div>";
+      h += chart([{ l: t(flat ? "me_net_vl" : "me_net"), v: flat ? p.netAfter : p.net }, { l: t("ch_contrib"), v: p.total }, { l: t("ch_tax"), v: flat ? p.flat : 0 }]);
       h += "<div class='kv'><span>" + t("me_turnover") + "</span><b>" + e(p.turnover) + "</b></div>";
       if (r.acre) {
         h += "<div class='kv'><span>" + t("me_social_acre", { rate: rp(r.acre) }) + "</span><b>− " + e(Micro.pct(p.acreBase, r.acre)) + "</b></div>";
