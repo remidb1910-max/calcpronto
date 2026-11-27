@@ -472,7 +472,7 @@
         if (res.regimes.length === 2) h += "<p class='small'>" + t("eu_both") + "</p>";
         h += "<p class='small'>" + t("eu_care_note") + "</p>";
         if (CP.claimUrl && res.regimes.some(function (r) { return res.results[r].eligible; })) {
-          h += "<p><a class='cta' href='" + esc(CP.claimUrl) + "' rel='sponsored noopener' target='_blank'>" + t("eu_claim_cta") + "</a></p>";
+          h += "<p><a class='cta' href='" + esc(CP.claimUrl) + "' rel='sponsored nofollow noopener' target='_blank'>" + t("eu_claim_cta") + "</a></p><p class='small'>" + t("eu_claim_note") + "</p>";
         }
         out.innerHTML = h;
       });
