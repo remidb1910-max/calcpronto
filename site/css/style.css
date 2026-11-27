@@ -205,3 +205,15 @@ nav.top .dd-panel a{padding:10px 8px}
 .faq details p{margin:0;padding:12px 14px}
 .content .pills.wide{grid-template-columns:repeat(auto-fill,minmax(200px,1fr))}
 .content .pills.wide a{text-align:left;padding:7px 12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* --- guides --- */
+.guide{max-width:820px}
+.guide ol,.guide ul{padding-left:22px}
+.guide li{margin:.35em 0}
+.offers{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin:12px 0}
+.offer{display:flex;flex-direction:column;gap:4px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px;text-decoration:none;color:var(--ink);position:relative}
+.offer:hover{border-color:var(--brand);box-shadow:0 6px 18px rgba(22,32,43,.07)}
+.offer b{font-size:1.05rem}
+.offer span{color:var(--muted);font-size:.9rem}
+.offer em{font-style:normal;color:var(--brand);font-weight:600;margin-top:6px}
+.offer .partner-tag{align-self:flex-start;font-size:.72rem;color:var(--muted);border:1px solid var(--line);border-radius:4px;padding:1px 6px}
+.guide .note-box{margin:22px 0}
