@@ -140,6 +140,13 @@
   // ------------------------------------------------------------ VAT
   var VAT = {
     rates: CP.vatRates || {},
+    // num / den rounded half away from zero, exact for integers up to 2^53 (den > 0)
+    halfUp: function (num, den) {
+      var s = num < 0 ? -1 : 1, a = Math.abs(num), q = Math.floor(a / den), r = a - q * den;
+      while (r < 0) { q--; r += den; }
+      while (r >= den) { q++; r -= den; }
+      return s * (2 * r >= den ? q + 1 : q);
+    },
     fillRates: function () {
       var cc = $("#vat-country").value, sel = $("#vat-rate"), r = VAT.rates[cc];
       if (!r) return;
@@ -159,9 +166,12 @@
       var rateSel = $("#vat-rate").value, rate = rateSel === "custom" ? val("vat-custom") : num(rateSel);
       var out = $("#result");
       if (!isFinite(amount) || !(rate >= 0 && rate < 100)) { out.innerHTML = "<p class='hint'>" + t("fill_fields") + "</p>"; return; }
-      var net, vat, gross;
-      if (mode === "net") { net = amount; vat = Math.round(net * rate) / 100; gross = net + vat; }
-      else { gross = amount; net = Math.round(gross / (1 + rate / 100) * 100) / 100; vat = gross - net; }
+      // Same rule as the euvat engine, in whole cents: one figure is rounded half-up, the other two follow from it,
+      // so net + VAT = gross. Integer maths avoids float errors on exact half cents (36,15 € TTC at 20 % -> 30,13 € HT).
+      var R = Math.round(rate * 10000), cents = VAT.halfUp(Math.round(amount * 1000), 10), netC, vatC, grossC;
+      if (mode === "net") { netC = cents; vatC = VAT.halfUp(netC * R, 1000000); grossC = netC + vatC; }
+      else { grossC = cents; netC = VAT.halfUp(grossC * 1000000, 1000000 + R); vatC = grossC - netC; }
+      var net = netC / 100, vat = vatC / 100, gross = grossC / 100;
       var c = currency();
       var h = "<div class='kv'><span>" + t("net_amount") + "</span><b>" + money(net, c) + "</b></div>";
       h += "<div class='kv'><span>" + t("vat_amount", { rate: fmt(rate, rate % 1 ? 1 : 0) }) + "</span><b>" + money(vat, c) + "</b></div>";
