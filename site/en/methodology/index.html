@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Method and sources: how CalcPronto checks its calculators</title>
-<meta name="description" content="Dated official rules, reference engines tested on official worked examples, 169,354 automatic checks before every release: how each CalcPronto calculator is verified.">
+<meta name="description" content="Dated official rules, reference engines tested on official worked examples, 243,340 automatic checks before every release: how each CalcPronto calculator is verified.">
 <link rel="canonical" href="https://calcpronto.com/en/methodology/">
 <link rel="alternate" hreflang="fr" href="https://calcpronto.com/fr/methode-et-sources/">
 <link rel="alternate" hreflang="en" href="https://calcpronto.com/en/methodology/">
@@ -15,13 +15,13 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="CalcPronto">
 <meta property="og:title" content="Method and sources: how CalcPronto checks its calculators">
-<meta property="og:description" content="Dated official rules, reference engines tested on official worked examples, 169,354 automatic checks before every release: how each CalcPronto calculator is verified.">
+<meta property="og:description" content="Dated official rules, reference engines tested on official worked examples, 243,340 automatic checks before every release: how each CalcPronto calculator is verified.">
 <meta property="og:url" content="https://calcpronto.com/en/methodology/">
 <meta property="og:locale" content="en_GB">
 <meta name="theme-color" content="#0b6e4f">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/css/style.css?v=c6ef1edf">
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "AboutPage", "name": "Method and sources", "url": "https://calcpronto.com/en/methodology/", "inLanguage": "en", "description": "Dated official rules, reference engines tested on official worked examples, 169,354 automatic checks before every release: how each CalcPronto calculator is verified.", "dateModified": "2026-11-27", "publisher": {"@type": "Organization", "name": "CalcPronto", "url": "https://calcpronto.com"}}</script>
+<link rel="stylesheet" href="/css/style.css?v=96ad6cd2">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "AboutPage", "name": "Method and sources", "url": "https://calcpronto.com/en/methodology/", "inLanguage": "en", "description": "Dated official rules, reference engines tested on official worked examples, 243,340 automatic checks before every release: how each CalcPronto calculator is verified.", "dateModified": "2026-11-27", "publisher": {"@type": "Organization", "name": "CalcPronto", "url": "https://calcpronto.com"}}</script>
 </head>
 <body>
 <header class="site">
@@ -51,7 +51,7 @@
       <details class="dd">
         <summary>Business and self-employed</summary>
         <div class="dd-panel">
-<a href="/en/vat-calculator/">VAT</a>        </div>
+<a href="/en/french-micro-entrepreneur-calculator/">French micro-entrepreneur</a><a href="/en/vat-calculator/">VAT</a>        </div>
       </details>
       <details class="dd">
         <summary>Travel</summary>
@@ -67,13 +67,13 @@
   <div class="wrap">
 <nav class="crumbs"><a href="/en/">Home</a></nav>
 <h1>Method and sources</h1>
-<p class="lead" id="method-lead">Every CalcPronto calculator applies official, dated rules. Before every release, 195 automated tests check the 8 reference calculation engines, then 169,354 checks compare the website with those engines. Last full verification: November 27, 2026.</p>
+<p class="lead" id="method-lead">Every CalcPronto calculator applies official, dated rules. Before every release, 253 automated tests check the 9 reference calculation engines, then 243,340 checks compare the website with those engines. Last full verification: November 27, 2026.</p>
 <div class="content">
   <h2>How each calculator is checked</h2>
   <ol><li><b>Rules taken from official texts.</b> Every rate, ceiling and scale comes from a dated official source: Légifrance, BOFiP, impots.gouv.fr, Urssaf, Service-Public.fr, the Official Journal of the European Union… The sources of each calculator are cited at the bottom of its page and listed below. When a rule is uncertain, the calculator leaves it out of scope and says so, rather than guessing.</li><li><b>A reference engine, tested on official examples.</b> Each calculation is first written as a reference engine (in Python), with automated tests that reproduce the worked examples published by the authorities: the French notaries' fee scale, income tax examples, the transfer tax rate of each French département, and so on. The same engines answer AI assistants through the <a href="/en/ai/">CalcPronto connector</a>.</li><li><b>The website compared with the engine, to the cent.</b> The calculators on this site run in your browser. For each one, hundreds to thousands of cases are computed by the reference engine, then computed again by the website in a simulated browser: every amount is compared to the cent, along with the titles, tables, links and pre-filled forms of the pages by amount.</li><li><b>Nothing is published if a check fails.</b> The website and the connector are only released when every test and every check passes. The figures on this page are produced automatically from those tests each time the site is built.</li></ol>
 
   <h2>Checks by calculator</h2>
-  <div class="table-wrap"><table class="data" id="verification" data-engine-tests="195" data-engines="8" data-checks="169354" data-date="2026-11-27">
+  <div class="table-wrap"><table class="data" id="verification" data-engine-tests="253" data-engines="9" data-checks="243340" data-date="2026-11-27">
     <thead><tr><th>Calculator</th><th>Engine tests</th><th>Website checks</th><th>Last verified</th></tr></thead>
     <tbody>
 <tr data-calc="loan" data-engine-tests="12" data-checks="48393" data-date="2026-11-27"><th><a href="#loan">Loan</a></th><td>12</td><td>48,393</td><td>November 27, 2026</td></tr>
@@ -81,12 +81,13 @@
 <tr data-calc="salary" data-engine-tests="18" data-checks="15502" data-date="2026-11-27"><th><a href="#salary">French salary</a></th><td>18</td><td>15,502</td><td>November 27, 2026</td></tr>
 <tr data-calc="incometax" data-engine-tests="46" data-checks="33877" data-date="2026-11-27"><th><a href="#incometax">French income tax</a></th><td>46</td><td>33,877</td><td>November 27, 2026</td></tr>
 <tr data-calc="notary" data-engine-tests="70" data-checks="63374" data-date="2026-11-27"><th><a href="#notary">French notary fees</a></th><td>70</td><td>63,374</td><td>November 27, 2026</td></tr>
+<tr data-calc="micro" data-engine-tests="58" data-checks="73986" data-date="2026-11-27"><th><a href="#micro">French micro-entrepreneur</a></th><td>58</td><td>73,986</td><td>November 27, 2026</td></tr>
 <tr data-calc="vat" data-engine-tests="16" data-checks="1228" data-date="2026-11-27"><th><a href="#vat">VAT</a></th><td>16</td><td>1,228</td><td>November 27, 2026</td></tr>
 <tr data-calc="schengen" data-engine-tests="10" data-checks="1261" data-date="2026-11-27"><th><a href="#schengen">Schengen 90/180</a></th><td>10</td><td>1,261</td><td>November 27, 2026</td></tr>
 <tr data-calc="bizdays" data-engine-tests="15" data-checks="800" data-date="2026-11-27"><th><a href="#bizdays">Business days</a></th><td>15</td><td>800</td><td>November 27, 2026</td></tr>
 <tr data-calc="eu261" data-engine-tests="8" data-checks="1811" data-date="2026-11-27"><th><a href="#eu261">Flight delay</a></th><td>8</td><td>1,811</td><td>November 27, 2026</td></tr>
     </tbody>
-    <tfoot><tr><th>Total (8 engines)</th><td>195</td><td>169,354</td><td>November 27, 2026</td></tr></tfoot>
+    <tfoot><tr><th>Total (9 engines)</th><td>253</td><td>243,340</td><td>November 27, 2026</td></tr></tfoot>
   </table></div>
   <p class="small">Engine tests: automated tests of the reference engine, counted in the code when the site is built (the loan and borrowing capacity calculators share one engine). Website checks: automatic comparisons passed at the last verification (amounts compared with the engine, plus the titles, tables, links and forms of the pages by amount).</p>
 
@@ -106,6 +107,9 @@
   <h3 id="notary"><a href="/en/french-notary-fees-calculator/">French notary fees calculator 2026</a></h3>
   <p class="small">70 engine tests, 63,374 website checks, last verified on November 27, 2026.</p>
   <ul><li><a href="https://www.impots.gouv.fr/sites/default/files/media/1_metier/3_partenaire/notaires/dmto/dmto_2026-06.pdf" rel="noopener" target="_blank">DGFiP — 2026 transfer tax rates by département (in French)</a></li><li><a href="https://www.impots.gouv.fr/particulier/questions/jachete-un-bien-immobilier-quaurai-je-payer-comme-frais-au-notaire" rel="noopener" target="_blank">impots.gouv.fr — notary fees on a purchase (in French)</a></li><li><a href="https://bofip.impots.gouv.fr/bofip/3311-PGP" rel="noopener" target="_blank">BOFiP — transfer taxes and first-time buyers, official doctrine (in French)</a></li><li><a href="https://www.justice.fr/fiche/frais-notaire-agit" rel="noopener" target="_blank">Justice.fr — notary fees and VAT (in French)</a></li></ul>
+  <h3 id="micro"><a href="/en/french-micro-entrepreneur-calculator/">French micro-entrepreneur calculator 2026</a></h3>
+  <p class="small">58 engine tests, 73,986 website checks, last verified on November 27, 2026.</p>
+  <ul><li><a href="https://www.urssaf.fr/accueil/actualites/taux-cotisations-autoentrepeneur.html" rel="noopener" target="_blank">Urssaf — micro-entrepreneur contribution rates 2026 (French)</a></li><li><a href="https://www.autoentrepreneur.urssaf.fr/portail/accueil/sinformer-sur-le-statut/lessentiel-du-statut.html" rel="noopener" target="_blank">Urssaf — the micro-entrepreneur status at a glance (French)</a></li><li><a href="https://entreprendre.service-public.gouv.fr/vosdroits/F36232" rel="noopener" target="_blank">Service-Public.fr — social contributions of a micro-entrepreneur (French)</a></li><li><a href="https://entreprendre.service-public.gouv.fr/vosdroits/F11677" rel="noopener" target="_blank">Service-Public.fr — ACRE (French)</a></li><li><a href="https://entreprendre.service-public.gouv.fr/vosdroits/F23267" rel="noopener" target="_blank">Service-Public.fr — tax regime of the micro-enterprise (French)</a></li><li><a href="https://www.impots.gouv.fr/professionnel/questions/en-tant-que-micro-entrepreneur-sous-quelles-conditions-puis-je-opter-pour-l" rel="noopener" target="_blank">impots.gouv.fr — flat income tax conditions (French)</a></li></ul>
   <h3 id="vat"><a href="/en/vat-calculator/">VAT calculator: net, VAT and gross</a></h3>
   <p class="small">16 engine tests, 1,228 website checks, last verified on November 27, 2026.</p>
   <ul><li><a href="https://taxation-customs.ec.europa.eu/taxation/vat/vat-directive/vat-rates_en" rel="noopener" target="_blank">European Commission — VAT rates</a></li><li><a href="https://vat-one-stop-shop.ec.europa.eu/index_en" rel="noopener" target="_blank">European Commission — One-Stop Shop</a></li></ul>
@@ -130,7 +134,7 @@
   <h2>Publisher</h2>
   <p id="publisher">CalcPronto is published by Rémi Dubois, Entrepreneur individuel (micro-entreprise en cours d&#39;immatriculation). Contact: <a href="mailto:remidb@outlook.fr">remidb@outlook.fr</a>. <a href="/en/legal-notice/">Legal notice</a></p>
 </div>
-<script type="application/json" id="verification-records">[{"test": "incometax_test.js", "date": "2026-11-27", "checks": {"incometax": 33877}}, {"test": "loan_pages_test.js", "date": "2026-11-27", "checks": {"capacity": 2808, "loan": 47493}}, {"test": "notary_pages_test.js", "date": "2026-11-27", "checks": {"notary": 15368}}, {"test": "notary_test.js", "date": "2026-11-27", "checks": {"notary": 48006}}, {"test": "salary_test.js", "date": "2026-11-27", "checks": {"salary": 15502}}, {"test": "test.js", "date": "2026-11-27", "checks": {"bizdays": 800, "capacity": 300, "eu261": 1811, "loan": 900, "schengen": 1261, "vat": 1228}}]</script>
+<script type="application/json" id="verification-records">[{"test": "incometax_test.js", "date": "2026-11-27", "checks": {"incometax": 33877}}, {"test": "loan_pages_test.js", "date": "2026-11-27", "checks": {"capacity": 2808, "loan": 47493}}, {"test": "micro_test.js", "date": "2026-11-27", "checks": {"micro": 73986}}, {"test": "notary_pages_test.js", "date": "2026-11-27", "checks": {"notary": 15368}}, {"test": "notary_test.js", "date": "2026-11-27", "checks": {"notary": 48006}}, {"test": "salary_test.js", "date": "2026-11-27", "checks": {"salary": 15502}}, {"test": "test.js", "date": "2026-11-27", "checks": {"bizdays": 800, "capacity": 300, "eu261": 1811, "loan": 900, "schengen": 1261, "vat": 1228}}]</script>
   </div>
 </main>
 <footer class="site">

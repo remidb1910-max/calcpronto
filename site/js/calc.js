@@ -805,6 +805,99 @@
     }
   };
 
+  // ------------------------------------------------------------ French micro-entrepreneur 2026
+  // Same rules as the microfr engine of the CalcPronto AI tools. Exact integer arithmetic: amounts in cents, rates
+  // in thousandths of a percent (12.3 % -> 12300), each line rounded half up to the cent.
+  var Micro = {
+    SOCIAL: { sales: 12300, services: 21200, liberal: 25600, liberal_cipav: 23200 },
+    FLOOR: { liberal_cipav: 13400 },                                       // ACRE minimum rate (Urssaf table)
+    CFP: { commercant: 100, artisan: 300, liberal: 200 },
+    CH: { commercant_sales: { mainland: 15, alsace: 15, moselle: 15 }, commercant_services: { mainland: 44, alsace: 44, moselle: 44 },
+          artisan_sales: { mainland: 220, alsace: 290, moselle: 370 }, artisan_services: { mainland: 480, alsace: 650, moselle: 830 } },
+    VL: { sales: 1000, services: 1700, liberal: 2200, liberal_cipav: 2200 },
+    AB: { sales: 71, services: 50, liberal: 34, liberal_cipav: 34 }, AB_MIN: 30500,
+    PASS: 4806000,                                                          // 48 060 € in cents
+    CEIL: { sales: 203100, services: 83600, liberal: 83600, liberal_cipav: 83600 },
+    VAT: { sales: [85000, 93500], services: [37500, 41250], liberal: [37500, 41250], liberal_cipav: [37500, 41250] },
+    MAX: 100000000,
+    pct: function (c, r) { return Math.floor((2 * c * r + 100000) / 200000); },
+    acreRate: function (act, frac) {
+      var r = Math.ceil(Micro.SOCIAL[act] * frac / 10000) * 100;
+      return Math.max(r, Micro.FLOOR[act] || 0);
+    },
+    acreCeil: function (act) { return Math.floor(Micro.PASS * 100 / (100 - Micro.AB[act])); },
+    lines: function (ca, months, act, trade, acre, flat, chamber, zone) {
+      var full = Micro.SOCIAL[act], social, base = 0;
+      if (acre) {
+        base = Math.min(ca, Math.floor(Micro.acreCeil(act) * months / 12));
+        social = Micro.pct(base, acre) + Micro.pct(ca - base, full);
+      } else social = Micro.pct(ca, full);
+      var cfp = Micro.pct(ca, Micro.CFP[trade]);
+      var chRate = chamber && trade !== "liberal" ? Micro.CH[trade + "_" + act][zone] : 0;
+      var ch = Micro.pct(ca, chRate), total = social + cfp + ch, vl = flat ? Micro.pct(ca, Micro.VL[act]) : 0;
+      return { turnover: ca, social: social, acreBase: base, cfp: cfp, chamber: ch, chamberRate: chRate, total: total,
+               net: ca - total, flat: vl, netAfter: ca - total - vl };
+    },
+    // ca in cents over `months` (1, 3 or 12); acreFrac 0 (none), 50 (started up to 30 June 2026) or 75 (from 1 July 2026)
+    compute: function (ca, months, act, trade, acreFrac, flat, chamber, zone) {
+      if (act === "liberal" || act === "liberal_cipav") trade = "liberal";
+      var acre = acreFrac ? Micro.acreRate(act, acreFrac) : 0;
+      var p = Micro.lines(ca, months, act, trade, acre, flat, chamber, zone);
+      var annualCa = Math.floor(ca * 12 / months), y = Micro.lines(annualCa, 12, act, trade, acre, flat, chamber, zone);
+      var abat = Math.min(annualCa, Math.max(Micro.pct(annualCa, Micro.AB[act] * 1000), Micro.AB_MIN));
+      return { act: act, trade: trade, months: months, acre: acre, full: Micro.SOCIAL[act], period: p, annual: y,
+               abatement: abat, taxable: annualCa - abat, acreCeiling: Micro.acreCeil(act),
+               aboveCeiling: annualCa > Micro.CEIL[act] * 100, aboveVat: annualCa > Micro.VAT[act][0] * 100,
+               aboveVatHigh: annualCa > Micro.VAT[act][1] * 100 };
+    },
+    toggle: function () {
+      var act = $("#me-activity").value, lib = act === "liberal" || act === "liberal_cipav";
+      $("#me-trade-box").hidden = lib;
+      $("#me-chamber-box").hidden = lib;
+      $("#me-zone-box").hidden = lib || $("#me-trade").value !== "artisan";
+    },
+    render: function () {
+      Micro.toggle();
+      var out = $("#result"), v = val("me-amount");
+      if (!isFinite(v) || v <= 0) { out.innerHTML = "<p class='hint'>" + t("fill_fields") + "</p>"; return; }
+      var ca = Math.round(v * 100);
+      if (ca > Micro.MAX) { out.innerHTML = "<p class='hint'>" + esc(t("me_max")) + "</p>"; return; }
+      var act = $("#me-activity").value, months = +$("#me-period").value, flat = $("#me-flat").checked;
+      var r = Micro.compute(ca, months, act, $("#me-trade").value, +$("#me-acre").value, flat, $("#me-chamber").checked, $("#me-zone").value);
+      var e = function (c) { return money(c / 100, "EUR"); };
+      var e0 = function (n) { return new Intl.NumberFormat(LOCALE, { style: "currency", currency: "EUR", maximumFractionDigits: 0 }).format(n); };
+      var rp = function (m) { return fmt(m / 1000, m % 10 ? 3 : (m % 100 ? 2 : (m % 1000 ? 1 : 0))); };
+      var p = r.period, h = "";
+      h += "<div class='big'><span>" + t(flat ? "me_net_vl" : "me_net") + "</span><strong>" + e(flat ? p.netAfter : p.net) + "</strong></div>";
+      h += "<div class='kv'><span>" + t("me_turnover") + "</span><b>" + e(p.turnover) + "</b></div>";
+      if (r.acre) {
+        h += "<div class='kv'><span>" + t("me_social_acre", { rate: rp(r.acre) }) + "</span><b>− " + e(Micro.pct(p.acreBase, r.acre)) + "</b></div>";
+        if (p.turnover > p.acreBase) h += "<div class='kv'><span>" + t("me_social_full", { rate: rp(r.full) }) + "</span><b>− " + e(p.social - Micro.pct(p.acreBase, r.acre)) + "</b></div>";
+      } else h += "<div class='kv'><span>" + t("me_social", { rate: rp(r.full) }) + "</span><b>− " + e(p.social) + "</b></div>";
+      h += "<div class='kv'><span>" + t("me_cfp", { rate: rp(Micro.CFP[r.trade]) }) + "</span><b>− " + e(p.cfp) + "</b></div>";
+      if (p.chamberRate) h += "<div class='kv'><span>" + t("me_chamber_line", { rate: rp(p.chamberRate) }) + "</span><b>− " + e(p.chamber) + "</b></div>";
+      h += "<div class='kv total'><span><b>" + t("me_total") + "</b></span><b>" + e(p.total) + "</b></div>";
+      h += "<p class='small'>" + t("me_pct", { pct: fmt(p.total / p.turnover * 100, 2) }) + "</p>";
+      if (flat) {
+        h += "<div class='kv'><span>" + t("me_net_before") + "</span><b>" + e(p.net) + "</b></div>";
+        h += "<div class='kv'><span>" + t("me_flat_line", { rate: rp(Micro.VL[act]) }) + "</span><b>− " + e(p.flat) + "</b></div>";
+      }
+      if (months !== 12) {
+        h += "<h3>" + t("me_annual") + "</h3><p class='small'>" + t("me_annual_line", { ca: e(r.annual.turnover), c: e(r.annual.total), n: e(flat ? r.annual.netAfter : r.annual.net) }) + "</p>";
+      }
+      var notes = [];
+      if (!flat) notes.push(t("me_taxable", { x: e(r.taxable), ab: String(Micro.AB[act]) }));
+      else notes.push(t("me_note_vl"));
+      if (r.acre) notes.push(t("me_note_acre", { x: e(r.acreCeiling) }));
+      if (r.aboveCeiling) notes.push(t("me_ceiling", { x: e0(Micro.CEIL[act]) }));
+      if (r.aboveVatHigh) notes.push(t("me_vat_high", { y: e0(Micro.VAT[act][1]) }));
+      else if (r.aboveVat) notes.push(t("me_vat", { x: e0(Micro.VAT[act][0]), y: e0(Micro.VAT[act][1]) }));
+      notes.push(t("me_note_expenses"));
+      notes.forEach(function (n) { h += "<p class='small'>" + esc(n) + "</p>"; });
+      out.innerHTML = h;
+    }
+  };
+
   // ------------------------------------------------------------ wiring
   function bind(ids, fn) {
     ids.forEach(function (id) {
@@ -852,6 +945,12 @@
       bind(["nf-price", "nf-dept", "nf-type", "nf-ftb", "nf-extra"], Notary.render);
       Notary.render();
     }
+    if (page === "micro") {
+      var pf = CP.prefillMicro;
+      if (pf) { $("#me-amount").value = pf.amount; $("#me-activity").value = pf.activity; $("#me-trade").value = pf.trade; }
+      bind(["me-activity", "me-trade", "me-amount", "me-period", "me-acre", "me-flat", "me-chamber", "me-zone"], Micro.render);
+      Micro.render();
+    }
     if (page === "incometax") {
       if (CP.prefillIncome) $("#ir-income").value = CP.prefillIncome;
       bind(["ir-mode", "ir-income", "ir-sal1", "ir-pen1", "ir-sal2", "ir-pen2", "ir-situation", "ir-children", "ir-shared",
@@ -871,6 +970,6 @@
     }
   }
 
-  window.CalcPronto = { Salary: Salary, IncomeTax: IncomeTax, Notary: Notary, Loan: Loan, Capacity: Capacity, VAT: VAT, Schengen: Schengen, BizDays: BizDays, EU261: EU261, dayNum: dayNum, isoOf: isoOf, num: num };
+  window.CalcPronto = { Salary: Salary, IncomeTax: IncomeTax, Notary: Notary, Micro: Micro, Loan: Loan, Capacity: Capacity, VAT: VAT, Schengen: Schengen, BizDays: BizDays, EU261: EU261, dayNum: dayNum, isoOf: isoOf, num: num };
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init); else init();
 })();
