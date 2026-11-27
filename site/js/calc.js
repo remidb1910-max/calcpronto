@@ -55,6 +55,15 @@
     });
     return "<div class='chart'><div class='chart-bar' aria-hidden='true'>" + bar + "</div><ul class='chart-legend'>" + legend + "</ul></div>";
   }
+  // "What next" box under a result: links to the decision guides (CP.tips, set by build.py for the pages that have guides).
+  // A tip with a "when" key is shown only if flags[when] is true.
+  function tips(flags) {
+    var list = (CP.tips || []).filter(function (x) { return !x.when || (flags && flags[x.when]); });
+    if (!list.length) return "";
+    var h = "<div class='next'><b>" + esc(CP.tipsTitle || "") + "</b><ul>";
+    list.forEach(function (x) { h += "<li>" + esc(x.text) + " <a href='" + esc(x.url) + "'>" + esc(x.label) + " →</a></li>"; });
+    return h + "</ul></div>";
+  }
   function currency() { var el = document.getElementById("currency"); return el ? el.value : (CP.currency || "EUR"); }
 
   // Dates as day numbers (UTC) to avoid time-zone and DST issues.
@@ -913,6 +922,7 @@
       else if (r.aboveVat) notes.push(t("me_vat", { x: e0(Micro.VAT[act][0]), y: e0(Micro.VAT[act][1]) }));
       notes.push(t("me_note_expenses"));
       notes.forEach(function (n) { h += "<p class='small'>" + esc(n) + "</p>"; });
+      h += tips({ ca10k: r.annual.turnover > 1000000 });
       out.innerHTML = h;
     }
   };
