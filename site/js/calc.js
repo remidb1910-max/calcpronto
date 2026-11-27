@@ -1085,6 +1085,116 @@
     }
   };
 
+  // ------------------------------------------------------------ French unemployment benefit (ARE) 2026
+  // Same rules as the arefr engine of the CalcPronto AI tools. Exact integer arithmetic: amounts in cents, rates in
+  // thousandths of a percent (40,4 % -> 40400), each line rounded half up to the cent.
+  var Unemployment = {
+    FIXED: 1318, MIN: 3213, CEIL: 1602000, SMIC_FLOOR: 6200, DEG_FLOOR: 9257, DEG_DAY: 183,
+    CSG: { normal: 6200, reduced: 3800, exempt: 0 }, CRDS: 500, BASE: 98250,
+    MAX_SALARY: 100000000, MAX_M100: 60000,
+    pct: function (c, r) { return Math.floor((2 * c * r + 100000) / 200000); },
+    pct2: function (c, r1, r2) { return Math.floor((2 * c * r1 * r2 + 1e10) / 2e10); },
+    sjr: function (m) { return Math.floor((2 * m * 12 + 365) / 730); },                  // monthly x 12 / 365
+    days: function (m100) { return Math.floor((2 * m100 * 365 + 1200) / 2400); },       // months x 365 / 12
+    monthsOf: function (d) { return Math.floor((2 * d * 120 + 365) / 730) / 10; },       // days x 12 / 365, 1 decimal
+    gross: function (sjr) {
+      var U = Unemployment, a1 = U.pct(sjr, 40400) + U.FIXED, a2 = U.pct(sjr, 57000), cap = U.pct(sjr, 75000);
+      var best = Math.max(a1, a2, U.MIN), g, f;
+      if (cap < best) { g = cap; f = "cap_75"; }
+      else if (U.MIN > a1 && U.MIN > a2) { g = U.MIN; f = "minimum"; }
+      else if (a2 >= a1) { g = a2; f = "57"; }
+      else { g = a1; f = "40_4_fixed"; }
+      return { a1: a1, a2: a2, cap: cap, gross: g, formula: f };
+    },
+    ded: function (g, sjr, rate) {
+      var U = Unemployment, ret = Math.min(U.pct(sjr, 3000), Math.max(0, g - U.MIN)), after = g - ret;
+      var csg = rate ? U.pct2(g, U.BASE, rate) : 0, crds = rate ? U.pct2(g, U.BASE, U.CRDS) : 0;
+      var full = csg + crds, room = Math.max(0, after - U.SMIC_FLOOR), reduced = csg + crds > room;
+      if (reduced) { crds = Math.min(crds, room); csg = room - crds; }
+      return { ret: ret, retFull: U.pct(sjr, 3000), csg: csg, crds: crds, net: after - csg - crds, after: after,
+               reduced: reduced && full > 0, full: full };
+    },
+    // salary in cents, months in hundredths of a month, age in years, rc and first booleans, csg 'normal' | 'reduced' | 'exempt'
+    compute: function (salary, m100, age, rc, first, csg) {
+      var U = Unemployment, senior = age >= 55, ref = senior ? 36 : 24, kept = Math.min(m100, 100 * ref);
+      var retained = Math.min(salary, U.CEIL), sjr = U.sjr(retained), required = first ? 5 : 6;
+      var eligible = kept >= 100 * required, gr = U.gross(sjr), rate = U.CSG[csg], d = U.ded(gr.gross, sjr, rate);
+      var r = { salary: salary, retained: retained, capped: salary > U.CEIL, sjr: sjr, ref: ref, kept: kept, m100: m100,
+                required: required, eligible: eligible, a1: gr.a1, a2: gr.a2, cap: gr.cap, gross: gr.gross,
+                formula: gr.formula, ret: d.ret, retFull: d.retFull, csg: d.csg, crds: d.crds, net: d.net,
+                after: d.after, reduced: d.reduced, csgFull: d.full, monthlyGross: 30 * gr.gross, monthlyNet: 30 * d.net };
+      if (!eligible) return r;
+      var counted = U.days(kept), raw = Math.floor((counted * 75 + 99) / 100);
+      var min = kept >= 600 ? 182 : 152, max = age >= 57 ? 822 : (age >= 55 ? 685 : 548);
+      var days = Math.min(Math.max(raw, min), max), limited = raw < min ? "minimum" : (raw > max ? "maximum" : null);
+      var capRc = rc ? (senior ? 624 : 456) : null;
+      if (capRc !== null && days > capRc) { days = capRc; limited = "rupture_conventionnelle"; }
+      r.counted = counted; r.raw = raw; r.days = days; r.months = U.monthsOf(days); r.limited = limited;
+      r.minDays = min; r.maxDays = max; r.capRc = capRc;
+      r.deg = age < 55 && gr.gross > U.DEG_FLOOR;
+      r.degReason = age >= 55 ? "age" : "threshold";
+      if (r.deg) {
+        var g2 = Math.max(U.pct(gr.gross, 70000), U.DEG_FLOOR), d2 = U.ded(g2, sjr, rate);
+        var fullDays = Math.min(days, U.DEG_DAY - 1), redDays = days - fullDays;
+        r.degGross = g2; r.degNet = d2.net; r.degRet = d2.ret; r.degCsg = d2.csg; r.degCrds = d2.crds;
+        r.degMonthlyGross = 30 * g2; r.degMonthlyNet = 30 * d2.net; r.redDays = redDays;
+        r.totalGross = fullDays * gr.gross + redDays * g2; r.totalNet = fullDays * d.net + redDays * d2.net;
+      } else {
+        r.redDays = 0; r.totalGross = days * gr.gross; r.totalNet = days * d.net;
+      }
+      return r;
+    },
+    render: function () {
+      var U = Unemployment, out = $("#result");
+      var salary = val("ue-salary"), months = val("ue-months"), age = val("ue-age");
+      if (!isFinite(salary) || salary < 1 || !isFinite(months) || months < 0 || !isFinite(age) || age !== Math.floor(age)) {
+        out.innerHTML = "<p class='hint'>" + t("fill_fields") + "</p>"; return;
+      }
+      var cents = Math.round(salary * 100), m100 = Math.round(months * 100);
+      if (cents > U.MAX_SALARY || m100 > U.MAX_M100 || age < 16 || age > 75) { out.innerHTML = "<p class='hint'>" + esc(t("ue_max")) + "</p>"; return; }
+      var rc = $("#ue-end").value === "rc", first = $("#ue-first").checked, csg = $("#ue-csg").value;
+      var r = U.compute(cents, m100, age, rc, first, csg);
+      var e = function (c) { return money(c / 100, "EUR"); };
+      var kv = function (k, v, cls) { return "<div class='kv" + (cls ? " " + cls : "") + "'><span>" + k + "</span><b>" + v + "</b></div>"; };
+      var notes = [], h = "";
+      if (r.m100 > r.kept) notes.push(t("ue_note_ref", { p: r.ref }));
+      if (!r.eligible) {
+        h += "<p class='hint'>" + esc(t("ue_not_eligible", { n: r.required, p: r.ref })) + "</p>";
+        if (!first && r.kept >= 500) h += "<p class='small'>" + esc(t("ue_not_eligible_first")) + "</p>";
+        notes.forEach(function (n) { h += "<p class='small'>" + esc(n) + "</p>"; });
+        out.innerHTML = h; return;
+      }
+      var fl = { "57": "ue_f_57", "40_4_fixed": "ue_f_404", minimum: "ue_f_min", cap_75: "ue_f_cap" }[r.formula];
+      var pctTxt = function (x) { return fmt(x, 1); };
+      h += "<div class='big'><span>" + t("ue_monthly_net") + "</span><strong>" + e(r.monthlyNet) + "</strong></div>";
+      h += chart([{ l: t("ch_net"), v: r.monthlyNet }, { l: t("ch_contrib"), v: r.monthlyGross - r.monthlyNet }]);
+      h += kv(t("ue_daily_gross") + " <small>(" + esc(t(fl)) + ")</small>", e(r.gross));
+      h += kv(t("ue_sjr"), e(r.sjr));
+      h += kv(t("ue_retirement"), "− " + e(r.ret));
+      h += kv(t("ue_csg_line", { rate: pctTxt(U.CSG[csg] / 1000) }), "− " + e(r.csg));
+      h += kv(t("ue_crds_line", { rate: pctTxt(U.CSG[csg] ? 0.5 : 0) }), "− " + e(r.crds));
+      h += kv("<b>" + t("ue_daily_net") + "</b>", e(r.net), "total");
+      h += kv(t("ue_monthly_gross"), e(r.monthlyGross));
+      h += kv(t("ue_duration"), esc(t("ue_days_months", { d: r.days, m: fmt(r.months, r.months % 1 ? 1 : 0) })));
+      if (r.deg) h += kv(t("ue_deg"), esc(t("ue_deg_value", { x: e(r.degMonthlyNet) })));
+      h += kv(t("ue_total"), esc(t("ue_total_value", { g: e(r.totalGross), n: e(r.totalNet) })));
+      if (r.capped) notes.push(t("ue_note_cap"));
+      if (r.salary < 186702) notes.push(t("ue_note_parttime"));
+      if (r.ret < r.retFull) notes.push(t("ue_note_ret_floor"));
+      if (csg === "exempt") notes.push(t("ue_note_csg_exempt"));
+      else if (r.csgFull > 0 && r.csg + r.crds === 0) notes.push(t("ue_note_no_csg"));
+      else if (r.reduced) notes.push(t("ue_note_csg_floor"));
+      if (r.limited === "rupture_conventionnelle") notes.push(t(age >= 55 ? "ue_note_rc55" : "ue_note_rc"));
+      else if (r.limited === "maximum") notes.push(t("ue_note_max", { d: r.maxDays }));
+      else if (r.limited === "minimum") notes.push(t("ue_note_min", { d: r.minDays }));
+      if (r.deg) notes.push(t("ue_note_deg")); else if (age >= 55) notes.push(t("ue_note_deg55"));
+      notes.push(t("ue_note_rule"));
+      notes.push(t("ue_note_start"));
+      notes.forEach(function (n) { h += "<p class='small'>" + esc(n) + "</p>"; });
+      out.innerHTML = h;
+    }
+  };
+
   // ------------------------------------------------------------ wiring
   function bind(ids, fn) {
     ids.forEach(function (id) {
@@ -1150,6 +1260,12 @@
       bind(["sv-type", "sv-salary", "sv-salary3", "sv-years", "sv-months", "sv-paid", "sv-conv", "sv-prev", "sv-pension"], Severance.render);
       Severance.render();
     }
+    if (page === "unemployment") {
+      var ue = CP.prefillUnemployment;
+      if (ue) { $("#ue-salary").value = ue.salary; $("#ue-months").value = ue.months; $("#ue-age").value = ue.age; }
+      bind(["ue-salary", "ue-months", "ue-age", "ue-end", "ue-first", "ue-csg"], Unemployment.render);
+      Unemployment.render();
+    }
     if (page === "incometax") {
       if (CP.prefillIncome) $("#ir-income").value = CP.prefillIncome;
       bind(["ir-mode", "ir-income", "ir-sal1", "ir-pen1", "ir-sal2", "ir-pen2", "ir-situation", "ir-children", "ir-shared",
@@ -1169,6 +1285,6 @@
     }
   }
 
-  window.CalcPronto = { Salary: Salary, IncomeTax: IncomeTax, Notary: Notary, Micro: Micro, Ptz: Ptz, Severance: Severance, Loan: Loan, Capacity: Capacity, VAT: VAT, Schengen: Schengen, BizDays: BizDays, EU261: EU261, dayNum: dayNum, isoOf: isoOf, num: num };
+  window.CalcPronto = { Salary: Salary, IncomeTax: IncomeTax, Notary: Notary, Micro: Micro, Ptz: Ptz, Severance: Severance, Unemployment: Unemployment, Loan: Loan, Capacity: Capacity, VAT: VAT, Schengen: Schengen, BizDays: BizDays, EU261: EU261, dayNum: dayNum, isoOf: isoOf, num: num };
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init); else init();
 })();
