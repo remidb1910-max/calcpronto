@@ -979,6 +979,93 @@
     }
   };
 
+  // ------------------------------------------------------------ French severance pay 2026
+  // Same rules as the severancefr engine of the CalcPronto AI tools. Exact integer arithmetic: amounts in cents,
+  // rates in thousandths of a percent (9.2 % -> 9200), each line rounded half up to the cent, exempt halves down.
+  var Severance = {
+    PASS: 4806000,                          // 48 060 € in cents (plafond annuel de la Sécurité sociale 2026)
+    CSG: 9200, CRDS: 500, EMP: 40, MIN_MONTHS: 8,
+    MAX_SALARY: 100000000, MAX_AMOUNT: 2000000000,
+    pct: function (c, r) { return Math.floor((2 * c * r + 100000) / 200000); },
+    units: function (m) { return 3 * Math.min(m, 120) + 4 * Math.max(m - 120, 0); },     // 144ths of a month
+    legal: function (s, m) { return Math.floor((2 * s * Severance.units(m) + 144) / 288); },
+    // kind 'rupture_conventionnelle' or 'licenciement'; cents; s3, paid, conv, prev: null when not given
+    compute: function (kind, s12, s3, months, paid, conv, prev, pension) {
+      var S = Severance, P = S.PASS, salary = Math.max(s12, s3 || 0), eligible = months >= S.MIN_MONTHS;
+      var legal = eligible ? S.legal(salary, months) : (kind === "licenciement" ? 0 : null);
+      var minimum = legal === null && conv === null ? null : Math.max(legal || 0, conv || 0);
+      if (paid === null) paid = minimum;
+      if (paid === null) return null;                                   // rupture conventionnelle under 8 months
+      var lc = Math.max(legal || 0, conv || 0), prevEst = prev === null;
+      if (prevEst) prev = 12 * s12;
+      var alt = Math.min(Math.max(2 * prev, Math.floor(paid / 2)), 6 * P);
+      var taxEx = Math.min(paid, Math.max(lc, alt)), full = paid > 10 * P;
+      var socEx = full ? 0 : Math.min(taxEx, 2 * P), csgEx = Math.min(lc, socEx);
+      var rcPension = kind === "rupture_conventionnelle" && pension;
+      if (rcPension) taxEx = 0;
+      var base = paid - csgEx, csg = S.pct(base, S.CSG), crds = S.pct(base, S.CRDS);
+      var empPct = kind === "rupture_conventionnelle" ? S.EMP : 0, emp = S.pct(socEx, empPct * 1000);
+      return { kind: kind, salary: salary, method: s3 !== null && s3 > s12 ? "3" : "12", eligible: eligible, legal: legal,
+               factor: S.units(months) / 144, minimum: minimum, paid: paid, below: minimum !== null && paid < minimum,
+               legalConv: lc, prev: prev, prevEst: prevEst, alt: alt, taxExempt: taxEx, taxable: paid - taxEx,
+               rcPension: rcPension, socExempt: socEx, subject: paid - socEx, full: full, csgExempt: csgEx, csgBase: base,
+               csg: csg, crds: crds, net: paid - csg - crds, empPct: empPct, employer: emp, cost: paid + emp };
+    },
+    opt: function (id) {
+      var el = document.getElementById(id);
+      if (!el || String(el.value).trim() === "") return null;
+      var v = num(el.value);
+      return isFinite(v) && v >= 0 ? Math.round(v * 100) : NaN;
+    },
+    render: function () {
+      var S = Severance, out = $("#result"), kind = $("#sv-type").value;
+      $("#sv-pension-box").hidden = kind !== "rupture_conventionnelle";
+      var s12 = val("sv-salary"), years = val("sv-years"), months = +$("#sv-months").value;
+      var s3 = S.opt("sv-salary3"), paid = S.opt("sv-paid"), conv = S.opt("sv-conv"), prev = S.opt("sv-prev");
+      if (!isFinite(s12) || s12 <= 0 || !isFinite(years) || years < 0 || years > 60 || years !== Math.floor(years) ||
+          12 * years + months < 1 || [s3, paid, conv, prev].some(function (x) { return x !== null && isNaN(x); })) {
+        out.innerHTML = "<p class='hint'>" + t("fill_fields") + "</p>"; return;
+      }
+      s12 = Math.round(s12 * 100);
+      if (s12 > S.MAX_SALARY || (s3 || 0) > S.MAX_SALARY || [paid, conv, prev].some(function (x) { return x !== null && x > S.MAX_AMOUNT; })) {
+        out.innerHTML = "<p class='hint'>" + esc(t("sv_max")) + "</p>"; return;
+      }
+      var total = 12 * years + months, pension = $("#sv-pension").checked;
+      var r = S.compute(kind, s12, s3, total, paid, conv, prev, pension);
+      if (!r) { out.innerHTML = "<p class='hint'>" + esc(t("sv_need_paid")) + "</p>"; return; }
+      var e = function (c) { return money(c / 100, "EUR"); };
+      var e0 = function (c) { return new Intl.NumberFormat(LOCALE, { style: "currency", currency: "EUR", maximumFractionDigits: 0 }).format(c / 100); };
+      var unit = function (n, one, many) { return n + " " + t(n === 1 ? one : many); };
+      var sen = [years ? unit(years, "sv_y1", "sv_yn") : "", months ? unit(months, "sv_m1", "sv_mn") : ""].filter(Boolean).join(" " + t("sv_and") + " ");
+      var kv = function (k, v, cls) { return "<div class='kv" + (cls ? " " + cls : "") + "'><span>" + k + "</span><b>" + v + "</b></div>"; };
+      var h = "";
+      h += "<div class='big'><span>" + t("sv_min") + "</span><strong>" + (r.minimum === null ? t("sv_min_none") : e(r.minimum)) + "</strong></div>";
+      if (r.eligible) h += "<p class='small'>" + esc(t("sv_months_of", { m: fmt(r.factor, r.factor * 100 % 1 ? 2 : (r.factor * 10 % 1 ? 2 : (r.factor % 1 ? 1 : 0))) })) + "</p>";
+      h += kv(t("sv_ref"), e(r.salary) + " (" + t(r.method === "3" ? "sv_ref_3" : "sv_ref_12") + ")");
+      h += kv(t("sv_seniority"), esc(sen));
+      if (conv !== null) { h += kv(t("sv_legal"), r.legal === null ? "—" : e(r.legal)); h += kv(t("sv_conv_line"), e(conv)); }
+      h += kv(t("sv_paid_line"), e(r.paid));
+      h += kv(t("sv_tax_ex"), e(r.taxExempt)) + kv(t("sv_taxable"), e(r.taxable));
+      h += kv(t("sv_soc_ex"), e(r.socExempt)) + kv(t("sv_soc_sub"), e(r.subject));
+      h += kv(t("sv_csg", { rate: fmt(9.2, 1) }), "− " + e(r.csg)) + kv(t("sv_crds", { rate: fmt(0.5, 1) }), "− " + e(r.crds));
+      h += kv("<b>" + t("sv_net") + "</b>", e(r.net), "total");
+      if (r.empPct) { h += kv(t("sv_emp", { rate: String(r.empPct) }), e(r.employer)) + kv(t("sv_cost"), e(r.cost)); }
+      var notes = [];
+      if (!r.eligible && kind === "licenciement") notes.push(t("sv_note_lt8"));
+      if (r.below) notes.push(t(kind === "rupture_conventionnelle" ? "sv_note_below" : "sv_note_below_lic", { x: e(r.minimum) }));
+      if (r.csgBase === 0 && r.subject === 0 && r.taxable === 0) notes.push(t("sv_note_min"));
+      else if (r.csgBase > 0) notes.push(t("sv_note_supra", { x: e(r.csgBase) }));
+      if (r.prevEst && r.paid > r.legalConv) notes.push(t("sv_note_prev", { x: e0(r.prev), y: e0(Math.max(r.legalConv, Math.min(2 * r.prev, 6 * S.PASS))) }));
+      if (r.full) notes.push(t("sv_note_full"));
+      else if (r.subject > 0) notes.push(t("sv_note_subject", { x: e(r.subject) }));
+      if (r.rcPension) notes.push(t("sv_note_pension"));
+      notes.push(t(kind === "rupture_conventionnelle" ? "sv_note_rc" : "sv_note_faute"));
+      notes.push(t("sv_note_seniority"));
+      notes.forEach(function (n) { h += "<p class='small'>" + esc(n) + "</p>"; });
+      out.innerHTML = h;
+    }
+  };
+
   // ------------------------------------------------------------ wiring
   function bind(ids, fn) {
     ids.forEach(function (id) {
@@ -1038,6 +1125,12 @@
       bind(["pz-zone", "pz-persons", "pz-rfr", "pz-type", "pz-cost", "pz-works"], Ptz.render);
       Ptz.render();
     }
+    if (page === "severance") {
+      var sv = CP.prefillSeverance;
+      if (sv) { $("#sv-salary").value = sv.salary; $("#sv-years").value = sv.years; $("#sv-months").value = sv.months; }
+      bind(["sv-type", "sv-salary", "sv-salary3", "sv-years", "sv-months", "sv-paid", "sv-conv", "sv-prev", "sv-pension"], Severance.render);
+      Severance.render();
+    }
     if (page === "incometax") {
       if (CP.prefillIncome) $("#ir-income").value = CP.prefillIncome;
       bind(["ir-mode", "ir-income", "ir-sal1", "ir-pen1", "ir-sal2", "ir-pen2", "ir-situation", "ir-children", "ir-shared",
@@ -1057,6 +1150,6 @@
     }
   }
 
-  window.CalcPronto = { Salary: Salary, IncomeTax: IncomeTax, Notary: Notary, Micro: Micro, Ptz: Ptz, Loan: Loan, Capacity: Capacity, VAT: VAT, Schengen: Schengen, BizDays: BizDays, EU261: EU261, dayNum: dayNum, isoOf: isoOf, num: num };
+  window.CalcPronto = { Salary: Salary, IncomeTax: IncomeTax, Notary: Notary, Micro: Micro, Ptz: Ptz, Severance: Severance, Loan: Loan, Capacity: Capacity, VAT: VAT, Schengen: Schengen, BizDays: BizDays, EU261: EU261, dayNum: dayNum, isoOf: isoOf, num: num };
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init); else init();
 })();
