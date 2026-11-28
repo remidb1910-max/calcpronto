@@ -51,7 +51,7 @@
     parts.forEach(function (p, i) {
       var pct = p.v / total * 100, col = CHART_COLORS[i % CHART_COLORS.length];
       bar += "<i style='width:" + pct.toFixed(2) + "%;background:" + col + "'></i>";
-      legend += "<li><i style='background:" + col + "'></i>" + esc(p.l) + " <span>" + fmt(pct, 1) + " %</span></li>";
+      legend += "<li><i style='background:" + col + "'></i>" + esc(p.l) + " <span>" + fmt(pct, 1) + (CP.lang === "en" ? "%" : " %") + "</span></li>";
     });
     return "<div class='chart'><div class='chart-bar' aria-hidden='true'>" + bar + "</div><ul class='chart-legend'>" + legend + "</ul></div>";
   }
@@ -143,7 +143,9 @@
       var n = Math.round(years * 12), r = ratePct / 100 / 12;
       var unit = payment(1, r, n) + (insPct || 0) / 100 / 12;
       var loan = budget / unit;
-      return { budget: budget, loan: loan, purchase: loan + down };
+      // What the n payments repay over the loan: capital, interest, insurance (same formulas as Loan.compute)
+      var interest = payment(loan, r, n) * n - loan, insurance = loan * (insPct || 0) / 100 / 12 * n;
+      return { budget: budget, loan: loan, purchase: loan + down, n: n, interest: interest, insurance: insurance };
     },
     render: function () {
       var inc = val("cap-income"), debts = val("cap-debts"), rate = val("cap-rate"), years = val("cap-years"), ratio = val("cap-ratio");
@@ -154,7 +156,10 @@
       var c = currency(), res = Capacity.compute(inc, debts, rate, years, ratio, ins, down);
       if (res.budget <= 0) { out.innerHTML = "<p class='warn'>" + t("cap_no_room") + "</p>"; return; }
       var h = "<div class='big'><span>" + t("max_loan") + "</span><strong>" + money(res.loan, c) + "</strong></div>";
+      h += chart([{ l: t("ch_capital"), v: res.loan }, { l: t("total_interest"), v: res.interest }, { l: t("total_insurance"), v: res.insurance }]);
       h += "<div class='kv'><span>" + t("max_monthly_payment") + "</span><b>" + money(res.budget, c) + "</b></div>";
+      h += "<div class='kv'><span>" + t("total_interest") + "</span><b>" + money(res.interest, c) + "</b></div>";
+      if (ins > 0) h += "<div class='kv'><span>" + t("total_insurance") + "</span><b>" + money(res.insurance, c) + "</b></div>";
       if (down > 0) h += "<div class='kv total'><span>" + t("max_purchase") + "</span><b>" + money(res.purchase, c) + "</b></div>";
       h += "<p class='small'>" + t("cap_explain", { ratio: fmt(ratio, ratio % 1 ? 1 : 0), income: money(inc, c), debts: money(debts, c), budget: money(res.budget, c) }) + "</p>";
       out.innerHTML = h;
@@ -201,6 +206,7 @@
       h += "<div class='kv'><span>" + t("vat_amount", { rate: fmt(rate, rate % 1 ? 1 : 0) }) + "</span><b>" + money(vat, c) + "</b></div>";
       h += "<div class='big'><span>" + t("gross_amount") + "</span><strong>" + money(gross, c) + "</strong></div>";
       h += "<p class='small'>" + (mode === "net" ? t("vat_formula_net", { rate: fmt(rate, rate % 1 ? 1 : 0) }) : t("vat_formula_gross", { rate: fmt(rate, rate % 1 ? 1 : 0) })) + "</p>";
+      h += tips({ fr: $("#vat-country").value === "FR" });              // French rules: only when France is selected
       out.innerHTML = h;
     }
   };
@@ -1001,6 +1007,7 @@
         h += kv(t("pz_resources"), e(r.retained));
       } else {
         h += "<div class='big'><span>" + t("pz_amount") + "</span><strong>" + e(r.amount) + "</strong></div>";
+        h += chart([{ l: t("pz_ch_ptz"), v: r.amount }, { l: t("pz_ch_rest"), v: rc - r.amount }]);   // financing of the whole cost
         h += kv(t("pz_resources"), e(r.retained));
         h += kv(t("pz_per_coef", { c: fmt(r.coef / 10, r.coef % 10 ? 1 : 0) }), e(r.perCoef));
         h += kv(t("pz_tranche"), t("pz_tranche_val", { t: String(r.tranche) }));
@@ -1084,6 +1091,8 @@
       var h = "";
       h += "<div class='big'><span>" + t("sv_min") + "</span><strong>" + (r.minimum === null ? t("sv_min_none") : e(r.minimum)) + "</strong></div>";
       if (r.eligible) h += "<p class='small'>" + esc(t("sv_months_of", { m: fmt(r.factor, r.factor * 100 % 1 ? 2 : (r.factor * 10 % 1 ? 2 : (r.factor % 1 ? 1 : 0))) })) + "</p>";
+      // Split of what the employer pays: net for the employee, CSG-CRDS, employer contribution (rupture conventionnelle)
+      h += chart([{ l: t("sv_ch_net"), v: r.net }, { l: "CSG-CRDS", v: r.csg + r.crds }, { l: t("sv_emp", { rate: String(r.empPct) }), v: r.employer }]);
       h += kv(t("sv_ref"), e(r.salary) + " (" + t(r.method === "3" ? "sv_ref_3" : "sv_ref_12") + ")");
       h += kv(t("sv_seniority"), esc(sen));
       if (conv !== null) { h += kv(t("sv_legal"), r.legal === null ? "—" : e(r.legal)); h += kv(t("sv_conv_line"), e(conv)); }
