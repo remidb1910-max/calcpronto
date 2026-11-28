@@ -944,7 +944,7 @@
       else if (r.aboveVat) notes.push(t("me_vat", { x: e0(Micro.VAT[act][0]), y: e0(Micro.VAT[act][1]) }));
       notes.push(t("me_note_expenses"));
       notes.forEach(function (n) { h += "<p class='small'>" + esc(n) + "</p>"; });
-      h += tips({ ca10k: r.annual.turnover > 1000000 });
+      h += tips({ ca10k: r.annual.turnover > 1000000, acre: !!r.acre });
       out.innerHTML = h;
     }
   };
@@ -1226,6 +1226,7 @@
       notes.push(t("ue_note_rule"));
       notes.push(t("ue_note_start"));
       notes.forEach(function (n) { h += "<p class='small'>" + esc(n) + "</p>"; });
+      h += tips();                                                       // French pages only (CP.tips)
       out.innerHTML = h;
     }
   };
