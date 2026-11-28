@@ -118,6 +118,7 @@
       var fees = val("loan-fees"); if (!isFinite(fees)) fees = 0;
       var out = $("#result");
       if (!(P > 0) || !(rate >= 0 && rate <= 100) || !(years > 0 && years <= 50)) { out.innerHTML = "<p class='hint'>" + t("fill_fields") + "</p>"; return; }
+      if (ins > 5 || ins < 0) { out.innerHTML = "<p class='warn'>" + t("ins_too_high", { v: fmt(ins, 2) }) + "</p>"; return; }
       var c = currency(), res = Loan.compute(P, rate, years, ins, fees);
       var h = "<div class='big'><span>" + t("monthly_payment") + "</span><strong>" + money(res.payment, c) + "</strong></div>";
       if (ins > 0) h += "<div class='kv'><span>" + t("payment_with_insurance") + "</span><b>" + money(res.paymentWithIns, c) + "</b></div>";
@@ -153,6 +154,7 @@
       if (!isFinite(debts)) debts = 0; if (!isFinite(ins)) ins = 0; if (!isFinite(down)) down = 0;
       var out = $("#result");
       if (!(inc > 0) || !(rate >= 0) || !(years > 0 && years <= 40) || !(ratio > 0 && ratio <= 100)) { out.innerHTML = "<p class='hint'>" + t("fill_fields") + "</p>"; return; }
+      if (ins > 5 || ins < 0) { out.innerHTML = "<p class='warn'>" + t("ins_too_high", { v: fmt(ins, 2) }) + "</p>"; return; }
       var c = currency(), res = Capacity.compute(inc, debts, rate, years, ratio, ins, down);
       if (res.budget <= 0) { out.innerHTML = "<p class='warn'>" + t("cap_no_room") + "</p>"; return; }
       var h = "<div class='big'><span>" + t("max_loan") + "</span><strong>" + money(res.loan, c) + "</strong></div>";
