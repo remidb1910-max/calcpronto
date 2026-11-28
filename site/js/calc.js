@@ -1304,6 +1304,8 @@
         el.addEventListener("change", EU261.render);
       });
       bind(["eu-carrier", "eu-kind", "eu-delay-h", "eu-delay-m", "eu-notice", "eu-early-h", "eu-early-m", "eu-late-h", "eu-late-m", "eu-extra", "eu-volunteer", "eu-grounds"], EU261.render);
+      var pe = CP.prefillEu261;  // pages per airline: first route of the table, arrival 3 hours late
+      if (pe) { $("#eu-from").value = pe.from; $("#eu-to").value = pe.to; $("#eu-carrier").value = pe.carrier; $("#eu-kind").value = "delay"; $("#eu-delay-h").value = pe.h; $("#eu-delay-m").value = "0"; }
       $all("[data-kind]").forEach(function (el) { el.hidden = el.dataset.kind.split(" ").indexOf($("#eu-kind").value) < 0; });
       if ($("#eu-from").value) EU261.render();
     }

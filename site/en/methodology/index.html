@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Method and sources: how CalcPronto checks its calculators</title>
-<meta name="description" content="Dated official rules, reference engines tested on official worked examples, 493,853 automatic checks before every release: how each CalcPronto calculator is verified.">
+<meta name="description" content="Dated official rules, reference engines tested on official worked examples, 513,062 automatic checks before every release: how each CalcPronto calculator is verified.">
 <link rel="canonical" href="https://calcpronto.com/en/methodology/">
 <link rel="alternate" hreflang="fr" href="https://calcpronto.com/fr/methode-et-sources/">
 <link rel="alternate" hreflang="en" href="https://calcpronto.com/en/methodology/">
@@ -15,14 +15,14 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="CalcPronto">
 <meta property="og:title" content="Method and sources: how CalcPronto checks its calculators">
-<meta property="og:description" content="Dated official rules, reference engines tested on official worked examples, 493,853 automatic checks before every release: how each CalcPronto calculator is verified.">
+<meta property="og:description" content="Dated official rules, reference engines tested on official worked examples, 513,062 automatic checks before every release: how each CalcPronto calculator is verified.">
 <meta property="og:url" content="https://calcpronto.com/en/methodology/">
 <meta property="og:locale" content="en_GB">
 <meta name="theme-color" content="#0b6e4f">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/css/style.css?v=2c18fde3">
+<link rel="stylesheet" href="/css/style.css?v=877438dc">
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3625379884205520" crossorigin="anonymous"></script>
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "AboutPage", "name": "Method and sources", "url": "https://calcpronto.com/en/methodology/", "inLanguage": "en", "description": "Dated official rules, reference engines tested on official worked examples, 493,853 automatic checks before every release: how each CalcPronto calculator is verified.", "dateModified": "2026-11-27", "publisher": {"@type": "Organization", "name": "CalcPronto", "url": "https://calcpronto.com"}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "AboutPage", "name": "Method and sources", "url": "https://calcpronto.com/en/methodology/", "inLanguage": "en", "description": "Dated official rules, reference engines tested on official worked examples, 513,062 automatic checks before every release: how each CalcPronto calculator is verified.", "dateModified": "2026-11-28", "publisher": {"@type": "Organization", "name": "CalcPronto", "url": "https://calcpronto.com"}}</script>
 </head>
 <body>
 <header class="site">
@@ -68,72 +68,72 @@
   <div class="wrap">
 <nav class="crumbs"><a href="/en/">Home</a></nav>
 <h1>Method and sources</h1>
-<p class="lead" id="method-lead">Every CalcPronto calculator applies official, dated rules. Before every release, 459 automated tests check the 12 reference calculation engines, then 493,853 checks compare the website with those engines. Last full verification: November 27, 2026.</p>
+<p class="lead" id="method-lead">Every CalcPronto calculator applies official, dated rules. Before every release, 459 automated tests check the 12 reference calculation engines, then 513,062 checks compare the website with those engines. Last full verification: November 28, 2026.</p>
 <div class="content">
   <h2>How each calculator is checked</h2>
   <ol><li><b>Rules taken from official texts.</b> Every rate, ceiling and scale comes from a dated official source: Légifrance, BOFiP, impots.gouv.fr, Urssaf, Service-Public.fr, the Official Journal of the European Union… The sources of each calculator are cited at the bottom of its page and listed below. When a rule is uncertain, the calculator leaves it out of scope and says so, rather than guessing.</li><li><b>A reference engine, tested on official examples.</b> Each calculation is first written as a reference engine (in Python), with automated tests that reproduce the worked examples published by the authorities: the French notaries' fee scale, income tax examples, the transfer tax rate of each French département, and so on. The same engines answer AI assistants through the <a href="/en/ai/">CalcPronto connector</a>.</li><li><b>The website compared with the engine, to the cent.</b> The calculators on this site run in your browser. For each one, hundreds to thousands of cases are computed by the reference engine, then computed again by the website in a simulated browser: every amount is compared to the cent, along with the titles, tables, links and pre-filled forms of the pages by amount.</li><li><b>Nothing is published if a check fails.</b> The website and the connector are only released when every test and every check passes. The figures on this page are produced automatically from those tests each time the site is built.</li></ol>
 
   <h2>Checks by calculator</h2>
-  <div class="table-wrap"><table class="data" id="verification" data-engine-tests="459" data-engines="12" data-checks="493853" data-date="2026-11-27">
+  <div class="table-wrap"><table class="data" id="verification" data-engine-tests="459" data-engines="12" data-checks="513062" data-date="2026-11-28">
     <thead><tr><th>Calculator</th><th>Engine tests</th><th>Website checks</th><th>Last verified</th></tr></thead>
     <tbody>
-<tr data-calc="loan" data-engine-tests="12" data-checks="48393" data-date="2026-11-27"><th><a href="#loan">Loan</a></th><td>12</td><td>48,393</td><td>November 27, 2026</td></tr>
-<tr data-calc="capacity" data-engine-tests="12" data-checks="3108" data-date="2026-11-27"><th><a href="#capacity">Borrowing capacity</a></th><td>12</td><td>3,108</td><td>November 27, 2026</td></tr>
-<tr data-calc="salary" data-engine-tests="18" data-checks="15502" data-date="2026-11-27"><th><a href="#salary">French salary</a></th><td>18</td><td>15,502</td><td>November 27, 2026</td></tr>
-<tr data-calc="incometax" data-engine-tests="46" data-checks="33877" data-date="2026-11-27"><th><a href="#incometax">French income tax</a></th><td>46</td><td>33,877</td><td>November 27, 2026</td></tr>
-<tr data-calc="notary" data-engine-tests="70" data-checks="63374" data-date="2026-11-27"><th><a href="#notary">French notary fees</a></th><td>70</td><td>63,374</td><td>November 27, 2026</td></tr>
-<tr data-calc="ptz" data-engine-tests="59" data-checks="68626" data-date="2026-11-27"><th><a href="#ptz">French PTZ loan</a></th><td>59</td><td>68,626</td><td>November 27, 2026</td></tr>
-<tr data-calc="micro" data-engine-tests="58" data-checks="73986" data-date="2026-11-27"><th><a href="#micro">French micro-entrepreneur</a></th><td>58</td><td>73,986</td><td>November 27, 2026</td></tr>
-<tr data-calc="severance" data-engine-tests="59" data-checks="79581" data-date="2026-11-27"><th><a href="#severance">French severance pay</a></th><td>59</td><td>79,581</td><td>November 27, 2026</td></tr>
-<tr data-calc="unemployment" data-engine-tests="88" data-checks="102306" data-date="2026-11-27"><th><a href="#unemployment">French unemployment benefit</a></th><td>88</td><td>102,306</td><td>November 27, 2026</td></tr>
-<tr data-calc="vat" data-engine-tests="16" data-checks="1228" data-date="2026-11-27"><th><a href="#vat">VAT</a></th><td>16</td><td>1,228</td><td>November 27, 2026</td></tr>
-<tr data-calc="schengen" data-engine-tests="10" data-checks="1261" data-date="2026-11-27"><th><a href="#schengen">Schengen 90/180</a></th><td>10</td><td>1,261</td><td>November 27, 2026</td></tr>
-<tr data-calc="bizdays" data-engine-tests="15" data-checks="800" data-date="2026-11-27"><th><a href="#bizdays">Business days</a></th><td>15</td><td>800</td><td>November 27, 2026</td></tr>
-<tr data-calc="eu261" data-engine-tests="8" data-checks="1811" data-date="2026-11-27"><th><a href="#eu261">Flight delay</a></th><td>8</td><td>1,811</td><td>November 27, 2026</td></tr>
+<tr data-calc="loan" data-engine-tests="12" data-checks="48393" data-date="2026-11-28"><th><a href="#loan">Loan</a></th><td>12</td><td>48,393</td><td>November 28, 2026</td></tr>
+<tr data-calc="capacity" data-engine-tests="12" data-checks="3108" data-date="2026-11-28"><th><a href="#capacity">Borrowing capacity</a></th><td>12</td><td>3,108</td><td>November 28, 2026</td></tr>
+<tr data-calc="salary" data-engine-tests="18" data-checks="15502" data-date="2026-11-28"><th><a href="#salary">French salary</a></th><td>18</td><td>15,502</td><td>November 28, 2026</td></tr>
+<tr data-calc="incometax" data-engine-tests="46" data-checks="33877" data-date="2026-11-28"><th><a href="#incometax">French income tax</a></th><td>46</td><td>33,877</td><td>November 28, 2026</td></tr>
+<tr data-calc="notary" data-engine-tests="70" data-checks="63374" data-date="2026-11-28"><th><a href="#notary">French notary fees</a></th><td>70</td><td>63,374</td><td>November 28, 2026</td></tr>
+<tr data-calc="ptz" data-engine-tests="59" data-checks="68626" data-date="2026-11-28"><th><a href="#ptz">French PTZ loan</a></th><td>59</td><td>68,626</td><td>November 28, 2026</td></tr>
+<tr data-calc="micro" data-engine-tests="58" data-checks="73986" data-date="2026-11-28"><th><a href="#micro">French micro-entrepreneur</a></th><td>58</td><td>73,986</td><td>November 28, 2026</td></tr>
+<tr data-calc="severance" data-engine-tests="59" data-checks="79581" data-date="2026-11-28"><th><a href="#severance">French severance pay</a></th><td>59</td><td>79,581</td><td>November 28, 2026</td></tr>
+<tr data-calc="unemployment" data-engine-tests="88" data-checks="102306" data-date="2026-11-28"><th><a href="#unemployment">French unemployment benefit</a></th><td>88</td><td>102,306</td><td>November 28, 2026</td></tr>
+<tr data-calc="vat" data-engine-tests="16" data-checks="1228" data-date="2026-11-28"><th><a href="#vat">VAT</a></th><td>16</td><td>1,228</td><td>November 28, 2026</td></tr>
+<tr data-calc="schengen" data-engine-tests="10" data-checks="1261" data-date="2026-11-28"><th><a href="#schengen">Schengen 90/180</a></th><td>10</td><td>1,261</td><td>November 28, 2026</td></tr>
+<tr data-calc="bizdays" data-engine-tests="15" data-checks="800" data-date="2026-11-28"><th><a href="#bizdays">Business days</a></th><td>15</td><td>800</td><td>November 28, 2026</td></tr>
+<tr data-calc="eu261" data-engine-tests="8" data-checks="21020" data-date="2026-11-28"><th><a href="#eu261">Flight delay</a></th><td>8</td><td>21,020</td><td>November 28, 2026</td></tr>
     </tbody>
-    <tfoot><tr><th>Total (12 engines)</th><td>459</td><td>493,853</td><td>November 27, 2026</td></tr></tfoot>
+    <tfoot><tr><th>Total (12 engines)</th><td>459</td><td>513,062</td><td>November 28, 2026</td></tr></tfoot>
   </table></div>
   <p class="small">Engine tests: automated tests of the reference engine, counted in the code when the site is built (the loan and borrowing capacity calculators share one engine). Website checks: automatic comparisons passed at the last verification (amounts compared with the engine, plus the titles, tables, links and forms of the pages by amount).</p>
 
   <h2>Official sources by calculator</h2>
   <h3 id="loan"><a href="/en/loan-calculator/">Loan and mortgage calculator</a></h3>
-  <p class="small">12 engine tests, 48,393 website checks, last verified on November 27, 2026.</p>
+  <p class="small">12 engine tests, 48,393 website checks, last verified on November 28, 2026.</p>
   <ul><li><a href="https://www.consumerfinance.gov/owning-a-home/" rel="noopener" target="_blank">Consumer Financial Protection Bureau — loan basics</a></li><li><a href="https://www.moneyhelper.org.uk/en/homes/buying-a-home" rel="noopener" target="_blank">MoneyHelper (UK) — mortgages</a></li></ul>
   <h3 id="capacity"><a href="/en/how-much-can-i-borrow/">How much can I borrow?</a></h3>
-  <p class="small">12 engine tests, 3,108 website checks, last verified on November 27, 2026.</p>
+  <p class="small">12 engine tests, 3,108 website checks, last verified on November 28, 2026.</p>
   <ul><li><a href="https://www.consumerfinance.gov/ask-cfpb/what-is-a-debt-to-income-ratio-en-1791/" rel="noopener" target="_blank">CFPB — debt-to-income ratio</a></li><li><a href="https://www.moneyhelper.org.uk/en/homes/buying-a-home" rel="noopener" target="_blank">MoneyHelper (UK) — how much can I borrow</a></li></ul>
   <h3 id="salary"><a href="/en/french-salary-calculator/">French salary calculator: gross to net 2026</a></h3>
-  <p class="small">18 engine tests, 15,502 website checks, last verified on November 27, 2026.</p>
+  <p class="small">18 engine tests, 15,502 website checks, last verified on November 28, 2026.</p>
   <ul><li><a href="https://entreprendre.service-public.gouv.fr/vosdroits/F2302" rel="noopener" target="_blank">Service-Public.fr — employee contributions (in French)</a></li><li><a href="https://bofip.impots.gouv.fr/doctrine/pgp/11255-PGP" rel="noopener" target="_blank">BOFiP — neutral withholding grid (in French)</a></li></ul>
   <h3 id="incometax"><a href="/en/french-income-tax-calculator/">French income tax calculator 2026</a></h3>
-  <p class="small">46 engine tests, 33,877 website checks, last verified on November 27, 2026.</p>
+  <p class="small">46 engine tests, 33,877 website checks, last verified on November 28, 2026.</p>
   <ul><li><a href="https://www.service-public.gouv.fr/particuliers/vosdroits/F1419" rel="noopener" target="_blank">Service-Public.fr — income tax brackets (in French)</a></li><li><a href="https://www.service-public.gouv.fr/particuliers/vosdroits/F34328" rel="noopener" target="_blank">Service-Public.fr — how the tax is calculated (in French)</a></li><li><a href="https://bofip.impots.gouv.fr/bofip/2491-PGP.html/identifiant=BOI-IR-LIQ-20-10-20260407" rel="noopener" target="_blank">BOFiP — 2026 brackets, official tax doctrine (in French)</a></li></ul>
   <h3 id="notary"><a href="/en/french-notary-fees-calculator/">French notary fees calculator 2026</a></h3>
-  <p class="small">70 engine tests, 63,374 website checks, last verified on November 27, 2026.</p>
+  <p class="small">70 engine tests, 63,374 website checks, last verified on November 28, 2026.</p>
   <ul><li><a href="https://www.impots.gouv.fr/sites/default/files/media/1_metier/3_partenaire/notaires/dmto/dmto_2026-06.pdf" rel="noopener" target="_blank">DGFiP — 2026 transfer tax rates by département (in French)</a></li><li><a href="https://www.impots.gouv.fr/particulier/questions/jachete-un-bien-immobilier-quaurai-je-payer-comme-frais-au-notaire" rel="noopener" target="_blank">impots.gouv.fr — notary fees on a purchase (in French)</a></li><li><a href="https://bofip.impots.gouv.fr/bofip/3311-PGP" rel="noopener" target="_blank">BOFiP — transfer taxes and first-time buyers, official doctrine (in French)</a></li><li><a href="https://www.justice.fr/fiche/frais-notaire-agit" rel="noopener" target="_blank">Justice.fr — notary fees and VAT (in French)</a></li></ul>
   <h3 id="ptz"><a href="/en/french-zero-interest-loan-ptz-calculator/">French zero-interest home loan (PTZ) calculator 2026</a></h3>
-  <p class="small">59 engine tests, 68,626 website checks, last verified on November 27, 2026.</p>
+  <p class="small">59 engine tests, 68,626 website checks, last verified on November 28, 2026.</p>
   <ul><li><a href="https://www.service-public.gouv.fr/particuliers/vosdroits/F10871" rel="noopener" target="_blank">Service-Public.fr — Prêt à taux zéro (PTZ), checked 15 September 2026 (French)</a></li><li><a href="https://bofip.impots.gouv.fr/bofip/6961-PGP.html/identifiant%3DBOI-BIC-RICI-10-140-20250521" rel="noopener" target="_blank">BOFiP — PTZ: new housing everywhere since 1 April 2025 (French)</a></li><li><a href="https://www.ecologie.gouv.fr/presse/decret-pret-taux-zero-ptz-publie-avancee-primo-accedants" rel="noopener" target="_blank">French Ministry of Housing — PTZ decree of 29 March 2025 and worked examples (French)</a></li><li><a href="https://www.service-public.gouv.fr/simulateur/calcul/zonage-abc" rel="noopener" target="_blank">Service-Public.fr — find the A, A bis, B1, B2 or C zone of a commune (French)</a></li><li><a href="https://www.fgas.fr/pret-a-0" rel="noopener" target="_blank">FGAS — Prêt à 0 % (ceilings, tranches, durations, French)</a></li></ul>
   <h3 id="micro"><a href="/en/french-micro-entrepreneur-calculator/">French micro-entrepreneur calculator 2026</a></h3>
-  <p class="small">58 engine tests, 73,986 website checks, last verified on November 27, 2026.</p>
+  <p class="small">58 engine tests, 73,986 website checks, last verified on November 28, 2026.</p>
   <ul><li><a href="https://www.urssaf.fr/accueil/actualites/taux-cotisations-autoentrepeneur.html" rel="noopener" target="_blank">Urssaf — micro-entrepreneur contribution rates 2026 (French)</a></li><li><a href="https://www.autoentrepreneur.urssaf.fr/portail/accueil/sinformer-sur-le-statut/lessentiel-du-statut.html" rel="noopener" target="_blank">Urssaf — the micro-entrepreneur status at a glance (French)</a></li><li><a href="https://entreprendre.service-public.gouv.fr/vosdroits/F36232" rel="noopener" target="_blank">Service-Public.fr — social contributions of a micro-entrepreneur (French)</a></li><li><a href="https://entreprendre.service-public.gouv.fr/vosdroits/F11677" rel="noopener" target="_blank">Service-Public.fr — ACRE (French)</a></li><li><a href="https://entreprendre.service-public.gouv.fr/vosdroits/F23267" rel="noopener" target="_blank">Service-Public.fr — tax regime of the micro-enterprise (French)</a></li><li><a href="https://www.impots.gouv.fr/professionnel/questions/en-tant-que-micro-entrepreneur-sous-quelles-conditions-puis-je-opter-pour-l" rel="noopener" target="_blank">impots.gouv.fr — flat income tax conditions (French)</a></li></ul>
   <h3 id="severance"><a href="/en/french-severance-pay-calculator/">French severance pay calculator 2026</a></h3>
-  <p class="small">59 engine tests, 79,581 website checks, last verified on November 27, 2026.</p>
+  <p class="small">59 engine tests, 79,581 website checks, last verified on November 28, 2026.</p>
   <ul><li><a href="https://www.service-public.gouv.fr/particuliers/vosdroits/F987" rel="noopener" target="_blank">Service-Public.fr — severance pay of an employee on a permanent contract (French)</a></li><li><a href="https://www.service-public.gouv.fr/particuliers/vosdroits/F31539" rel="noopener" target="_blank">Service-Public.fr — computing the rupture conventionnelle indemnity (French)</a></li><li><a href="https://www.service-public.gouv.fr/particuliers/vosdroits/F371" rel="noopener" target="_blank">Service-Public.fr — how seniority is counted (French)</a></li><li><a href="https://www.legifrance.gouv.fr/codes/id/LEGIARTI000035644687/" rel="noopener" target="_blank">Légifrance — French labour code, articles R1234-1 to R1234-5</a></li><li><a href="https://bofip.impots.gouv.fr/bofip/4935-PGP.html" rel="noopener" target="_blank">BOFiP — tax-exempt severance pay (French)</a></li><li><a href="https://www.urssaf.fr/accueil/employeur/embaucher-gerer-salaries/gerer-fin-relation-travail/rupture-conventionnelle.html" rel="noopener" target="_blank">Urssaf — rupture conventionnelle indemnities (French)</a></li></ul>
   <h3 id="unemployment"><a href="/en/french-unemployment-benefit-calculator/">French unemployment benefit calculator 2026 (ARE)</a></h3>
-  <p class="small">88 engine tests, 102,306 website checks, last verified on November 27, 2026.</p>
+  <p class="small">88 engine tests, 102,306 website checks, last verified on November 28, 2026.</p>
   <ul><li><a href="https://www.service-public.gouv.fr/particuliers/vosdroits/F38881" rel="noopener" target="_blank">Service-Public.fr — unemployment benefit (ARE) for a contract ending from 1 April 2025 (French)</a></li><li><a href="https://www.service-public.gouv.fr/particuliers/vosdroits/F2064" rel="noopener" target="_blank">Service-Public.fr — daily reference wage (French)</a></li><li><a href="https://www.francetravail.fr/candidat/mes-droits-aux-aides-et-allocati/lessentiel-a-savoir-sur-lallocat/quelle-somme-vais-je-recevoir/comment-est-calcule-le-montant-d.html" rel="noopener" target="_blank">France Travail — how the allowance is calculated (French)</a></li><li><a href="https://www.francetravail.fr/candidat/mes-droits-aux-aides-et-allocati/lessentiel-a-savoir-sur-lallocat/quelle-somme-vais-je-recevoir/quelles-retenues-sociales-sont-a.html" rel="noopener" target="_blank">France Travail — deductions from the allowance (French)</a></li><li><a href="https://www.unedic.org/actualites/assurance-chomage-ce-qui-change-le-1er-septembre-2026" rel="noopener" target="_blank">Unédic — changes on 1 September 2026 (French)</a></li><li><a href="https://www.unedic.org/la-reglementation/conventions-d-assurance-chomage/texte-consolide-de-la-convention-du-15-novembre-2024-relative-a-lassurance-chomage-3" rel="noopener" target="_blank">Unédic — unemployment insurance agreement of 15 November 2024, consolidated (French)</a></li></ul>
   <h3 id="vat"><a href="/en/vat-calculator/">VAT calculator: net, VAT and gross</a></h3>
-  <p class="small">16 engine tests, 1,228 website checks, last verified on November 27, 2026.</p>
+  <p class="small">16 engine tests, 1,228 website checks, last verified on November 28, 2026.</p>
   <ul><li><a href="https://taxation-customs.ec.europa.eu/taxation/vat/vat-directive/vat-rates_en" rel="noopener" target="_blank">European Commission — VAT rates</a></li><li><a href="https://vat-one-stop-shop.ec.europa.eu/index_en" rel="noopener" target="_blank">European Commission — One-Stop Shop</a></li></ul>
   <h3 id="schengen"><a href="/en/schengen-calculator/">Schengen calculator: the 90/180-day rule</a></h3>
-  <p class="small">10 engine tests, 1,261 website checks, last verified on November 27, 2026.</p>
+  <p class="small">10 engine tests, 1,261 website checks, last verified on November 28, 2026.</p>
   <ul><li><a href="https://home-affairs.ec.europa.eu/policies/schengen-borders-and-visa/border-crossing_en" rel="noopener" target="_blank">European Commission — short-stay calculator</a></li><li><a href="https://eur-lex.europa.eu/eli/reg/2016/399/oj" rel="noopener" target="_blank">Regulation (EU) 2016/399, Art. 6</a></li></ul>
   <h3 id="bizdays"><a href="/en/business-days-calculator/">Business days calculator</a></h3>
-  <p class="small">15 engine tests, 800 website checks, last verified on November 27, 2026.</p>
+  <p class="small">15 engine tests, 800 website checks, last verified on November 28, 2026.</p>
   <ul><li><a href="https://www.gov.uk/bank-holidays" rel="noopener" target="_blank">GOV.UK — bank holidays</a></li><li><a href="https://www.opm.gov/policy-data-oversight/pay-leave/federal-holidays/" rel="noopener" target="_blank">US OPM — federal holidays</a></li></ul>
   <h3 id="eu261"><a href="/en/flight-delay-compensation/">Flight delay and cancellation compensation</a></h3>
-  <p class="small">8 engine tests, 1,811 website checks, last verified on November 27, 2026.</p>
+  <p class="small">8 engine tests, 21,020 website checks, last verified on November 28, 2026.</p>
   <ul><li><a href="https://eur-lex.europa.eu/eli/reg/2004/261/oj" rel="noopener" target="_blank">Regulation (EC) No 261/2004</a></li><li><a href="https://europa.eu/youreurope/citizens/travel/passenger-rights/air/index_en.htm" rel="noopener" target="_blank">Your Europe — air passenger rights</a></li><li><a href="https://www.caa.co.uk/passengers-and-public/resolving-travel-problems/delays-and-cancellations/" rel="noopener" target="_blank">UK Civil Aviation Authority — delays and cancellations</a></li></ul>
 
   <h2>Rate updates</h2>
@@ -147,7 +147,7 @@
   <h2>Publisher</h2>
   <p id="publisher">CalcPronto is published by Rémi Dubois, Entrepreneur individuel (micro-entreprise en cours d&#39;immatriculation). Contact: <a href="mailto:remidb@outlook.fr">remidb@outlook.fr</a>. <a href="/en/legal-notice/">Legal notice</a></p>
 </div>
-<script type="application/json" id="verification-records">[{"test": "incometax_test.js", "date": "2026-11-27", "checks": {"incometax": 33877}}, {"test": "loan_pages_test.js", "date": "2026-11-27", "checks": {"capacity": 2808, "loan": 47493}}, {"test": "micro_test.js", "date": "2026-11-27", "checks": {"micro": 73986}}, {"test": "notary_pages_test.js", "date": "2026-11-27", "checks": {"notary": 15368}}, {"test": "notary_test.js", "date": "2026-11-27", "checks": {"notary": 48006}}, {"test": "ptz_test.js", "date": "2026-11-27", "checks": {"ptz": 68626}}, {"test": "salary_test.js", "date": "2026-11-27", "checks": {"salary": 15502}}, {"test": "severance_test.js", "date": "2026-11-27", "checks": {"severance": 79581}}, {"test": "test.js", "date": "2026-11-27", "checks": {"bizdays": 800, "capacity": 300, "eu261": 1811, "loan": 900, "schengen": 1261, "vat": 1228}}, {"test": "unemployment_test.js", "date": "2026-11-27", "checks": {"unemployment": 102306}}]</script>
+<script type="application/json" id="verification-records">[{"test": "airline_pages_test.js", "date": "2026-11-28", "checks": {"eu261": 19209}}, {"test": "incometax_test.js", "date": "2026-11-28", "checks": {"incometax": 33877}}, {"test": "loan_pages_test.js", "date": "2026-11-28", "checks": {"capacity": 2808, "loan": 47493}}, {"test": "micro_test.js", "date": "2026-11-28", "checks": {"micro": 73986}}, {"test": "notary_pages_test.js", "date": "2026-11-28", "checks": {"notary": 15368}}, {"test": "notary_test.js", "date": "2026-11-28", "checks": {"notary": 48006}}, {"test": "ptz_test.js", "date": "2026-11-28", "checks": {"ptz": 68626}}, {"test": "salary_test.js", "date": "2026-11-28", "checks": {"salary": 15502}}, {"test": "severance_test.js", "date": "2026-11-28", "checks": {"severance": 79581}}, {"test": "test.js", "date": "2026-11-28", "checks": {"bizdays": 800, "capacity": 300, "eu261": 1811, "loan": 900, "schengen": 1261, "vat": 1228}}, {"test": "unemployment_test.js", "date": "2026-11-28", "checks": {"unemployment": 102306}}]</script>
   </div>
 </main>
 <footer class="site">
